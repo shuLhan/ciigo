@@ -7,44 +7,134 @@ https://asciidoctor.org/docs/what-is-asciidoc/[asciidoc markup language].
 
 ==  Document Structure
 
-This repository use the following directory structure,
+This software use the following directory structure and file name
+conventions,
 
-*  `cmd/ciigo`: this is the program that serve the generated content.
+*  `cmd/<name>`: this is the program that serve the generated content.
 
 *  `content`: the root directory of static and generated content to be
-   embedded and served.  This is where ".adoc" files must be saved.
+   embedded and served.
+   This is where asciidoc files must be saved.
+   Any files inside this directory (except in "content/assets") will be
+   ignored.
 
 *  `content/assets`: contains static files (images, js, css) that can be
    accessed by any pages using absolute path under `/assets/`.
 
 *  `templates`: contains dynamic templates.  Currently. there is only single
-   template `html.tmpl` that wrap the generated HTML.
+   template: `html.tmpl`, that wrap the generated HTML.
+
+*  All asciidoc files inside content must have an ".adoc" extension.
 
 
 ==  Getting Started
 
-This section describe how to build and create pages to be viewed for local
-development before being deployed.
-This step assume that you have clone the `ciigo` repository.
+This section describe step by step instructions on how to build and create
+pages to be viewed for local development using `ciigo`.
 
-Set the `DEBUG` environment and build the binary on local directory,
+.  Clone the `ciigo` repository.
+For example, lets say we have clone the `ciigo` repository into
+`$HOME/src/github.com/shuLhan/ciigo`.
 
+.  Create new Go repository for building a website.
+For example, in directory `$HOME/src/remote.tld/user/mysite`.
+Replace "remote.tld/user/mysite" with your private or public repository.
++
+----
+$ mkdir -p $HOME/src/remote.tld/user/mysite
+$ cd $HOME/src/remote.tld/user/mysite
+----
+
+.  If you use Go module, create the Go module; if you use GOPATH ignore this
+   step.
++
+----
+$ go mod init remote.tld/user/mysite
+----
+
+.  Create directories for storing our content and a package binary.
+ciigo use strict directory structure as we have mention above.
++
+----
+$ mkdir -p cmd/mysite
+$ mkdir -p content/assets
+$ mkdir -p templates
+----
+
+.  Copy the example of stylesheet and HTML template from `ciigo` repository,
++
+----
+$ cp $HOME/src/github.com/shuLhan/ciigo/content/assets/style.css ./content/assets/
+$ cp $HOME/src/github.com/shuLhan/ciigo/templates/html.tmpl ./templates/
+----
+
+.  Create a Go source code to generate all asciidoc files inside "content"
+   directory.
+   Lets named it `generate.go` with the following content,
++
+----
+//go:generate go run generate.go
+
+package main
+
+import (
+        "github.com/shuLhan/ciigo"
+)
+
+func main() {
+        ciigo.Generate("./content", "cmd/mysite/static.go")
+}
+----
+
+.  Create the main Go code inside `cmd/mysite`,
++
+----
+package main
+
+import (
+        "github.com/shuLhan/ciigo"
+)
+
+func main() {
+        srv := ciigo.NewServer(":8080")
+
+        srv.Start()
+}
+----
+
+.  Create a new asciidoc file `index.adoc` inside "content" directory.
+   Each directory, or sub directory, should have `index.adoc` to be able to
+   accessed by browser,
++
+----
+=  Test
+:stylesheet: /assets/style.css
+
+Hello, world!
+----
+
+.  Build the binary on local directory with `DEBUG` environment variable is
+   set,
++
 ----
 $ export DEBUG=1
-$ go build ./cmd/ciigo
+$ go build ./cmd/mysite
+----
++
+Any non zero value on `DEBUG` environment signal the running program to watch
+changes in ".adoc" files inside "content" directory and serve the generated
+HTML directly.
+
+.  Run the `mysite` binary on current directory,
++
+----
+$ ./mysite
 ----
 
-Any non zero value on `DEBUG` environment signal the running `ciigo` program
-to watch changes in ".adoc" files inside "content" directory and serve the
-generated HTML directly.
+.  Open the web browser at `localhost:8080` to view the generated HTML.
+You should see "Hello, world!" as the main page.
 
-Run the `ciigo` on current directory,
-
-----
-$ ./ciigo
-----
-
-Open the web browser at `localhost:8080` to view the generated HTML.
+Thats it!
 
 Create or update any ".adoc" files in "content" directory, the program will
 automatically generated the HTML file.
@@ -59,7 +149,9 @@ dump the content of all static files inside "content",
 $ go generate
 ----
 
-Second, build the web server,
+The above command will generate Go source code in `cmd/mystite/static.go`.
+
+Second, build the web server that serve static contents in `static.go`,
 
 ----
 $ go build cmd/ciigo
@@ -72,22 +164,25 @@ on web browser,
 $ ./ciigo
 ----
 
-Last, deploy the binary to your server.
+Finally, deploy the program to your server.
 
-NOTE: By default, server will listen on port `8080`.  If you need to use
-another port, you can change at `cmd/ciigo/main.go`.
+*NOTE:* By default, server will listen on address `0.0.0.0` at port `8080`.
+If you need to use another port, you can change it at `cmd/mysite/main.go`.
 
 
-==  Limitations
+==  Limitations and Known Bugs
 
 `ciigo` will not handle automatic certificate (e.g. using LetsEncrypt), its
 up to administrator how the certificate are gathered or generated.
 
+Using symlink on ".adoc" file inside `content` directory is not supported yet.
+
 
 ==  Resources
 
-The source code for this software can be viewed on this
-https://github.com/shuLhan/ciigo[page].
+The source code for this software can be viewed at
+https://github.com/shuLhan/ciigo
+under custom link:/LICENSE[BSD license].
 
 
 ==  Credits
