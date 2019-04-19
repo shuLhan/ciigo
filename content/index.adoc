@@ -1,0 +1,99 @@
+=  Welcome to ciigo
+:stylesheet: /assets/style.css
+
+`ciigo` is a program to write static web server with embedded files using
+https://asciidoctor.org/docs/what-is-asciidoc/[asciidoc markup language].
+
+
+==  Document Structure
+
+This repository use the following directory structure,
+
+*  `cmd/ciigo`: this is the program that serve the generated content.
+
+*  `content`: the root directory of static and generated content to be
+   embedded and served.  This is where ".adoc" files must be saved.
+
+*  `content/assets`: contains static files (images, js, css) that can be
+   accessed by any pages using absolute path under `/assets/`.
+
+*  `templates`: contains dynamic templates.  Currently. there is only single
+   template `html.tmpl` that wrap the generated HTML.
+
+
+==  Getting Started
+
+This section describe how to build and create pages to be viewed for local
+development before being deployed.
+This step assume that you have clone the `ciigo` repository.
+
+Set the `DEBUG` environment and build the binary on local directory,
+
+----
+$ export DEBUG=1
+$ go build ./cmd/ciigo
+----
+
+Any non zero value on `DEBUG` environment signal the running `ciigo` program
+to watch changes in ".adoc" files inside "content" directory and serve the
+generated HTML directly.
+
+Run the `ciigo` on current directory,
+
+----
+$ ./ciigo
+----
+
+Open the web browser at `localhost:8080` to view the generated HTML.
+
+Create or update any ".adoc" files in "content" directory, the program will
+automatically generated the HTML file.
+
+
+==  Deployment
+
+First, we need to convert all asciidoc files inside "content" into HTML and
+dump the content of all static files inside "content",
+
+----
+$ go generate
+----
+
+Second, build the web server,
+
+----
+$ go build cmd/ciigo
+----
+
+Third, test the web server by running the program and opening `localhost:8080`
+on web browser,
+
+----
+$ ./ciigo
+----
+
+Last, deploy the binary to your server.
+
+NOTE: By default, server will listen on port `8080`.  If you need to use
+another port, you can change at `cmd/ciigo/main.go`.
+
+
+==  Limitations
+
+`ciigo` will not handle automatic certificate (e.g. using LetsEncrypt), its
+up to administrator how the certificate are gathered or generated.
+
+
+==  Resources
+
+The source code for this software can be viewed on this
+https://github.com/shuLhan/ciigo[page].
+
+
+==  Credits
+
+This software is developed with helps from third party libraries.
+The following section list only direct third party library.
+
+*  https://github.com/bytesparadise/libasciidoc[libasciidoc].
+   https://raw.githubusercontent.com/bytesparadise/libasciidoc/master/LICENSE[License].
