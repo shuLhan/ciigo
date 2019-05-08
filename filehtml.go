@@ -13,9 +13,10 @@ import (
 // fileHTML represent an HTML metadata for header and its body.
 //
 type fileHTML struct {
-	Title  string
-	Styles []string
-	Body   template.HTML
+	Title    string
+	Styles   []string
+	Body     template.HTML
+	Metadata map[string]string
 
 	path    string
 	rawBody strings.Builder
@@ -38,12 +39,16 @@ func (fhtml *fileHTML) reset() {
 // rawBody to template.HTML.
 //
 func (fhtml *fileHTML) unpackAdoc(fa *fileAdoc) {
+	fhtml.Metadata = make(map[string]string)
+
 	for k, v := range fa.metadata {
 		switch k {
 		case "doctitle":
 			fhtml.Title = v.(string)
 		case "stylesheet":
 			fhtml.Styles = append(fhtml.Styles, v.(string))
+		default:
+			fhtml.Metadata[k] = v.(string)
 		}
 	}
 
