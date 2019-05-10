@@ -34,15 +34,15 @@ pages to be viewed for local development using `ciigo`.
 
 .  Clone the `ciigo` repository.
 For example, lets say we have clone the `ciigo` repository into
-`$HOME/src/github.com/shuLhan/ciigo`.
+`$HOME/go/src/github.com/shuLhan/ciigo`.
 
 .  Create new Go repository for building a website.
-For example, in directory `$HOME/src/remote.tld/user/mysite`.
+For example, in directory `$HOME/go/src/remote.tld/user/mysite`.
 Replace "remote.tld/user/mysite" with your private or public repository.
 +
 ----
-$ mkdir -p $HOME/src/remote.tld/user/mysite
-$ cd $HOME/src/remote.tld/user/mysite
+$ mkdir -p $HOME/go/src/remote.tld/user/mysite
+$ cd $HOME/go/src/remote.tld/user/mysite
 ----
 
 .  If you use Go module, create the Go module; if you use GOPATH ignore this
@@ -64,8 +64,8 @@ $ mkdir -p templates
 .  Copy the example of stylesheet and HTML template from `ciigo` repository,
 +
 ----
-$ cp $HOME/src/github.com/shuLhan/ciigo/content/assets/style.css ./content/assets/
-$ cp $HOME/src/github.com/shuLhan/ciigo/templates/html.tmpl ./templates/
+$ cp $HOME/go/src/github.com/shuLhan/ciigo/content/assets/style.css ./content/assets/
+$ cp $HOME/go/src/github.com/shuLhan/ciigo/templates/html.tmpl ./templates/
 ----
 
 .  Create a Go source code to generate all asciidoc files inside "content"
