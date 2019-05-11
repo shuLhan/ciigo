@@ -43,7 +43,7 @@ func (fhtml *fileHTML) unpackAdoc(fa *fileAdoc) {
 
 	for k, v := range fa.metadata {
 		switch k {
-		case "doctitle":
+		case "title":
 			fhtml.Title = v.(string)
 		case "stylesheet":
 			fhtml.Styles = append(fhtml.Styles, v.(string))
