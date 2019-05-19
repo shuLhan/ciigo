@@ -2,9 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-package ciigo
-
 //go:generate go run generate_main.go
+
+package ciigo
 
 import (
 	"log"
