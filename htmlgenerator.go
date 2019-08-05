@@ -28,9 +28,13 @@ type htmlGenerator struct {
 	tmpl *template.Template
 }
 
-func newHTMLGenerator() (htmlg *htmlGenerator) {
+func newHTMLGenerator(htmlTemplate string) (htmlg *htmlGenerator) {
+	if len(htmlTemplate) == 0 {
+		htmlTemplate = defHTMLTemplate
+	}
+
 	htmlg = &htmlGenerator{
-		path: "./templates/html.tmpl",
+		path: htmlTemplate,
 		mdg: goldmark.New(
 			goldmark.WithExtensions(
 				meta.Meta,

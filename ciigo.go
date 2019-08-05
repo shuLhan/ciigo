@@ -12,10 +12,11 @@
 package ciigo
 
 const (
-	dirAssets   = "assets"
-	dirRoot     = "./content"
-	extAsciidoc = ".adoc"
-	extMarkdown = ".md"
+	dirAssets       = "assets"
+	dirRoot         = "./content"
+	extAsciidoc     = ".adoc"
+	extMarkdown     = ".md"
+	defHTMLTemplate = "./templates/html.tmpl"
 )
 
 const (

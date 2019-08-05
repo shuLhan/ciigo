@@ -16,14 +16,30 @@ import (
 )
 
 //
+// Convert all markup files inside directory, recursively, into HTML files
+// using "htmlTemplate" file as template.
+//
+func Convert(dir, htmlTemplate string) {
+	if len(dir) == 0 {
+		dir = "."
+	}
+
+	htmlg := newHTMLGenerator(htmlTemplate)
+
+	markupFiles := listMarkupFiles(dir)
+
+	htmlg.convertMarkupFiles(markupFiles, true)
+}
+
+//
 // Generate a static Go file to be used for building binary.
 //
 // It will convert all markup files inside root directory into HTML files,
 // recursively; and read all the HTML files and files in "content/assets" and
 // convert them into Go file in "out".
 //
-func Generate(root, out string) {
-	htmlg := newHTMLGenerator()
+func Generate(root, out, htmlTemplate string) {
+	htmlg := newHTMLGenerator(htmlTemplate)
 	markupFiles := listMarkupFiles(root)
 
 	htmlg.convertMarkupFiles(markupFiles, false)

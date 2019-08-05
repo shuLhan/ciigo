@@ -28,10 +28,13 @@ type Server struct {
 }
 
 //
-// NewServer create an HTTP server to serve HTML files in directory "content".
-// The address parameter is optional, if not set its default to ":8080".
+// NewServer create an HTTP server to serve HTML files in directory "root".
 //
-func NewServer(root, address string) (srv *Server) {
+// The address parameter is optional, if not set its default to ":8080".
+// The htmlTemplate parameter is optional, if not set its default to
+// "templates/html.tmpl" in current directory.
+//
+func NewServer(root, address, htmlTemplate string) (srv *Server) {
 	var err error
 
 	if len(root) == 0 {
@@ -56,8 +59,9 @@ func NewServer(root, address string) (srv *Server) {
 	}
 
 	if srv.opts.Development {
-		srv.htmlg = newHTMLGenerator()
+		srv.htmlg = newHTMLGenerator(htmlTemplate)
 		srv.markupFiles = listMarkupFiles(root)
+		srv.htmlg.convertMarkupFiles(srv.markupFiles, false)
 	}
 
 	return srv
@@ -71,7 +75,7 @@ func (srv *Server) Start() {
 		srv.autoGenerate()
 	}
 
-	fmt.Printf("ciigo: starting HTTP server at %s for %s\n",
+	fmt.Printf("ciigo: starting HTTP server at %q for %q\n",
 		srv.opts.Address, srv.opts.Root)
 
 	err := srv.http.Start()
