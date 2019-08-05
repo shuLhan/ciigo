@@ -2,6 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+//
+// Program ciigo-example provide an example on how to build a binary that
+// include the static, generated .go file.
+//
 package main
 
 import (
