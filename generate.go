@@ -38,7 +38,7 @@ func Generate(root, out string) {
 		log.Fatal("ciigo: Generate: " + err.Error())
 	}
 
-	err = mfs.GoGenerate("", out)
+	err = mfs.GoGenerate("", out, memfs.EncodingGzip)
 	if err != nil {
 		log.Fatal("ciigo: Generate: " + err.Error())
 	}
