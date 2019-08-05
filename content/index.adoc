@@ -2,7 +2,13 @@
 :stylesheet: /assets/style.css
 
 `ciigo` is a program to write static web server with embedded files using
-https://asciidoctor.org/docs/what-is-asciidoc/[asciidoc markup language].
+generated markup format.
+
+Currently, ciigo support
+https://asciidoctor.org/docs/what-is-asciidoc/[asciidoc]
+and
+https://commonmark.org/[markdown]
+as markup format.
 
 
 ==  Document Structure
@@ -14,8 +20,8 @@ conventions,
 
 *  `content`: the root directory of static and generated content to be
    embedded and served.
-   This is where asciidoc files must be saved.
-   Any files inside this directory (except in "content/assets") will be
+   This is where markup files must be saved.
+   Any files inside this directory, except in "content/assets", will be
    ignored.
 
 *  `content/assets`: contains static files (images, js, css) that can be
@@ -24,7 +30,7 @@ conventions,
 *  `templates`: contains dynamic templates.  Currently. there is only single
    template: `html.tmpl`, that wrap the generated HTML.
 
-*  All asciidoc files inside content must have an ".adoc" extension.
+*  All markup files inside content must have an ".adoc" extension.
 
 
 ==  Getting Started
@@ -33,7 +39,7 @@ This section describe step by step instructions on how to build and create
 pages to be viewed for local development using `ciigo`.
 
 .  Clone the `ciigo` repository.
-For example, lets say we have clone the `ciigo` repository into
+For example, lets say we have cloned the `ciigo` repository into
 `$HOME/go/src/github.com/shuLhan/ciigo`.
 
 .  Create new Go repository for building a website.
@@ -68,8 +74,8 @@ $ cp $HOME/go/src/github.com/shuLhan/ciigo/content/assets/style.css ./content/as
 $ cp $HOME/go/src/github.com/shuLhan/ciigo/templates/html.tmpl ./templates/
 ----
 
-.  Create a Go source code to generate all asciidoc files inside "content"
-   directory.
+.  Create a Go source code in the root repository to generate all markup files
+   inside "content" directory into HTML.
    Lets named it `generate.go` with the following content,
 +
 ----
@@ -102,7 +108,7 @@ func main() {
 }
 ----
 
-.  Create a new asciidoc file `index.adoc` inside "content" directory.
+.  Create a new markup file `index.adoc` inside "content" directory.
    Each directory, or sub directory, should have `index.adoc` to be able to
    accessed by browser,
 +
@@ -113,23 +119,21 @@ func main() {
 Hello, world!
 ----
 
-.  Build the binary on local directory with `DEBUG` environment variable is
-   set,
+.  Run `go generate` to convert all files with extension `.adoc` (or `.md`)
+   into HTML and embed it into `./cmd/mysite/static.go`
++
+	$ go generate
+
+.  Now run the `./cmd/mysite` with `DEBUG` environment variable is set,
 +
 ----
 $ export DEBUG=1
-$ go build ./cmd/mysite
+$ go run ./cmd/mysite
 ----
 +
 Any non zero value on `DEBUG` environment signal the running program to watch
 changes in ".adoc" files inside "content" directory and serve the generated
 HTML directly.
-
-.  Run the `mysite` binary on current directory,
-+
-----
-$ ./mysite
-----
 
 .  Open the web browser at `localhost:8080` to view the generated HTML.
 You should see "Hello, world!" as the main page.
@@ -137,12 +141,13 @@ You should see "Hello, world!" as the main page.
 Thats it!
 
 Create or update any ".adoc" files in "content" directory, the program will
-automatically generated the HTML file.
+automatically generated the HTML file, but you still need to refresh the web
+browser to load the new generated file.
 
 
 ==  Deployment
 
-First, we need to convert all asciidoc files inside "content" into HTML and
+First, we need to convert all markup files inside "content" into HTML and
 dump the content of all static files inside "content",
 
 ----
@@ -192,3 +197,6 @@ The following section list only direct third party library.
 
 *  https://github.com/bytesparadise/libasciidoc[libasciidoc].
    https://raw.githubusercontent.com/bytesparadise/libasciidoc/master/LICENSE[License].
+
+*  https://github.com/yuin/goldmark[goldmark].
+   https://raw.githubusercontent.com/yuin/goldmark/master/LICENSE[License].

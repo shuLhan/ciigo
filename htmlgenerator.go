@@ -5,10 +5,18 @@
 package ciigo
 
 import (
+	"bytes"
+	"context"
 	"fmt"
 	"html/template"
+	"io/ioutil"
 	"log"
 	"os"
+
+	"github.com/bytesparadise/libasciidoc"
+	"github.com/yuin/goldmark"
+	meta "github.com/yuin/goldmark-meta"
+	"github.com/yuin/goldmark/parser"
 )
 
 //
@@ -16,12 +24,18 @@ import (
 //
 type htmlGenerator struct {
 	path string
+	mdg  goldmark.Markdown
 	tmpl *template.Template
 }
 
 func newHTMLGenerator() (htmlg *htmlGenerator) {
 	htmlg = &htmlGenerator{
 		path: "./templates/html.tmpl",
+		mdg: goldmark.New(
+			goldmark.WithExtensions(
+				meta.Meta,
+			),
+		),
 	}
 
 	err := htmlg.loadTemplate()
@@ -38,29 +52,58 @@ func (htmlg *htmlGenerator) loadTemplate() (err error) {
 	return
 }
 
-func (htmlg *htmlGenerator) convertAdocs(adocs []*fileAdoc, force bool) {
+func (htmlg *htmlGenerator) convertMarkupFiles(markupFiles []*markupFile, force bool) {
 	fhtml := &fileHTML{}
 
-	for _, adoc := range adocs {
+	for _, fmarkup := range markupFiles {
 		fhtml.reset()
-		fhtml.path = adoc.basePath + ".html"
+		fhtml.path = fmarkup.basePath + ".html"
 
-		fmt.Printf("ciigo: converting %q to %q ... ", adoc.path, fhtml.path)
+		fmt.Printf("ciigo: converting %q to %q ... ", fmarkup.path, fhtml.path)
 
-		adoc.toHTML(fhtml.path, &fhtml.rawBody, force)
-		if fhtml.rawBody.Len() == 0 {
-			fmt.Println("skip")
-			continue
-		}
-
-		fhtml.unpackAdoc(adoc)
-		fhtml.Body = template.HTML(fhtml.rawBody.String()) //nolint: gosec
-
-		htmlg.write(fhtml)
+		htmlg.convert(fmarkup, fhtml, force)
 
 		fmt.Println("OK")
-		fmt.Printf("  metadata: %+v\n", adoc.metadata)
+		fmt.Printf("  metadata: %+v\n", fmarkup.metadata)
 	}
+}
+
+func (htmlg *htmlGenerator) convert(fmarkup *markupFile, fhtml *fileHTML, force bool) {
+	if fmarkup.isHTMLLatest(fhtml.path) && !force {
+		return
+	}
+
+	in, err := ioutil.ReadFile(fmarkup.path)
+	if err != nil {
+		log.Fatal("htmlGenerator.convert: " + err.Error())
+	}
+
+	switch fmarkup.kind {
+	case markupKindAsciidoc:
+		ctx := context.Background()
+		bufin := bytes.NewBuffer(in)
+		fmarkup.metadata, err = libasciidoc.ConvertToHTML(ctx,
+			bufin, &fhtml.rawBody)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+	case markupKindMarkdown:
+		ctx := parser.NewContext()
+		err := htmlg.mdg.Convert(in, &fhtml.rawBody, parser.WithContext(ctx))
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		fmarkup.metadata = meta.Get(ctx)
+	}
+	if fhtml.rawBody.Len() == 0 {
+		fmt.Println("skip")
+		return
+	}
+
+	fhtml.unpackMarkup(fmarkup)
+	htmlg.write(fhtml)
 }
 
 //

@@ -5,49 +5,54 @@
 package ciigo
 
 import (
-	"context"
 	"fmt"
-	"io"
 	"log"
 	"os"
+	"path"
 	"strings"
-
-	"github.com/bytesparadise/libasciidoc"
 )
 
-type fileAdoc struct {
-	path     string                 // path contains full path to ".adoc" file.
-	info     os.FileInfo            // info contains FileInfo of ".adoc" file.
-	basePath string                 // basePath contains full path to file without ".adoc" extension.
-	metadata map[string]interface{} // metadata contains ".adoc" metadata.
+type markupFile struct {
+	kind     byte                   // kind define the type of markup file.
+	path     string                 // path contains full path to markup file.
+	info     os.FileInfo            // info contains FileInfo of markup file.
+	basePath string                 // basePath contains full path to file without markup extension.
+	metadata map[string]interface{} // metadata contains markup metadata.
 }
 
-func newFileAdoc(path string, fi os.FileInfo) (adoc *fileAdoc, err error) {
-	if len(path) == 0 {
-		return nil, fmt.Errorf("ciigo: newFileAdoc: empty path")
+func newMarkupFile(filePath string, fi os.FileInfo) (fmarkup *markupFile, err error) {
+	if len(filePath) == 0 {
+		return nil, fmt.Errorf("ciigo: newMarkupFile: empty path")
 	}
 	if fi == nil {
-		fi, err = os.Stat(path)
+		fi, err = os.Stat(filePath)
 		if err != nil {
-			return nil, fmt.Errorf("ciigo: newFileAdoc: " + err.Error())
+			return nil, fmt.Errorf("newMarkupFile: " + err.Error())
 		}
 	}
 
-	adoc = &fileAdoc{
-		path:     path,
-		info:     fi,
-		basePath: strings.TrimSuffix(path, ".adoc"),
+	ext := strings.ToLower(path.Ext(filePath))
+
+	fmarkup = &markupFile{
+		kind: markupKind(ext),
+		path: filePath,
+		info: fi,
+	}
+	if fmarkup.kind == markupKindUnknown {
+		return nil, fmt.Errorf("newMarkupFile: unknown markup file " + filePath)
 	}
 
-	return adoc, nil
+	fmarkup.basePath = strings.TrimSuffix(filePath, ext)
+
+	return fmarkup, nil
 }
 
 //
 // isHTMLLatest will return true if generated HTML is exist and its
-// modification time is equal or greater than their asciidoc file; otherwise
+// modification time is equal or greater than their markup file; otherwise
 // it will return false.
 //
-func (fa *fileAdoc) isHTMLLatest(htmlPath string) bool {
+func (fa *markupFile) isHTMLLatest(htmlPath string) bool {
 	htmlInfo, err := os.Stat(htmlPath)
 	if err != nil {
 		if os.IsNotExist(err) {
@@ -64,23 +69,4 @@ func (fa *fileAdoc) isHTMLLatest(htmlPath string) bool {
 	htmlTime := htmlInfo.ModTime()
 
 	return htmlTime.Equal(infoTime) || htmlTime.After(infoTime)
-}
-
-//
-// toHTML convert the asciidoc file to HTML and store its metadata in
-//
-func (fa *fileAdoc) toHTML(htmlPath string, out io.Writer, force bool) {
-	if fa.isHTMLLatest(htmlPath) && !force {
-		return
-	}
-
-	var (
-		ctx = context.Background()
-		err error
-	)
-
-	fa.metadata, err = libasciidoc.ConvertFileToHTML(ctx, fa.path, out)
-	if err != nil {
-		log.Fatal(err)
-	}
 }

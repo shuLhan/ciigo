@@ -35,10 +35,10 @@ func (fhtml *fileHTML) reset() {
 }
 
 //
-// unpackAdoc convert the asciidoc metadata to its HTML representation and
+// unpackMarkup convert the markup metadata to its HTML representation and
 // rawBody to template.HTML.
 //
-func (fhtml *fileHTML) unpackAdoc(fa *fileAdoc) {
+func (fhtml *fileHTML) unpackMarkup(fa *markupFile) {
 	fhtml.Metadata = make(map[string]string)
 
 	for k, v := range fa.metadata {

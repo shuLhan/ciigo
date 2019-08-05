@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"log"
 	"path"
+	"strings"
 	"time"
 
 	"github.com/shuLhan/share/lib/debug"
@@ -19,11 +20,11 @@ import (
 // Server contains the HTTP server.
 //
 type Server struct {
-	http  *libhttp.Server
-	opts  *libhttp.ServerOptions
-	htmlg *htmlGenerator
-	adocs []*fileAdoc
-	dw    *libio.DirWatcher
+	http        *libhttp.Server
+	opts        *libhttp.ServerOptions
+	htmlg       *htmlGenerator
+	markupFiles []*markupFile
+	dw          *libio.DirWatcher
 }
 
 //
@@ -44,6 +45,7 @@ func NewServer(address string) (srv *Server) {
 		Root:    dirRoot,
 		Excludes: []string{
 			`.*\.adoc$`,
+			`.*\.md$`,
 		},
 		Development: debug.Value > 0,
 	}
@@ -55,7 +57,7 @@ func NewServer(address string) (srv *Server) {
 
 	if srv.opts.Development {
 		srv.htmlg = newHTMLGenerator()
-		srv.adocs = listAdocFiles(dirRoot)
+		srv.markupFiles = listMarkupFiles(dirRoot)
 	}
 
 	return srv
@@ -69,6 +71,9 @@ func (srv *Server) Start() {
 		srv.autoGenerate()
 	}
 
+	fmt.Printf("ciigo: starting HTTP server at %s for %s\n",
+		srv.opts.Address, srv.opts.Root)
+
 	err := srv.http.Start()
 	if err != nil {
 		log.Fatal("web: Start: " + err.Error())
@@ -81,12 +86,13 @@ func (srv *Server) autoGenerate() {
 		Delay: time.Second,
 		Includes: []string{
 			`.*\.adoc$`,
+			`.*\.md$`,
 		},
 		Excludes: []string{
 			`assets/.*`,
 			`.*\.html$`,
 		},
-		Callback: srv.onChangeAdoc,
+		Callback: srv.onChangeMarkupFile,
 	}
 
 	err := srv.dw.Start()
@@ -101,64 +107,61 @@ func (srv *Server) autoGenerate() {
 }
 
 //
-// onChangeAdoc watch the ".adoc" file in the "content" directory, and
-// re-generate the HTML file if changed.
+// onChangeMarkupFile watch the markup files inside the "content" directory,
+// and re-generate them into HTML file when changed.
 //
-func (srv *Server) onChangeAdoc(ns *libio.NodeState) {
+func (srv *Server) onChangeMarkupFile(ns *libio.NodeState) {
 	if ns.State == libio.FileStateDeleted {
-		fmt.Printf("ciigo: onChangeAdoc: %q deleted\n", ns.Node.SysPath)
+		fmt.Printf("ciigo: onChangeMarkupFile: %q deleted\n", ns.Node.SysPath)
 		return
 	}
 
-	ext := path.Ext(ns.Node.SysPath)
-	if ext != ".adoc" {
+	ext := strings.ToLower(path.Ext(ns.Node.SysPath))
+	if !isExtensionMarkup(ext) {
 		return
 	}
 
-	fmt.Println("ciigo: onChangeAdoc: " + ns.Node.SysPath)
+	fmt.Println("ciigo: onChangeMarkupFile: " + ns.Node.SysPath)
 
 	var (
-		adoc *fileAdoc
-		err  error
+		fmarkup *markupFile
+		err     error
 	)
 
 	switch ns.State {
 	case libio.FileStateCreated:
-		adoc, err = newFileAdoc(ns.Node.SysPath, nil)
+		fmarkup, err = newMarkupFile(ns.Node.SysPath, nil)
 		if err != nil {
 			log.Println(err)
 			return
 		}
 
-		srv.adocs = append(srv.adocs, adoc)
+		srv.markupFiles = append(srv.markupFiles, fmarkup)
 
 	case libio.FileStateModified:
-		for x := 0; x < len(srv.adocs); x++ {
-			if srv.adocs[x].path == ns.Node.SysPath {
-				adoc = srv.adocs[x]
+		for x := 0; x < len(srv.markupFiles); x++ {
+			if srv.markupFiles[x].path == ns.Node.SysPath {
+				fmarkup = srv.markupFiles[x]
 				break
 			}
 		}
-		if adoc == nil {
-			adoc, err = newFileAdoc(ns.Node.SysPath, nil)
+		if fmarkup == nil {
+			fmarkup, err = newMarkupFile(ns.Node.SysPath, nil)
 			if err != nil {
 				log.Println(err)
 				return
 			}
 
-			srv.adocs = append(srv.adocs, adoc)
+			srv.markupFiles = append(srv.markupFiles, fmarkup)
 		}
 	}
 
 	fhtml := &fileHTML{
-		path: adoc.basePath + ".html",
+		path: fmarkup.basePath + ".html",
 	}
 
 	fhtml.rawBody.Reset()
-	adoc.toHTML(fhtml.path, &fhtml.rawBody, true)
-	fhtml.unpackAdoc(adoc)
-
-	srv.htmlg.write(fhtml)
+	srv.htmlg.convert(fmarkup, fhtml, true)
 }
 
 func (srv *Server) onChangeHTMLTemplate(ns *libio.NodeState) {
@@ -175,7 +178,7 @@ func (srv *Server) onChangeHTMLTemplate(ns *libio.NodeState) {
 		return
 	}
 
-	fmt.Println("web: regenerate all .adoc files ... ")
+	fmt.Println("web: regenerate all markup files ... ")
 
-	srv.htmlg.convertAdocs(srv.adocs, true)
+	srv.htmlg.convertMarkupFiles(srv.markupFiles, true)
 }

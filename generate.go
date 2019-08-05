@@ -18,17 +18,20 @@ import (
 //
 // Generate a static Go file to be used for building binary.
 //
-// It will convert all asciidoc files inside root directory into HTML files,
+// It will convert all markup files inside root directory into HTML files,
 // recursively; and read all the HTML files and files in "content/assets" and
 // convert them into Go file in "out".
 //
 func Generate(root, out string) {
 	htmlg := newHTMLGenerator()
-	adocs := listAdocFiles(root)
-	htmlg.convertAdocs(adocs, false)
+	markupFiles := listMarkupFiles(root)
+
+	htmlg.convertMarkupFiles(markupFiles, false)
 
 	excs := []string{
 		`.*\.adoc$`,
+		`.*\.md$`,
+		`^\..*`,
 	}
 
 	mfs, err := memfs.New(nil, excs, true)
@@ -36,19 +39,25 @@ func Generate(root, out string) {
 		log.Fatal("ciigo: Generate: " + err.Error())
 	}
 
-	mfs.Mount(root)
+	err = mfs.Mount(root)
+	if err != nil {
+		log.Fatal("ciigo: Generate: " + err.Error())
+	}
 
-	mfs.GoGenerate("", out)
+	err = mfs.GoGenerate("", out)
+	if err != nil {
+		log.Fatal("ciigo: Generate: " + err.Error())
+	}
 }
 
 //
-// listAdocFiles find any ".adoc" file inside the content directory,
+// listMarkupFiles find any markup files inside the content directory,
 // recursively.
 //
-func listAdocFiles(dir string) (adocs []*fileAdoc) {
+func listMarkupFiles(dir string) (markupFiles []*markupFile) {
 	d, err := os.Open(dir)
 	if err != nil {
-		log.Fatal("ciigo: listAdocFiles: os.Open: ", err)
+		log.Fatal("ciigo: listMarkupFiles: os.Open: ", err)
 	}
 
 	fis, err := d.Readdir(0)
@@ -62,27 +71,28 @@ func listAdocFiles(dir string) (adocs []*fileAdoc) {
 		if name == dirAssets {
 			continue
 		}
-		if fi.IsDir() {
+		if fi.IsDir() && name[0] != '.' {
 			newdir := filepath.Join(dir, fi.Name())
-			adocs = append(adocs, listAdocFiles(newdir)...)
+			markupFiles = append(markupFiles, listMarkupFiles(newdir)...)
 			continue
 		}
 
 		ext := strings.ToLower(filepath.Ext(name))
-		if ext != ".adoc" {
+		if !isExtensionMarkup(ext) {
 			continue
 		}
 		if fi.Size() == 0 {
 			continue
 		}
 
-		adoc := &fileAdoc{
+		markupf := &markupFile{
+			kind:     markupKind(ext),
 			path:     filepath.Join(dir, name),
 			info:     fi,
 			basePath: filepath.Join(dir, strings.TrimSuffix(name, ext)),
 		}
-		adocs = append(adocs, adoc)
+		markupFiles = append(markupFiles, markupf)
 	}
 
-	return adocs
+	return markupFiles
 }
