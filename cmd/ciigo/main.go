@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	srv := ciigo.NewServer(":8080")
+	srv := ciigo.NewServer("./content", ":8080")
 
 	srv.Start()
 }

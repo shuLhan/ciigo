@@ -31,23 +31,23 @@ type Server struct {
 // NewServer create an HTTP server to serve HTML files in directory "content".
 // The address parameter is optional, if not set its default to ":8080".
 //
-func NewServer(address string) (srv *Server) {
+func NewServer(root, address string) (srv *Server) {
 	var err error
 
+	if len(root) == 0 {
+		root = dirRoot
+	}
 	if len(address) == 0 {
 		address = ":8080"
 	}
 
-	srv = new(Server)
-
-	srv.opts = &libhttp.ServerOptions{
-		Address: address,
-		Root:    dirRoot,
-		Excludes: []string{
-			`.*\.adoc$`,
-			`.*\.md$`,
+	srv = &Server{
+		opts: &libhttp.ServerOptions{
+			Address:     address,
+			Root:        root,
+			Excludes:    defExcludes,
+			Development: debug.Value > 0,
 		},
-		Development: debug.Value > 0,
 	}
 
 	srv.http, err = libhttp.NewServer(srv.opts)
@@ -57,7 +57,7 @@ func NewServer(address string) (srv *Server) {
 
 	if srv.opts.Development {
 		srv.htmlg = newHTMLGenerator()
-		srv.markupFiles = listMarkupFiles(dirRoot)
+		srv.markupFiles = listMarkupFiles(root)
 	}
 
 	return srv
@@ -82,7 +82,7 @@ func (srv *Server) Start() {
 
 func (srv *Server) autoGenerate() {
 	srv.dw = &libio.DirWatcher{
-		Path:  dirRoot,
+		Path:  srv.opts.Root,
 		Delay: time.Second,
 		Includes: []string{
 			`.*\.adoc$`,
@@ -91,6 +91,7 @@ func (srv *Server) autoGenerate() {
 		Excludes: []string{
 			`assets/.*`,
 			`.*\.html$`,
+			`^\..*`,
 		},
 		Callback: srv.onChangeMarkupFile,
 	}

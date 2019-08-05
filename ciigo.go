@@ -24,6 +24,14 @@ const (
 	markupKindMarkdown
 )
 
+var (
+	defExcludes = []string{
+		`.*\.adoc$`,
+		`.*\.md$`,
+		`^\..*`,
+	}
+)
+
 func isExtensionMarkup(ext string) bool {
 	return ext == extAsciidoc || ext == extMarkdown
 }

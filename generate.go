@@ -28,13 +28,7 @@ func Generate(root, out string) {
 
 	htmlg.convertMarkupFiles(markupFiles, false)
 
-	excs := []string{
-		`.*\.adoc$`,
-		`.*\.md$`,
-		`^\..*`,
-	}
-
-	mfs, err := memfs.New(nil, excs, true)
+	mfs, err := memfs.New(nil, defExcludes, true)
 	if err != nil {
 		log.Fatal("ciigo: Generate: " + err.Error())
 	}
