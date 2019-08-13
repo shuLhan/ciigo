@@ -14,6 +14,8 @@ import (
 //
 type fileHTML struct {
 	Title    string
+	Author   string
+	Date     string
 	Styles   []string
 	Body     template.HTML
 	Metadata map[string]string
@@ -27,6 +29,8 @@ type fileHTML struct {
 //
 func (fhtml *fileHTML) reset() {
 	fhtml.Title = ""
+	fhtml.Author = ""
+	fhtml.Date = ""
 	fhtml.Styles = fhtml.Styles[:0]
 	fhtml.Body = template.HTML("")
 
@@ -43,6 +47,10 @@ func (fhtml *fileHTML) unpackMarkup(fa *markupFile) {
 
 	for k, v := range fa.metadata {
 		switch k {
+		case "author":
+			fhtml.Author = v.(string)
+		case "date":
+			fhtml.Date = v.(string)
 		case "title":
 			fhtml.Title = v.(string)
 		case "stylesheet":

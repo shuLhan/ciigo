@@ -1,5 +1,7 @@
 =  Welcome to ciigo
 :stylesheet: /assets/style.css
+:author: Shulhan
+:date: 14 August 2019
 
 `ciigo` is a library and a program to write static web server with embedded
 files using generated markup format.

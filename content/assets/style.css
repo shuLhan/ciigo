@@ -145,6 +145,11 @@ dd {
 	padding: 0 1.25rem;
 }
 
+.container .meta {
+	font-style: italic;
+	margin: 1.25rem;
+}
+
 .footer {
 	text-align: center;
 	color: #666;
