@@ -1,5 +1,5 @@
-github.com/bytesparadise/libasciidoc v0.2.1-0.20190523062038-e0ac68b26fee h1:iNdLGct2/0spWj2gaQxCKcvCLK6hCoC0Bu7sAg2HpBI=
-github.com/bytesparadise/libasciidoc v0.2.1-0.20190523062038-e0ac68b26fee/go.mod h1:CZX8GIEkxy/LHrDZjPbNrE16RQFDrnG6hBjnjXcD34Y=
+github.com/bytesparadise/libasciidoc v0.2.1-0.20190904185117-3445b3d62993 h1:nEqimrb46hPtGS66LOHaqs/o7z5cbH6pViks4BV0xsg=
+github.com/bytesparadise/libasciidoc v0.2.1-0.20190904185117-3445b3d62993/go.mod h1:CZX8GIEkxy/LHrDZjPbNrE16RQFDrnG6hBjnjXcD34Y=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/fsnotify/fsnotify v1.4.7 h1:IXs+QLmnXW2CcXuY+8Mzv/fWEsPGWxqefPtCP5CnV9I=
@@ -21,8 +21,8 @@ github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZb
 github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=
 github.com/sergi/go-diff v1.0.0 h1:Kpca3qRNrduNnOQeazBd0ysaKrUJiIuISHxogkT9RPQ=
 github.com/sergi/go-diff v1.0.0/go.mod h1:0CfEIISq7TuYL3j771MWULgwwjU+GofnZX9QAmXWZgo=
-github.com/shuLhan/share v0.8.1 h1:yLOp/oCHuONxWwPelZ0ga1qqNaMXlFfmISns4H7g7ks=
-github.com/shuLhan/share v0.8.1/go.mod h1:p2/wsQ00pX/F1ysg+tXaix99ca2poS7iiWd6WWcVnuI=
+github.com/shuLhan/share v0.8.2 h1:ct3OO0ZJZ3OWAjhE/2W1OfzwyN8U3yZUymgWBda/Ug0=
+github.com/shuLhan/share v0.8.2/go.mod h1:p2/wsQ00pX/F1ysg+tXaix99ca2poS7iiWd6WWcVnuI=
 github.com/sirupsen/logrus v1.4.2 h1:SPIRibHv4MatM3XXNO2BJeFLZwZ2LvZgfQ5+UNI2im4=
 github.com/sirupsen/logrus v1.4.2/go.mod h1:tLMulIdttU9McNUspp0xgXVQah82FyeX6MwdIuYE2rE=
 github.com/stretchr/objx v0.1.1/go.mod h1:HFkY916IF+rwdDfMAkV7OtwuqBVzrE8GR6GFx+wExME=
