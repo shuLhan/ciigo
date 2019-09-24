@@ -6,6 +6,7 @@
 		<meta name="theme-color" content="#375EAB" />
 
 		<title>{{.Title}}</title>
+		<link rel="stylesheet" href="/assets/style.css" />
 		{{- range .Styles}}
 		<link rel="stylesheet" href="{{.}}" />
 		{{- end}}
@@ -15,6 +16,11 @@
 			<div class="container">
 				<div class="top-heading">
 					<a href="/">ciigo</a>
+				</div>
+				<div class="menu">
+					<form class="item" action="/_internal/search">
+						<input type="text" name="q" placeholder="Search" />
+					</form>
 				</div>
 				<div class="menu">
 					<a href="/sub">Sub</a>

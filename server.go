@@ -5,8 +5,11 @@
 package ciigo
 
 import (
+	"bytes"
 	"fmt"
+	"html/template"
 	"log"
+	"net/http"
 	"path"
 	"strings"
 	"time"
@@ -55,11 +58,24 @@ func NewServer(root, address, htmlTemplate string) (srv *Server) {
 
 	srv.http, err = libhttp.NewServer(srv.opts)
 	if err != nil {
-		log.Fatal("web: libhttp.NewServer: " + err.Error())
+		log.Fatal("ciigo: libhttp.NewServer: " + err.Error())
 	}
 
+	epInSearch := &libhttp.Endpoint{
+		Path:         "/_internal/search",
+		RequestType:  libhttp.RequestTypeQuery,
+		ResponseType: libhttp.ResponseTypeHTML,
+		Call:         srv.onSearch,
+	}
+
+	err = srv.http.RegisterGet(epInSearch)
+	if err != nil {
+		log.Fatal("ciigo: " + err.Error())
+	}
+
+	srv.htmlg = newHTMLGenerator(htmlTemplate)
+
 	if srv.opts.Development {
-		srv.htmlg = newHTMLGenerator(htmlTemplate)
 		srv.markupFiles = listMarkupFiles(root)
 		srv.htmlg.convertMarkupFiles(srv.markupFiles, false)
 	}
@@ -186,4 +202,31 @@ func (srv *Server) onChangeHTMLTemplate(ns *libio.NodeState) {
 	fmt.Println("web: regenerate all markup files ... ")
 
 	srv.htmlg.convertMarkupFiles(srv.markupFiles, true)
+}
+
+func (srv *Server) onSearch(res http.ResponseWriter, req *http.Request, reqBody []byte) (
+	resBody []byte, err error,
+) {
+	var bufSearch, buf bytes.Buffer
+
+	q := req.Form.Get("q")
+	results := srv.http.Memfs.Search(strings.Fields(q), 0)
+
+	err = srv.htmlg.tmplSearch.Execute(&bufSearch, results)
+	if err != nil {
+		return nil, fmt.Errorf("ciigo.onSearch: " + err.Error())
+	}
+
+	fhtml := &fileHTML{
+		Body: template.HTML(bufSearch.String()),
+	}
+
+	err = srv.htmlg.tmpl.Execute(&buf, fhtml)
+	if err != nil {
+		return nil, fmt.Errorf("ciigo.onSearch: " + err.Error())
+	}
+
+	resBody = buf.Bytes()
+
+	return resBody, nil
 }

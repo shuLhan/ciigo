@@ -23,9 +23,10 @@ import (
 // htmlGenerator provide a template to write full HTML file.
 //
 type htmlGenerator struct {
-	path string
-	mdg  goldmark.Markdown
-	tmpl *template.Template
+	path       string
+	mdg        goldmark.Markdown
+	tmpl       *template.Template
+	tmplSearch *template.Template
 }
 
 func newHTMLGenerator(htmlTemplate string) (htmlg *htmlGenerator) {
@@ -45,6 +46,12 @@ func newHTMLGenerator(htmlTemplate string) (htmlg *htmlGenerator) {
 	err := htmlg.loadTemplate()
 	if err != nil {
 		log.Fatal("htmlGenerator: loadTemplate: ", err.Error())
+	}
+
+	htmlg.tmplSearch = template.New("search")
+	htmlg.tmplSearch, err = htmlg.tmplSearch.Parse(templateSearch)
+	if err != nil {
+		log.Fatal("newHTMLGenerator: " + err.Error())
 	}
 
 	return

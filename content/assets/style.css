@@ -133,6 +133,9 @@ dd {
 	border: 0.0625rem solid #375eab;
 	border-radius: 5px;
 }
+.topbar .menu form {
+	margin-left: 0.625rem;
+}
 .page {
 	width: 100%;
 }
