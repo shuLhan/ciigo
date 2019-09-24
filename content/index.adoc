@@ -1,6 +1,6 @@
 =  Welcome to ciigo
 :author: Shulhan
-:date: 14 August 2019
+:date: 25 September 2019
 
 `ciigo` is a library and a program to write static web server with embedded
 files using generated markup format.
@@ -15,7 +15,6 @@ as markup format.
 ==  ciigo as library
 
 This README explain how to use the ciigo as library.
-For ciigo as command line interface see
 
 
 ===  Document Structure
@@ -168,14 +167,14 @@ The above command will generate Go source code in `cmd/mystite/static.go`.
 Second, build the web server that serve static contents in `static.go`,
 
 ----
-$ go build cmd/ciigo
+$ go build cmd/mysite
 ----
 
 Third, test the web server by running the program and opening `localhost:8080`
 on web browser,
 
 ----
-$ ./ciigo
+$ ./mysite
 ----
 
 Finally, deploy the program to your server.
@@ -191,21 +190,27 @@ markup files, as HTML files.
 
 ===  Usage
 
+----
 	ciigo convert [-template <file>] <dir>
+----
 
 Scan the "dir" recursively to find markup files (.adoc or .md) and
 convert them into HTML files.
 The template "file" is optional, default to "templates/html.tmpl" in
 the current directory.
 
+----
 	ciigo generate [-template <file>] [-out <file>] <dir>
+----
 
 Convert all markup files inside directory "dir" recursively and then
 embed them into ".go" source file.
 The output file is optional, default to "ciigo_static.go" in current
 directory.
 
+----
 	ciigo serve [-template <file>] [-address <ip:port>] <dir>
+----
 
 Serve all files inside directory "dir" using HTTP server, watch
 changes on markup files and convert them to HTML files automatically.
