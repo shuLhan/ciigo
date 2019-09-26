@@ -29,13 +29,11 @@ type htmlGenerator struct {
 	tmplSearch *template.Template
 }
 
-func newHTMLGenerator(htmlTemplate string) (htmlg *htmlGenerator) {
-	if len(htmlTemplate) == 0 {
-		htmlTemplate = defHTMLTemplate
-	}
+func newHTMLGenerator(file, content string) (htmlg *htmlGenerator) {
+	var err error
 
 	htmlg = &htmlGenerator{
-		path: htmlTemplate,
+		path: file,
 		mdg: goldmark.New(
 			goldmark.WithExtensions(
 				meta.Meta,
@@ -43,9 +41,10 @@ func newHTMLGenerator(htmlTemplate string) (htmlg *htmlGenerator) {
 		),
 	}
 
-	err := htmlg.loadTemplate()
+	htmlg.tmpl = template.New("")
+	htmlg.tmpl, err = htmlg.tmpl.Parse(content)
 	if err != nil {
-		log.Fatal("htmlGenerator: loadTemplate: ", err.Error())
+		log.Fatal("newHTMLGenerator: ", err.Error())
 	}
 
 	htmlg.tmplSearch = template.New("search")

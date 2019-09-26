@@ -8,9 +8,11 @@ import (
 	"bytes"
 	"fmt"
 	"html/template"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"path"
+	"path/filepath"
 	"strings"
 	"time"
 
@@ -73,11 +75,31 @@ func NewServer(root, address, htmlTemplate string) (srv *Server) {
 		log.Fatal("ciigo: " + err.Error())
 	}
 
-	srv.htmlg = newHTMLGenerator(htmlTemplate)
+	htmlTemplate = filepath.Clean(htmlTemplate)
 
 	if srv.opts.Development {
+		bhtml, err := ioutil.ReadFile(htmlTemplate)
+		if err != nil {
+			log.Fatal("ciigo.Convert: " + err.Error())
+		}
+
+		srv.htmlg = newHTMLGenerator(htmlTemplate, string(bhtml))
 		srv.markupFiles = listMarkupFiles(root)
 		srv.htmlg.convertMarkupFiles(srv.markupFiles, false)
+	} else {
+		tmplNode, err := srv.http.Memfs.Get(htmlTemplate)
+		if err != nil {
+			log.Fatalf("ciigo.NewServer: Memfs.Get %s: %s",
+				htmlTemplate, err.Error())
+		}
+
+		bhtml, err := tmplNode.Decode()
+		if err != nil {
+			log.Fatalf("ciigo.NewServer: tmplNode.decode: %s",
+				err.Error())
+		}
+
+		srv.htmlg = newHTMLGenerator("", string(bhtml))
 	}
 
 	return srv

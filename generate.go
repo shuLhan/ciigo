@@ -7,6 +7,7 @@
 package ciigo
 
 import (
+	"io/ioutil"
 	"log"
 	"os"
 	"path/filepath"
@@ -24,7 +25,12 @@ func Convert(dir, htmlTemplate string) {
 		dir = "."
 	}
 
-	htmlg := newHTMLGenerator(htmlTemplate)
+	b, err := ioutil.ReadFile(htmlTemplate)
+	if err != nil {
+		log.Fatal("ciigo.Convert: " + err.Error())
+	}
+
+	htmlg := newHTMLGenerator(htmlTemplate, string(b))
 
 	markupFiles := listMarkupFiles(dir)
 
@@ -39,24 +45,34 @@ func Convert(dir, htmlTemplate string) {
 // convert them into Go file in "out".
 //
 func Generate(root, out, htmlTemplate string) {
-	htmlg := newHTMLGenerator(htmlTemplate)
+	b, err := ioutil.ReadFile(htmlTemplate)
+	if err != nil {
+		log.Fatal("ciigo.Generate: " + err.Error())
+	}
+
+	htmlg := newHTMLGenerator(htmlTemplate, string(b))
 	markupFiles := listMarkupFiles(root)
 
 	htmlg.convertMarkupFiles(markupFiles, false)
 
 	mfs, err := memfs.New(nil, defExcludes, true)
 	if err != nil {
-		log.Fatal("ciigo: Generate: " + err.Error())
+		log.Fatal("ciigo.Generate: " + err.Error())
 	}
 
 	err = mfs.Mount(root)
 	if err != nil {
-		log.Fatal("ciigo: Generate: " + err.Error())
+		log.Fatalf("ciigo.Generate: Mount %s: %s", root, err.Error())
+	}
+
+	_, err = mfs.AddFile(htmlTemplate)
+	if err != nil {
+		log.Fatalf("ciigo.Generate: AddFile %s: %s", htmlTemplate, err.Error())
 	}
 
 	err = mfs.GoGenerate("", out, memfs.EncodingGzip)
 	if err != nil {
-		log.Fatal("ciigo: Generate: " + err.Error())
+		log.Fatal("ciigo.Generate: " + err.Error())
 	}
 }
 
