@@ -10,13 +10,12 @@ func generate_() *memfs.Node {
 	node := &memfs.Node{
 		SysPath:         "./content",
 		Path:            "/",
-		Name:            "/",
 		ContentType:     "",
 		ContentEncoding: "",
-		Mode:            2147484141,
-		Size:            4096,
 	}
-	memfs.GeneratedPathNode.Set("/", node)
+	node.SetMode(2147484141)
+	node.SetName("/")
+	node.SetSize(4096)
 	return node
 }
 
@@ -24,11 +23,8 @@ func generate_LICENSE() *memfs.Node {
 	node := &memfs.Node{
 		SysPath:         "content/LICENSE",
 		Path:            "/LICENSE",
-		Name:            "LICENSE",
 		ContentType:     "text/plain; charset=utf-8",
 		ContentEncoding: "gzip",
-		Mode:            420,
-		Size:            957,
 		V: []byte{
 			31, 139, 8, 0, 0, 0, 0, 0, 0, 255, 148, 149, 95, 111, 219, 54,
 			23, 198, 175, 95, 126, 138, 7, 189, 106, 1, 197, 253, 243, 2, 3, 150,
@@ -92,7 +88,9 @@ func generate_LICENSE() *memfs.Node {
 			43, 0, 0, 255, 255, 106, 236, 187, 87, 157, 7, 0, 0,
 		},
 	}
-	memfs.GeneratedPathNode.Set("/LICENSE", node)
+	node.SetMode(420)
+	node.SetName("LICENSE")
+	node.SetSize(957)
 	return node
 }
 
@@ -100,13 +98,12 @@ func generate_assets() *memfs.Node {
 	node := &memfs.Node{
 		SysPath:         "content/assets",
 		Path:            "/assets",
-		Name:            "assets",
 		ContentType:     "",
 		ContentEncoding: "",
-		Mode:            2147484141,
-		Size:            0,
 	}
-	memfs.GeneratedPathNode.Set("/assets", node)
+	node.SetMode(2147484141)
+	node.SetName("assets")
+	node.SetSize(0)
 	return node
 }
 
@@ -114,18 +111,17 @@ func generate_assets_custom_css() *memfs.Node {
 	node := &memfs.Node{
 		SysPath:         "content/assets/custom.css",
 		Path:            "/assets/custom.css",
-		Name:            "custom.css",
 		ContentType:     "text/css; charset=utf-8",
 		ContentEncoding: "gzip",
-		Mode:            420,
-		Size:            47,
 		V: []byte{
 			31, 139, 8, 0, 0, 0, 0, 0, 0, 255, 202, 48, 84, 168, 230, 226,
 			76, 206, 207, 201, 47, 178, 82, 40, 206, 76, 205, 203, 75, 180, 230, 170,
 			229, 2, 4, 0, 0, 255, 255, 28, 53, 13, 44, 23, 0, 0, 0,
 		},
 	}
-	memfs.GeneratedPathNode.Set("/assets/custom.css", node)
+	node.SetMode(420)
+	node.SetName("custom.css")
+	node.SetSize(47)
 	return node
 }
 
@@ -133,11 +129,8 @@ func generate_assets_style_css() *memfs.Node {
 	node := &memfs.Node{
 		SysPath:         "content/assets/style.css",
 		Path:            "/assets/style.css",
-		Name:            "style.css",
 		ContentType:     "text/css; charset=utf-8",
 		ContentEncoding: "gzip",
-		Mode:            420,
-		Size:            739,
 		V: []byte{
 			31, 139, 8, 0, 0, 0, 0, 0, 0, 255, 148, 85, 93, 143, 171, 54,
 			20, 124, 142, 127, 197, 145, 86, 125, 137, 128, 5, 178, 36, 45, 72, 43,
@@ -188,7 +181,9 @@ func generate_assets_style_css() *memfs.Node {
 			8, 0, 0,
 		},
 	}
-	memfs.GeneratedPathNode.Set("/assets/style.css", node)
+	node.SetMode(420)
+	node.SetName("style.css")
+	node.SetSize(739)
 	return node
 }
 
@@ -196,11 +191,8 @@ func generate_favicon_ico() *memfs.Node {
 	node := &memfs.Node{
 		SysPath:         "content/favicon.ico",
 		Path:            "/favicon.ico",
-		Name:            "favicon.ico",
 		ContentType:     "image/vnd.microsoft.icon",
 		ContentEncoding: "gzip",
-		Mode:            420,
-		Size:            1316,
 		V: []byte{
 			31, 139, 8, 0, 0, 0, 0, 0, 0, 255, 236, 152, 13, 76, 85, 101,
 			24, 199, 31, 224, 26, 4, 133, 24, 154, 93, 75, 239, 105, 166, 50, 231,
@@ -287,7 +279,9 @@ func generate_favicon_ico() *memfs.Node {
 			54, 22, 0, 0,
 		},
 	}
-	memfs.GeneratedPathNode.Set("/favicon.ico", node)
+	node.SetMode(420)
+	node.SetName("favicon.ico")
+	node.SetSize(1316)
 	return node
 }
 
@@ -295,11 +289,8 @@ func generate_index_html() *memfs.Node {
 	node := &memfs.Node{
 		SysPath:         "content/index.html",
 		Path:            "/index.html",
-		Name:            "index.html",
 		ContentType:     "text/html; charset=utf-8",
 		ContentEncoding: "gzip",
-		Mode:            420,
-		Size:            3200,
 		V: []byte{
 			31, 139, 8, 0, 0, 0, 0, 0, 0, 255, 180, 90, 109, 111, 219, 56,
 			144, 254, 28, 253, 138, 89, 109, 81, 164, 128, 99, 245, 229, 22, 183, 151,
@@ -503,7 +494,9 @@ func generate_index_html() *memfs.Node {
 			247, 91, 255, 63, 0, 0, 255, 255, 165, 93, 58, 87, 247, 42, 0, 0,
 		},
 	}
-	memfs.GeneratedPathNode.Set("/index.html", node)
+	node.SetMode(420)
+	node.SetName("index.html")
+	node.SetSize(3200)
 	return node
 }
 
@@ -511,13 +504,12 @@ func generate_sub() *memfs.Node {
 	node := &memfs.Node{
 		SysPath:         "content/sub",
 		Path:            "/sub",
-		Name:            "sub",
 		ContentType:     "",
 		ContentEncoding: "",
-		Mode:            2147484141,
-		Size:            0,
 	}
-	memfs.GeneratedPathNode.Set("/sub", node)
+	node.SetMode(2147484141)
+	node.SetName("sub")
+	node.SetSize(0)
 	return node
 }
 
@@ -525,11 +517,8 @@ func generate_sub_index_html() *memfs.Node {
 	node := &memfs.Node{
 		SysPath:         "content/sub/index.html",
 		Path:            "/sub/index.html",
-		Name:            "index.html",
 		ContentType:     "text/html; charset=utf-8",
 		ContentEncoding: "gzip",
-		Mode:            420,
-		Size:            601,
 		V: []byte{
 			31, 139, 8, 0, 0, 0, 0, 0, 0, 255, 140, 84, 77, 111, 219, 56,
 			20, 60, 219, 191, 226, 45, 23, 200, 41, 178, 214, 187, 88, 180, 69, 36,
@@ -571,7 +560,9 @@ func generate_sub_index_html() *memfs.Node {
 			255, 93, 183, 107, 98, 246, 4, 0, 0,
 		},
 	}
-	memfs.GeneratedPathNode.Set("/sub/index.html", node)
+	node.SetMode(420)
+	node.SetName("index.html")
+	node.SetSize(601)
 	return node
 }
 
@@ -579,13 +570,12 @@ func generatetemplates() *memfs.Node {
 	node := &memfs.Node{
 		SysPath:         "templates",
 		Path:            "templates",
-		Name:            "templates",
 		ContentType:     "",
 		ContentEncoding: "",
-		Mode:            2147484141,
-		Size:            0,
 	}
-	memfs.GeneratedPathNode.Set("templates", node)
+	node.SetMode(2147484141)
+	node.SetName("templates")
+	node.SetSize(0)
 	return node
 }
 
@@ -593,11 +583,8 @@ func generatetemplates_html_tmpl() *memfs.Node {
 	node := &memfs.Node{
 		SysPath:         "templates/html.tmpl",
 		Path:            "templates/html.tmpl",
-		Name:            "html.tmpl",
 		ContentType:     "text/html; charset=utf-8",
 		ContentEncoding: "gzip",
-		Mode:            420,
-		Size:            610,
 		V: []byte{
 			31, 139, 8, 0, 0, 0, 0, 0, 0, 255, 140, 84, 77, 111, 219, 56,
 			16, 61, 59, 191, 98, 194, 5, 114, 138, 164, 245, 46, 22, 219, 34, 146,
@@ -640,7 +627,9 @@ func generatetemplates_html_tmpl() *memfs.Node {
 			0, 0,
 		},
 	}
-	memfs.GeneratedPathNode.Set("templates/html.tmpl", node)
+	node.SetMode(420)
+	node.SetName("html.tmpl")
+	node.SetSize(610)
 	return node
 }
 
