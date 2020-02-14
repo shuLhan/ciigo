@@ -43,8 +43,8 @@ import (
 )
 
 func main() {
-	isHelp := flag.Bool("h", false, "print help")
-	isHelp = flag.Bool("help", false, "print help")
+	isHelp := flag.Bool("help", false, "print help")
+
 	htmlTemplate := flag.String("template", "templates/html.tmpl",
 		"path to HTML template")
 	outputFile := flag.String("out", "ciigo_static.go",
