@@ -240,7 +240,7 @@ func (srv *Server) onSearch(res http.ResponseWriter, req *http.Request, reqBody 
 	}
 
 	fhtml := &fileHTML{
-		Body: template.HTML(bufSearch.String()),
+		Body: template.HTML(bufSearch.String()), //nolint: gosec
 	}
 
 	err = srv.htmlg.tmpl.Execute(&buf, fhtml)

@@ -24,6 +24,7 @@ const (
 	markupKindMarkdown
 )
 
+//nolint: gochecknoglobals
 var (
 	defExcludes = []string{
 		`.*\.adoc$`,

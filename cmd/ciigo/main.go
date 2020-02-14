@@ -113,6 +113,5 @@ ciigo [-template <file>] [-address <ip:port>] serve <dir>
 
 	Serve all files inside directory "dir" using HTTP server, watch
 	changes on markup files and convert them to HTML files automatically.
-	If the address is not set, its default to ":8080".
-`)
+	If the address is not set, its default to ":8080".`)
 }
