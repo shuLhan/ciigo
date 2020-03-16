@@ -6,6 +6,7 @@ package ciigo
 
 import (
 	"bytes"
+	"context"
 	"fmt"
 	"html/template"
 	"io/ioutil"
@@ -89,8 +90,9 @@ func (htmlg *htmlGenerator) convert(fmarkup *markupFile, fhtml *fileHTML, force 
 
 	switch fmarkup.kind {
 	case markupKindAsciidoc:
+		ctx := context.Background()
 		bufin := bytes.NewBuffer(in)
-		fmarkup.metadata, err = libasciidoc.ConvertToHTML(fmarkup.path,
+		fmarkup.metadata, err = libasciidoc.ConvertToHTML(ctx,
 			bufin, &fhtml.rawBody)
 		if err != nil {
 			log.Fatal(err)
