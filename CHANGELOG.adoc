@@ -1,0 +1,8 @@
+#  CHANGELOG
+
+##  ciigo v0.1.1 (2020-03-24)
+
+The first release support asciidoc and markdown markup language.
+
+The v0.1.0 release has been deleted because it contains error in the
+dependencies and the Go module cache make it even harder to invalidate it.
