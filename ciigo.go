@@ -19,6 +19,13 @@ const (
 )
 
 const (
+	metadataAuthor     = "author"
+	metadataDate       = "date"
+	metadataStylesheet = "stylesheet"
+	metadataTitle      = "title"
+)
+
+const (
 	markupKindUnknown byte = iota
 	markupKindAsciidoc
 	markupKindMarkdown

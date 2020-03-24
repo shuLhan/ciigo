@@ -47,13 +47,13 @@ func (fhtml *fileHTML) unpackMarkup(fa *fileMarkup) {
 
 	for k, v := range fa.metadata {
 		switch k {
-		case "author":
+		case metadataAuthor:
 			fhtml.Author = v.(string)
-		case "date":
+		case metadataDate:
 			fhtml.Date = v.(string)
-		case "title":
+		case metadataTitle:
 			fhtml.Title = v.(string)
-		case "stylesheet":
+		case metadataStylesheet:
 			fhtml.Styles = append(fhtml.Styles, v.(string))
 		default:
 			fhtml.Metadata[k] = v.(string)
