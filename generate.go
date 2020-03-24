@@ -32,9 +32,9 @@ func Convert(dir, htmlTemplate string) {
 
 	htmlg := newHTMLGenerator(htmlTemplate, string(b))
 
-	markupFiles := listMarkupFiles(dir)
+	fileMarkups := listFileMarkups(dir)
 
-	htmlg.convertMarkupFiles(markupFiles, true)
+	htmlg.convertFileMarkups(fileMarkups, true)
 }
 
 //
@@ -51,9 +51,9 @@ func Generate(root, out, htmlTemplate string) {
 	}
 
 	htmlg := newHTMLGenerator(htmlTemplate, string(b))
-	markupFiles := listMarkupFiles(root)
+	fileMarkups := listFileMarkups(root)
 
-	htmlg.convertMarkupFiles(markupFiles, false)
+	htmlg.convertFileMarkups(fileMarkups, false)
 
 	mfs, err := memfs.New(nil, defExcludes, true)
 	if err != nil {
@@ -77,13 +77,13 @@ func Generate(root, out, htmlTemplate string) {
 }
 
 //
-// listMarkupFiles find any markup files inside the content directory,
+// listFileMarkups find any markup files inside the content directory,
 // recursively.
 //
-func listMarkupFiles(dir string) (markupFiles []*markupFile) {
+func listFileMarkups(dir string) (fileMarkups []*fileMarkup) {
 	d, err := os.Open(dir)
 	if err != nil {
-		log.Fatal("ciigo: listMarkupFiles: os.Open: ", err)
+		log.Fatal("ciigo: listFileMarkups: os.Open: ", err)
 	}
 
 	fis, err := d.Readdir(0)
@@ -99,7 +99,7 @@ func listMarkupFiles(dir string) (markupFiles []*markupFile) {
 		}
 		if fi.IsDir() && name[0] != '.' {
 			newdir := filepath.Join(dir, fi.Name())
-			markupFiles = append(markupFiles, listMarkupFiles(newdir)...)
+			fileMarkups = append(fileMarkups, listFileMarkups(newdir)...)
 			continue
 		}
 
@@ -111,14 +111,14 @@ func listMarkupFiles(dir string) (markupFiles []*markupFile) {
 			continue
 		}
 
-		markupf := &markupFile{
+		markupf := &fileMarkup{
 			kind:     markupKind(ext),
 			path:     filepath.Join(dir, name),
 			info:     fi,
 			basePath: filepath.Join(dir, strings.TrimSuffix(name, ext)),
 		}
-		markupFiles = append(markupFiles, markupf)
+		fileMarkups = append(fileMarkups, markupf)
 	}
 
-	return markupFiles
+	return fileMarkups
 }

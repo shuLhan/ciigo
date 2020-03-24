@@ -42,7 +42,7 @@ func (fhtml *fileHTML) reset() {
 // unpackMarkup convert the markup metadata to its HTML representation and
 // rawBody to template.HTML.
 //
-func (fhtml *fileHTML) unpackMarkup(fa *markupFile) {
+func (fhtml *fileHTML) unpackMarkup(fa *fileMarkup) {
 	fhtml.Metadata = make(map[string]string)
 
 	for k, v := range fa.metadata {

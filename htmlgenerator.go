@@ -62,10 +62,10 @@ func (htmlg *htmlGenerator) loadTemplate() (err error) {
 	return
 }
 
-func (htmlg *htmlGenerator) convertMarkupFiles(markupFiles []*markupFile, force bool) {
+func (htmlg *htmlGenerator) convertFileMarkups(fileMarkups []*fileMarkup, force bool) {
 	fhtml := &fileHTML{}
 
-	for _, fmarkup := range markupFiles {
+	for _, fmarkup := range fileMarkups {
 		fhtml.reset()
 		fhtml.path = fmarkup.basePath + ".html"
 
@@ -78,7 +78,7 @@ func (htmlg *htmlGenerator) convertMarkupFiles(markupFiles []*markupFile, force 
 	}
 }
 
-func (htmlg *htmlGenerator) convert(fmarkup *markupFile, fhtml *fileHTML, force bool) {
+func (htmlg *htmlGenerator) convert(fmarkup *fileMarkup, fhtml *fileHTML, force bool) {
 	if fmarkup.isHTMLLatest(fhtml.path) && !force {
 		return
 	}

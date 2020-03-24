@@ -12,7 +12,7 @@ import (
 	"strings"
 )
 
-type markupFile struct {
+type fileMarkup struct {
 	kind     byte                   // kind define the type of markup file.
 	path     string                 // path contains full path to markup file.
 	info     os.FileInfo            // info contains FileInfo of markup file.
@@ -20,26 +20,26 @@ type markupFile struct {
 	metadata map[string]interface{} // metadata contains markup metadata.
 }
 
-func newMarkupFile(filePath string, fi os.FileInfo) (fmarkup *markupFile, err error) {
+func newFileMarkup(filePath string, fi os.FileInfo) (fmarkup *fileMarkup, err error) {
 	if len(filePath) == 0 {
-		return nil, fmt.Errorf("ciigo: newMarkupFile: empty path")
+		return nil, fmt.Errorf("ciigo: newFileMarkup: empty path")
 	}
 	if fi == nil {
 		fi, err = os.Stat(filePath)
 		if err != nil {
-			return nil, fmt.Errorf("newMarkupFile: " + err.Error())
+			return nil, fmt.Errorf("newFileMarkup: " + err.Error())
 		}
 	}
 
 	ext := strings.ToLower(path.Ext(filePath))
 
-	fmarkup = &markupFile{
+	fmarkup = &fileMarkup{
 		kind: markupKind(ext),
 		path: filePath,
 		info: fi,
 	}
 	if fmarkup.kind == markupKindUnknown {
-		return nil, fmt.Errorf("newMarkupFile: unknown markup file " + filePath)
+		return nil, fmt.Errorf("newFileMarkup: unknown markup file " + filePath)
 	}
 
 	fmarkup.basePath = strings.TrimSuffix(filePath, ext)
@@ -52,7 +52,7 @@ func newMarkupFile(filePath string, fi os.FileInfo) (fmarkup *markupFile, err er
 // modification time is equal or greater than their markup file; otherwise
 // it will return false.
 //
-func (fa *markupFile) isHTMLLatest(htmlPath string) bool {
+func (fa *fileMarkup) isHTMLLatest(htmlPath string) bool {
 	htmlInfo, err := os.Stat(htmlPath)
 	if err != nil {
 		if os.IsNotExist(err) {

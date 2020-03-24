@@ -28,7 +28,7 @@ type Server struct {
 	http        *libhttp.Server
 	opts        *libhttp.ServerOptions
 	htmlg       *htmlGenerator
-	markupFiles []*markupFile
+	fileMarkups []*fileMarkup
 	dw          *libio.DirWatcher
 }
 
@@ -84,8 +84,8 @@ func NewServer(root, address, htmlTemplate string) (srv *Server) {
 		}
 
 		srv.htmlg = newHTMLGenerator(htmlTemplate, string(bhtml))
-		srv.markupFiles = listMarkupFiles(root)
-		srv.htmlg.convertMarkupFiles(srv.markupFiles, false)
+		srv.fileMarkups = listFileMarkups(root)
+		srv.htmlg.convertFileMarkups(srv.fileMarkups, false)
 	} else {
 		tmplNode, err := srv.http.Memfs.Get(htmlTemplate)
 		if err != nil {
@@ -135,7 +135,7 @@ func (srv *Server) autoGenerate() {
 			`.*\.html$`,
 			`^\..*`,
 		},
-		Callback: srv.onChangeMarkupFile,
+		Callback: srv.onChangeFileMarkup,
 	}
 
 	err := srv.dw.Start()
@@ -150,12 +150,12 @@ func (srv *Server) autoGenerate() {
 }
 
 //
-// onChangeMarkupFile watch the markup files inside the "content" directory,
+// onChangeFileMarkup watch the markup files inside the "content" directory,
 // and re-generate them into HTML file when changed.
 //
-func (srv *Server) onChangeMarkupFile(ns *libio.NodeState) {
+func (srv *Server) onChangeFileMarkup(ns *libio.NodeState) {
 	if ns.State == libio.FileStateDeleted {
-		fmt.Printf("ciigo: onChangeMarkupFile: %q deleted\n", ns.Node.SysPath)
+		fmt.Printf("ciigo: onChangeFileMarkup: %q deleted\n", ns.Node.SysPath)
 		return
 	}
 
@@ -164,38 +164,38 @@ func (srv *Server) onChangeMarkupFile(ns *libio.NodeState) {
 		return
 	}
 
-	fmt.Println("ciigo: onChangeMarkupFile: " + ns.Node.SysPath)
+	fmt.Println("ciigo: onChangeFileMarkup: " + ns.Node.SysPath)
 
 	var (
-		fmarkup *markupFile
+		fmarkup *fileMarkup
 		err     error
 	)
 
 	switch ns.State {
 	case libio.FileStateCreated:
-		fmarkup, err = newMarkupFile(ns.Node.SysPath, nil)
+		fmarkup, err = newFileMarkup(ns.Node.SysPath, nil)
 		if err != nil {
 			log.Println(err)
 			return
 		}
 
-		srv.markupFiles = append(srv.markupFiles, fmarkup)
+		srv.fileMarkups = append(srv.fileMarkups, fmarkup)
 
 	case libio.FileStateModified:
-		for x := 0; x < len(srv.markupFiles); x++ {
-			if srv.markupFiles[x].path == ns.Node.SysPath {
-				fmarkup = srv.markupFiles[x]
+		for x := 0; x < len(srv.fileMarkups); x++ {
+			if srv.fileMarkups[x].path == ns.Node.SysPath {
+				fmarkup = srv.fileMarkups[x]
 				break
 			}
 		}
 		if fmarkup == nil {
-			fmarkup, err = newMarkupFile(ns.Node.SysPath, nil)
+			fmarkup, err = newFileMarkup(ns.Node.SysPath, nil)
 			if err != nil {
 				log.Println(err)
 				return
 			}
 
-			srv.markupFiles = append(srv.markupFiles, fmarkup)
+			srv.fileMarkups = append(srv.fileMarkups, fmarkup)
 		}
 	}
 
@@ -223,7 +223,7 @@ func (srv *Server) onChangeHTMLTemplate(ns *libio.NodeState) {
 
 	fmt.Println("web: regenerate all markup files ... ")
 
-	srv.htmlg.convertMarkupFiles(srv.markupFiles, true)
+	srv.htmlg.convertFileMarkups(srv.fileMarkups, true)
 }
 
 func (srv *Server) onSearch(res http.ResponseWriter, req *http.Request, reqBody []byte) (
