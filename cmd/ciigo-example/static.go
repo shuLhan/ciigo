@@ -15,7 +15,7 @@ func generate_() *memfs.Node {
 	}
 	node.SetMode(2147484141)
 	node.SetName("/")
-	node.SetSize(4096)
+	node.SetSize(256)
 	return node
 }
 
@@ -191,7 +191,7 @@ func generate_favicon_ico() *memfs.Node {
 	node := &memfs.Node{
 		SysPath:         "content/favicon.ico",
 		Path:            "/favicon.ico",
-		ContentType:     "image/vnd.microsoft.icon",
+		ContentType:     "image/x-icon",
 		ContentEncoding: "gzip",
 		V: []byte{
 			31, 139, 8, 0, 0, 0, 0, 0, 0, 255, 236, 152, 13, 76, 85, 101,
