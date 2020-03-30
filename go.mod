@@ -10,7 +10,7 @@ require (
 	github.com/onsi/gomega v1.8.1 // indirect
 	github.com/pkg/errors v0.8.1 // indirect
 	github.com/sergi/go-diff v1.1.0 // indirect
-	github.com/shuLhan/share v0.13.0
+	github.com/shuLhan/share v0.13.1-0.20200330125604-7ac43c699173
 	github.com/sirupsen/logrus v1.4.2 // indirect
 	github.com/yuin/goldmark v1.1.18
 	github.com/yuin/goldmark-meta v0.0.0-20191126180153-f0638e958b60

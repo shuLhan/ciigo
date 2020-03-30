@@ -64,13 +64,14 @@ func NewServer(root, address, htmlTemplate string) (srv *Server) {
 	}
 
 	epInSearch := &libhttp.Endpoint{
+		Method:       libhttp.RequestMethodGet,
 		Path:         "/_internal/search",
 		RequestType:  libhttp.RequestTypeQuery,
 		ResponseType: libhttp.ResponseTypeHTML,
 		Call:         srv.onSearch,
 	}
 
-	err = srv.http.RegisterGet(epInSearch)
+	err = srv.http.RegisterEndpoint(epInSearch)
 	if err != nil {
 		log.Fatal("ciigo: " + err.Error())
 	}
