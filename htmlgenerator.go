@@ -6,7 +6,6 @@ package ciigo
 
 import (
 	"bytes"
-	"context"
 	"fmt"
 	"html/template"
 	"io/ioutil"
@@ -14,9 +13,11 @@ import (
 	"os"
 
 	"github.com/bytesparadise/libasciidoc"
+	"github.com/bytesparadise/libasciidoc/pkg/configuration"
+	"github.com/bytesparadise/libasciidoc/pkg/parser"
 	"github.com/yuin/goldmark"
 	meta "github.com/yuin/goldmark-meta"
-	"github.com/yuin/goldmark/parser"
+	mdparser "github.com/yuin/goldmark/parser"
 )
 
 //
@@ -90,17 +91,25 @@ func (htmlg *htmlGenerator) convert(fmarkup *fileMarkup, fhtml *fileHTML, force 
 
 	switch fmarkup.kind {
 	case markupKindAsciidoc:
-		ctx := context.Background()
+		cfg := configuration.NewConfiguration()
 		bufin := bytes.NewBuffer(in)
-		fmarkup.metadata, err = libasciidoc.ConvertToHTML(ctx,
-			bufin, &fhtml.rawBody)
+
+		doc, err := parser.ParseDocument(bufin, cfg)
 		if err != nil {
 			log.Fatal(err)
 		}
 
+		bufin = bytes.NewBuffer(in)
+		md, err := libasciidoc.Convert(bufin, &fhtml.rawBody, cfg)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		fhtml.unpackAdocMetadata(doc, md)
+
 	case markupKindMarkdown:
-		ctx := parser.NewContext()
-		err := htmlg.mdg.Convert(in, &fhtml.rawBody, parser.WithContext(ctx))
+		ctx := mdparser.NewContext()
+		err := htmlg.mdg.Convert(in, &fhtml.rawBody, mdparser.WithContext(ctx))
 		if err != nil {
 			log.Fatal(err)
 		}
