@@ -1,3 +1,5 @@
 /ciigo
 /ciigo-example
+/_bin/ciigo-darwin-amd64
+/_bin/ciigo-linux-amd64
 *.html
