@@ -1,7 +1,7 @@
 RELEASES= _bin/ciigo-linux-amd64 \
 	_bin/ciigo-darwin-amd64
 
-.PHONY: all lint install build build-release
+.PHONY: all lint install serve build build-release
 
 all: install
 
@@ -13,6 +13,12 @@ install:
 	go run ./internal/cmd/generate
 	go install ./cmd/ciigo-example
 	go install ./cmd/ciigo
+
+serve:
+	find _example -name "*.html" -delete
+	rm -f ./cmd/ciigo-example/static.go
+	go run ./internal/cmd/generate
+	DEBUG=1 go run ./cmd/ciigo-example
 
 build-release: _bin $(RELEASES)
 
