@@ -22,8 +22,9 @@ import (
 )
 
 const (
+	defAddress  = ":8080"
+	defDir      = "."
 	dirAssets   = "assets"
-	dirRoot     = "./content"
 	extAsciidoc = ".adoc"
 	extMarkdown = ".md"
 )
@@ -81,14 +82,14 @@ func Convert(dir, htmlTemplate string) {
 //
 // Generate a static Go file to be used for building binary.
 //
-// It will convert all markup files inside root directory into HTML files,
+// It will convert all markup files inside directory "dir" into HTML files,
 // recursively; and read all the HTML files and files in "content/assets" and
 // convert them into Go file in "out".
 //
 // If htmlTemplate is empty it will default to use embedded HTML template.
 // See template_index_html.go for template format.
 //
-func Generate(root, out, htmlTemplate string) {
+func Generate(dir, out, htmlTemplate string) {
 	contentHTML := templateIndexHTML
 
 	if len(htmlTemplate) > 0 {
@@ -100,7 +101,7 @@ func Generate(root, out, htmlTemplate string) {
 	}
 
 	htmlg := newHTMLGenerator(htmlTemplate, contentHTML)
-	fileMarkups := listFileMarkups(root)
+	fileMarkups := listFileMarkups(dir)
 
 	htmlg.convertFileMarkups(fileMarkups, len(htmlTemplate) == 0)
 
@@ -109,9 +110,9 @@ func Generate(root, out, htmlTemplate string) {
 		log.Fatal("ciigo.Generate: " + err.Error())
 	}
 
-	err = mfs.Mount(root)
+	err = mfs.Mount(dir)
 	if err != nil {
-		log.Fatalf("ciigo.Generate: Mount %s: %s", root, err.Error())
+		log.Fatalf("ciigo.Generate: Mount %s: %s", dir, err.Error())
 	}
 
 	if len(htmlTemplate) > 0 {
@@ -125,6 +126,21 @@ func Generate(root, out, htmlTemplate string) {
 	if err != nil {
 		log.Fatal("ciigo.Generate: " + err.Error())
 	}
+}
+
+//
+// Serve the content at directory "dir" using HTTP server at specific
+// "address".
+//
+func Serve(dir, address, htmlTemplate string) {
+	if len(dir) == 0 {
+		dir = defDir
+	}
+	if len(address) == 0 {
+		address = defAddress
+	}
+	srv := newServer(dir, address, htmlTemplate)
+	srv.start()
 }
 
 func isExtensionMarkup(ext string) bool {

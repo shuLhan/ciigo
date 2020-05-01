@@ -13,7 +13,5 @@ import (
 )
 
 func main() {
-	srv := ciigo.NewServer("./content", ":8080", "./templates/html.tmpl")
-
-	srv.Start()
+	ciigo.Serve("./content", ":8080", "./templates/html.tmpl")
 }

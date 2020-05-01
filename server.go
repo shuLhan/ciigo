@@ -22,9 +22,9 @@ import (
 )
 
 //
-// Server contains the HTTP server.
+// server contains the HTTP server.
 //
-type Server struct {
+type server struct {
 	http        *libhttp.Server
 	opts        *libhttp.ServerOptions
 	htmlg       *htmlGenerator
@@ -33,23 +33,16 @@ type Server struct {
 }
 
 //
-// NewServer create an HTTP server to serve HTML files in directory "root".
+// newServer create an HTTP server to serve HTML files in directory "root".
 //
 // The address parameter is optional, if not set its default to ":8080".
 // The htmlTemplate parameter is optional, if not set its default to
 // embedded HTML template.
 //
-func NewServer(root, address, htmlTemplate string) (srv *Server) {
+func newServer(root, address, htmlTemplate string) (srv *server) {
 	var err error
 
-	if len(root) == 0 {
-		root = dirRoot
-	}
-	if len(address) == 0 {
-		address = ":8080"
-	}
-
-	srv = &Server{
+	srv = &server{
 		opts: &libhttp.ServerOptions{
 			Address:     address,
 			Root:        root,
@@ -87,9 +80,9 @@ func NewServer(root, address, htmlTemplate string) (srv *Server) {
 }
 
 //
-// Start the web server.
+// start the web server.
 //
-func (srv *Server) Start() {
+func (srv *server) start() {
 	if srv.opts.Development {
 		srv.autoGenerate()
 	}
@@ -103,7 +96,7 @@ func (srv *Server) Start() {
 	}
 }
 
-func (srv *Server) autoGenerate() {
+func (srv *server) autoGenerate() {
 	srv.dw = &libio.DirWatcher{
 		Path:  srv.opts.Root,
 		Delay: time.Second,
@@ -132,7 +125,7 @@ func (srv *Server) autoGenerate() {
 	}
 }
 
-func (srv *Server) initHTMLGenerator(htmlTemplate string) {
+func (srv *server) initHTMLGenerator(htmlTemplate string) {
 	if len(htmlTemplate) == 0 {
 		srv.htmlg = newHTMLGenerator("", templateIndexHTML)
 		return
@@ -149,17 +142,17 @@ func (srv *Server) initHTMLGenerator(htmlTemplate string) {
 	if srv.opts.Development {
 		bhtml, err = ioutil.ReadFile(htmlTemplate)
 		if err != nil {
-			log.Fatal("Server.initHTMLGenerator: " + err.Error())
+			log.Fatal("server.initHTMLGenerator: " + err.Error())
 		}
 	} else {
 		tmplNode, err := srv.http.Memfs.Get(htmlTemplate)
 		if err != nil {
-			log.Fatalf("Server.initHTMLGenerator: Memfs.Get %s: %s",
+			log.Fatalf("server.initHTMLGenerator: Memfs.Get %s: %s",
 				htmlTemplate, err.Error())
 		}
 		bhtml, err = tmplNode.Decode()
 		if err != nil {
-			log.Fatal("Server.initHTMLGenerator: " + err.Error())
+			log.Fatal("server.initHTMLGenerator: " + err.Error())
 		}
 	}
 
@@ -171,7 +164,7 @@ func (srv *Server) initHTMLGenerator(htmlTemplate string) {
 // onChangeFileMarkup watch the markup files inside the "content" directory,
 // and re-generate them into HTML file when changed.
 //
-func (srv *Server) onChangeFileMarkup(ns *libio.NodeState) {
+func (srv *server) onChangeFileMarkup(ns *libio.NodeState) {
 	if ns.State == libio.FileStateDeleted {
 		fmt.Printf("ciigo: onChangeFileMarkup: %q deleted\n", ns.Node.SysPath)
 		return
@@ -225,7 +218,7 @@ func (srv *Server) onChangeFileMarkup(ns *libio.NodeState) {
 	srv.htmlg.convert(fmarkup, fhtml, true)
 }
 
-func (srv *Server) onChangeHTMLTemplate(ns *libio.NodeState) {
+func (srv *server) onChangeHTMLTemplate(ns *libio.NodeState) {
 	if ns.State == libio.FileStateDeleted {
 		fmt.Printf("watchHTMLTemplate: file %q deleted\n", ns.Node.SysPath)
 		return
@@ -244,7 +237,7 @@ func (srv *Server) onChangeHTMLTemplate(ns *libio.NodeState) {
 	srv.htmlg.convertFileMarkups(srv.fileMarkups, true)
 }
 
-func (srv *Server) onSearch(res http.ResponseWriter, req *http.Request, reqBody []byte) (
+func (srv *server) onSearch(res http.ResponseWriter, req *http.Request, reqBody []byte) (
 	resBody []byte, err error,
 ) {
 	var bufSearch, buf bytes.Buffer

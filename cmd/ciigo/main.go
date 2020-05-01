@@ -76,8 +76,7 @@ func main() {
 		ciigo.Generate(dir, *outputFile, *htmlTemplate)
 	case "serve":
 		debug.Value = 2
-		srv := ciigo.NewServer(dir, *address, *htmlTemplate)
-		srv.Start()
+		ciigo.Serve(dir, *address, *htmlTemplate)
 	default:
 		usage()
 		os.Exit(1)
