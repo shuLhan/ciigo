@@ -10,7 +10,7 @@ lint:
 		--disable=wsl --disable=gomnd --disable=funlen ./...
 
 install:
-	go generate
+	go run ./internal/cmd/generate
 	go install ./cmd/ciigo-example
 	go install ./cmd/ciigo
 
