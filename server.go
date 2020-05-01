@@ -37,7 +37,7 @@ type Server struct {
 //
 // The address parameter is optional, if not set its default to ":8080".
 // The htmlTemplate parameter is optional, if not set its default to
-// "templates/html.tmpl" in current directory.
+// embedded HTML template.
 //
 func NewServer(root, address, htmlTemplate string) (srv *Server) {
 	var err error
@@ -76,31 +76,11 @@ func NewServer(root, address, htmlTemplate string) (srv *Server) {
 		log.Fatal("ciigo: " + err.Error())
 	}
 
-	htmlTemplate = filepath.Clean(htmlTemplate)
+	srv.initHTMLGenerator(htmlTemplate)
 
 	if srv.opts.Development {
-		bhtml, err := ioutil.ReadFile(htmlTemplate)
-		if err != nil {
-			log.Fatal("ciigo.Convert: " + err.Error())
-		}
-
-		srv.htmlg = newHTMLGenerator(htmlTemplate, string(bhtml))
 		srv.fileMarkups = listFileMarkups(root)
 		srv.htmlg.convertFileMarkups(srv.fileMarkups, false)
-	} else {
-		tmplNode, err := srv.http.Memfs.Get(htmlTemplate)
-		if err != nil {
-			log.Fatalf("ciigo.NewServer: Memfs.Get %s: %s",
-				htmlTemplate, err.Error())
-		}
-
-		bhtml, err := tmplNode.Decode()
-		if err != nil {
-			log.Fatalf("ciigo.NewServer: tmplNode.decode: %s",
-				err.Error())
-		}
-
-		srv.htmlg = newHTMLGenerator("", string(bhtml))
 	}
 
 	return srv
@@ -144,10 +124,47 @@ func (srv *Server) autoGenerate() {
 		log.Fatal("ciigo: autoGenerate: " + err.Error())
 	}
 
-	_, err = libio.NewWatcher(srv.htmlg.path, 0, srv.onChangeHTMLTemplate)
-	if err != nil {
-		log.Fatal("ciigo: autoGenerate: " + err.Error())
+	if len(srv.htmlg.path) > 0 {
+		_, err = libio.NewWatcher(srv.htmlg.path, 0, srv.onChangeHTMLTemplate)
+		if err != nil {
+			log.Fatal("ciigo: autoGenerate: " + err.Error())
+		}
 	}
+}
+
+func (srv *Server) initHTMLGenerator(htmlTemplate string) {
+	if len(htmlTemplate) == 0 {
+		srv.htmlg = newHTMLGenerator("", templateIndexHTML)
+		return
+	}
+
+	var (
+		bhtml       []byte
+		err         error
+		htmlContent string
+	)
+
+	htmlTemplate = filepath.Clean(htmlTemplate)
+
+	if srv.opts.Development {
+		bhtml, err = ioutil.ReadFile(htmlTemplate)
+		if err != nil {
+			log.Fatal("Server.initHTMLGenerator: " + err.Error())
+		}
+	} else {
+		tmplNode, err := srv.http.Memfs.Get(htmlTemplate)
+		if err != nil {
+			log.Fatalf("Server.initHTMLGenerator: Memfs.Get %s: %s",
+				htmlTemplate, err.Error())
+		}
+		bhtml, err = tmplNode.Decode()
+		if err != nil {
+			log.Fatal("Server.initHTMLGenerator: " + err.Error())
+		}
+	}
+
+	htmlContent = string(bhtml)
+	srv.htmlg = newHTMLGenerator("", htmlContent)
 }
 
 //
@@ -216,7 +233,7 @@ func (srv *Server) onChangeHTMLTemplate(ns *libio.NodeState) {
 
 	fmt.Println("web: recompiling HTML template  ...")
 
-	err := srv.htmlg.loadTemplate()
+	err := srv.htmlg.reloadTemplate()
 	if err != nil {
 		log.Println("watchHTMLTemplate: loadTemplate: " + err.Error())
 		return

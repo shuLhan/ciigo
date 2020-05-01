@@ -14,8 +14,7 @@
 //
 // Scan the "dir" recursively to find markup files (.adoc or .md) and convert
 // them into HTML files.
-// The template "file" is optional, default to "templates/html.tmpl" in the
-// current directory.
+// The template "file" is optional, default to embedded HTML template.
 //
 //	ciigo [-template <file>] [-out <file>] generate <dir>
 //
@@ -45,8 +44,7 @@ import (
 func main() {
 	isHelp := flag.Bool("help", false, "print help")
 
-	htmlTemplate := flag.String("template", "templates/html.tmpl",
-		"path to HTML template")
+	htmlTemplate := flag.String("template", "", "path to HTML template")
 	outputFile := flag.String("out", "ciigo_static.go",
 		"path to output of .go generated file")
 	address := flag.String("address", ":8080",
@@ -99,8 +97,7 @@ ciigo [-template <file>] convert <dir>
 
 	Scan the "dir" recursively to find markup files (.adoc or .md)
 	and convert them into HTML files.
-	The template "file" is optional, default to "templates/html.tmpl" in
-	the current directory.
+	The template "file" is optional, default to embedded HTML template.
 
 ciigo [-template <file>] [-out <file>] generate <dir>
 

@@ -14,33 +14,6 @@ as markup format.
 
 ==  ciigo as library
 
-This README explain how to use the ciigo as library.
-
-
-===  Document Structure
-
-This software use the following directory structure and file name
-conventions,
-
-*  `cmd/<name>`: this is the program that serve the generated content.
-
-*  `content`: the root directory of static and generated content to be
-   embedded and served.
-   This is where markup files must be saved.
-   Any files inside this directory, except in "content/assets", will be
-   ignored.
-
-*  `content/assets`: contains static files (images, js, css) that can be
-   accessed by any pages using absolute path under `/assets/`.
-
-*  `templates`: contains dynamic templates.  Currently. there is only single
-   template: `html.tmpl`, that wrap the generated HTML.
-
-*  All markup files inside content must have an ".adoc" or ".md" extension.
-
-
-===  Getting Started
-
 This section describe step by step instructions on how to build and create
 pages to be viewed for local development using `ciigo`.
 
@@ -94,7 +67,7 @@ import (
 )
 
 func main() {
-        ciigo.Generate("./content", "cmd/mysite/static.go")
+        ciigo.Generate("./content", "cmd/mysite/static.go", "templates/html.tmpl")
 }
 ----
 
@@ -191,16 +164,15 @@ markup files, as HTML files.
 ===  Usage
 
 ----
-	ciigo convert [-template <file>] <dir>
+$ ciigo [-template <file>] convert <dir>
 ----
 
 Scan the "dir" recursively to find markup files (.adoc or .md) and
 convert them into HTML files.
-The template "file" is optional, default to "templates/html.tmpl" in
-the current directory.
+The template "file" is optional, default to embedded HTML template.
 
 ----
-	ciigo generate [-template <file>] [-out <file>] <dir>
+$ ciigo [-template <file>] [-out <file>] generate <dir>
 ----
 
 Convert all markup files inside directory "dir" recursively and then
@@ -209,7 +181,7 @@ The output file is optional, default to "ciigo_static.go" in current
 directory.
 
 ----
-	ciigo serve [-template <file>] [-address <ip:port>] <dir>
+$ ciigo [-template <file>] [-address <ip:port>] serve <dir>
 ----
 
 Serve all files inside directory "dir" using HTTP server, watch

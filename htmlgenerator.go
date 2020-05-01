@@ -56,7 +56,7 @@ func newHTMLGenerator(file, content string) (htmlg *htmlGenerator) {
 	return
 }
 
-func (htmlg *htmlGenerator) loadTemplate() (err error) {
+func (htmlg *htmlGenerator) reloadTemplate() (err error) {
 	htmlg.tmpl, err = template.ParseFiles(htmlg.path)
 
 	return

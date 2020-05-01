@@ -13,12 +13,13 @@ import (
 // fileHTML represent an HTML metadata for header and its body.
 //
 type fileHTML struct {
-	Title    string
-	Author   string
-	Date     string
-	Styles   []string
-	Body     template.HTML
-	Metadata map[string]string
+	Title       string
+	Author      string
+	Date        string
+	EmbeddedCSS *template.CSS
+	Styles      []string
+	Body        template.HTML
+	Metadata    map[string]string
 
 	path    string
 	rawBody strings.Builder
@@ -31,6 +32,7 @@ func (fhtml *fileHTML) reset() {
 	fhtml.Title = ""
 	fhtml.Author = ""
 	fhtml.Date = ""
+	fhtml.EmbeddedCSS = nil
 	fhtml.Styles = fhtml.Styles[:0]
 	fhtml.Body = template.HTML("")
 
@@ -58,6 +60,9 @@ func (fhtml *fileHTML) unpackMarkup(fa *fileMarkup) {
 		default:
 			fhtml.Metadata[k] = v.(string)
 		}
+	}
+	if len(fhtml.Styles) == 0 {
+		fhtml.EmbeddedCSS = embeddedCSS()
 	}
 
 	fhtml.Body = template.HTML(fhtml.rawBody.String()) // nolint:gosec
