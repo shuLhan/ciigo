@@ -13,5 +13,5 @@ import (
 )
 
 func main() {
-	ciigo.Serve("./content", ":8080", "./templates/html.tmpl")
+	ciigo.Serve("_example", ":8080", "_example/html.tmpl")
 }

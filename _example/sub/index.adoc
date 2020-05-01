@@ -1,4 +1,4 @@
 = Sub directory
-:stylesheet: /assets/custom.css
+:stylesheet: /custom.css
 
 This is an example of content in sub directory using custom stylesheet.

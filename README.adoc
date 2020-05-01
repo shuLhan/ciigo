@@ -1,1 +1,1 @@
-content/index.adoc
+_example/index.adoc

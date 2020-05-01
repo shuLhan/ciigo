@@ -9,5 +9,6 @@ package main
 import "github.com/shuLhan/ciigo"
 
 func main() {
-	ciigo.Generate("./content", "cmd/ciigo-example/static.go", "templates/html.tmpl")
+	ciigo.Generate("./_example", "cmd/ciigo-example/static.go",
+		"_example/html.tmpl")
 }
