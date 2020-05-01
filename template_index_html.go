@@ -50,10 +50,11 @@ const templateIndexHTML = `<!DOCTYPE html>
 		<!-- .page -->
 
 		<div class="footer">
-			Copyright 2020, Shulhan &lt;ms@kilabit.info&gt;. All rights reserved.
-			<br />
-			Use of this source code is governed by a BSD-style license that can be
-			found in the <a href="/LICENSE">LICENSE</a> file.
+			Powered by <a
+				href="https://github.com/shuLhan/ciigo"
+			>
+				ciigo
+			</a>
 		</div>
 	</body>
 </html>`
