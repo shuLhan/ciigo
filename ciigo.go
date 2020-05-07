@@ -105,14 +105,9 @@ func Generate(dir, out, htmlTemplate string) {
 
 	htmlg.convertFileMarkups(fileMarkups, len(htmlTemplate) == 0)
 
-	mfs, err := memfs.New(nil, defExcludes, true)
+	mfs, err := memfs.New(dir, nil, defExcludes, true)
 	if err != nil {
 		log.Fatal("ciigo.Generate: " + err.Error())
-	}
-
-	err = mfs.Mount(dir)
-	if err != nil {
-		log.Fatalf("ciigo.Generate: Mount %s: %s", dir, err.Error())
 	}
 
 	if len(htmlTemplate) > 0 {
