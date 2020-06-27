@@ -154,10 +154,14 @@ func (srv *server) initHTMLGenerator(htmlTemplate string) {
 		if err != nil {
 			log.Fatal("server.initHTMLGenerator: " + err.Error())
 		}
+
+		// Set to empty value to prevent watcher running on template
+		// file.
+		htmlTemplate = ""
 	}
 
 	htmlContent = string(bhtml)
-	srv.htmlg = newHTMLGenerator("", htmlContent)
+	srv.htmlg = newHTMLGenerator(htmlTemplate, htmlContent)
 }
 
 //
