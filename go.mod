@@ -7,7 +7,7 @@ require (
 	github.com/onsi/ginkgo v1.12.3 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/sergi/go-diff v1.1.0 // indirect
-	github.com/shuLhan/share v0.16.1-0.20200627020222-d13579896847
+	github.com/shuLhan/share v0.17.0
 	github.com/sirupsen/logrus v1.6.0 // indirect
 	github.com/yuin/goldmark v1.1.32
 	github.com/yuin/goldmark-meta v0.0.0-20191126180153-f0638e958b60

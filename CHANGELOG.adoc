@@ -1,6 +1,20 @@
-#  CHANGELOG
+=  CHANGELOG
 
-##  ciigo v0.1.1 (2020-03-24)
+==  ciigo v0.2.0 (2020-07-05)
+
+* all: simplify serving content using function Serve
+  Previously to serve the generated content we call two fucntions:
+  NewServer() and Server.Start().
+  This changes unexported the internal server, and expose only the Serve()
+  function with the same parameter as NewServer().
+
+* all: embed the HTML template and the stylesheet
+  The parameter for template either in Convert or Generate functions or
+  in CLI now become pure optional, not default to "templates/html.tmpl"
+  anymore.
+  This will minimize steps for user to setup or run the library or program.
+
+==  ciigo v0.1.1 (2020-03-24)
 
 The first release support asciidoc and markdown markup language.
 
