@@ -39,9 +39,10 @@ const templateIndexHTML = `<!DOCTYPE html>
 			<div class="container">
 				<h1>{{.Title}}</h1>
 				<div class="meta">
-					{{.Author}}
-					<br />
-					{{.Date}}
+					{{if .Author}}{{.Author}}{{end}}
+					{{- if .Date}}<br />
+						{{.Date}}
+					{{- end}}
 				</div>
 				{{.Body}}
 			</div>

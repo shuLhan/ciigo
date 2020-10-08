@@ -8,7 +8,9 @@ import (
 	"fmt"
 	"html/template"
 	"strings"
+	"time"
 
+	"github.com/bytesparadise/libasciidoc/pkg/configuration"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 )
 
@@ -89,5 +91,17 @@ func (fhtml *fileHTML) unpackAdocMetadata(doc types.Document, md types.Metadata)
 		default:
 			fhtml.Metadata[k] = fmt.Sprintf("%v", v)
 		}
+	}
+
+	if len(fhtml.Date) == 0 {
+		return
+	}
+
+	dt, err := time.Parse(configuration.LastUpdatedFormat, fhtml.Date)
+	if err == nil {
+		if dt.IsZero() {
+			fhtml.Date = ""
+		}
+		return
 	}
 }
