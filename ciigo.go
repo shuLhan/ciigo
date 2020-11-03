@@ -26,7 +26,6 @@ const (
 	defDir      = "."
 	dirAssets   = "assets"
 	extAsciidoc = ".adoc"
-	extMarkdown = ".md"
 )
 
 const (
@@ -39,14 +38,12 @@ const (
 const (
 	markupKindUnknown byte = iota
 	markupKindAsciidoc
-	markupKindMarkdown
 )
 
 //nolint: gochecknoglobals
 var (
 	defExcludes = []string{
 		`.*\.adoc$`,
-		`.*\.md$`,
 		`^\..*`,
 	}
 )
@@ -139,7 +136,7 @@ func Serve(dir, address, htmlTemplate string) {
 }
 
 func isExtensionMarkup(ext string) bool {
-	return ext == extAsciidoc || ext == extMarkdown
+	return ext == extAsciidoc
 }
 
 //
@@ -193,8 +190,6 @@ func markupKind(ext string) byte {
 	switch ext {
 	case extAsciidoc:
 		return markupKindAsciidoc
-	case extMarkdown:
-		return markupKindMarkdown
 	}
 	return markupKindUnknown
 }

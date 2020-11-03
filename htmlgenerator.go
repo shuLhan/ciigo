@@ -7,13 +7,8 @@ package ciigo
 import (
 	"fmt"
 	"html/template"
-	"io/ioutil"
 	"log"
 	"os"
-
-	"github.com/yuin/goldmark"
-	meta "github.com/yuin/goldmark-meta"
-	mdparser "github.com/yuin/goldmark/parser"
 
 	"github.com/shuLhan/asciidoctor-go"
 )
@@ -23,7 +18,6 @@ import (
 //
 type htmlGenerator struct {
 	path       string
-	mdg        goldmark.Markdown
 	tmpl       *template.Template
 	tmplSearch *template.Template
 }
@@ -33,11 +27,6 @@ func newHTMLGenerator(file, content string) (htmlg *htmlGenerator) {
 
 	htmlg = &htmlGenerator{
 		path: file,
-		mdg: goldmark.New(
-			goldmark.WithExtensions(
-				meta.Meta,
-			),
-		),
 	}
 
 	htmlg.tmpl = template.New("")
@@ -95,20 +84,6 @@ func (htmlg *htmlGenerator) convert(fmarkup *fileMarkup, fhtml *fileHTML, force 
 		}
 
 		fhtml.unpackAdocMetadata(doc)
-
-	case markupKindMarkdown:
-		in, err := ioutil.ReadFile(fmarkup.path)
-		if err != nil {
-			log.Fatal("htmlGenerator.convert: " + err.Error())
-		}
-
-		ctx := mdparser.NewContext()
-		err = htmlg.mdg.Convert(in, &fhtml.rawBody, mdparser.WithContext(ctx))
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		fmarkup.metadata = meta.Get(ctx)
 	}
 	if fhtml.rawBody.Len() == 0 {
 		fmt.Println("skip")

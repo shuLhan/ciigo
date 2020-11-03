@@ -8,13 +8,9 @@ image:https://img.shields.io/badge/go.dev-reference-007d9c?logo=go&logoColor=whi
 image:https://goreportcard.com/badge/github.com/shuLhan/ciigo[Go Report Card, link={url-gocard}]
 
 `ciigo` is a library and a program to write static web server with embedded
-files using generated markup format.
-
-Currently, ciigo support
+files using
 https://asciidoctor.org/docs/what-is-asciidoc/[asciidoc]
-and
-https://commonmark.org/[markdown]
-as markup format.
+markup format.
 
 
 ==  ciigo as library
@@ -34,8 +30,8 @@ markup files, as HTML files.
 $ ciigo [-template <file>] convert <dir>
 ----
 
-Scan the "dir" recursively to find markup files (.adoc or .md) and
-convert them into HTML files.
+Scan the "dir" recursively to find markup files (.adoc) and convert them into
+HTML files.
 The template "file" is optional, default to embedded HTML template.
 
 ----
@@ -138,7 +134,7 @@ accessed by browser,
 Hello, world!
 ----
 
-Run `go generate` to convert all files with extension `.adoc` (or `.md`)
+Run `go generate` to convert all files with extension `.adoc`
 into HTML and embed it into `./cmd/mysite/static.go`
 
 ----
@@ -207,15 +203,3 @@ Using symlink on ".adoc" file inside `content` directory is not supported yet.
 The source code for this software can be viewed at
 https://github.com/shuLhan/ciigo
 under custom link:/LICENSE[BSD license].
-
-
-==  Credits
-
-This software is developed with helps from the following third party
-libraries,
-
-*  https://github.com/bytesparadise/libasciidoc[libasciidoc].
-   https://raw.githubusercontent.com/bytesparadise/libasciidoc/master/LICENSE[License].
-
-*  https://github.com/yuin/goldmark[goldmark].
-   https://raw.githubusercontent.com/yuin/goldmark/master/LICENSE[License].
