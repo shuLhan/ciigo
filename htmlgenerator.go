@@ -5,19 +5,17 @@
 package ciigo
 
 import (
-	"bytes"
 	"fmt"
 	"html/template"
 	"io/ioutil"
 	"log"
 	"os"
 
-	"github.com/bytesparadise/libasciidoc"
-	"github.com/bytesparadise/libasciidoc/pkg/configuration"
-	"github.com/bytesparadise/libasciidoc/pkg/parser"
 	"github.com/yuin/goldmark"
 	meta "github.com/yuin/goldmark-meta"
 	mdparser "github.com/yuin/goldmark/parser"
+
+	"github.com/shuLhan/asciidoctor-go"
 )
 
 //
@@ -84,32 +82,28 @@ func (htmlg *htmlGenerator) convert(fmarkup *fileMarkup, fhtml *fileHTML, force 
 		return
 	}
 
-	in, err := ioutil.ReadFile(fmarkup.path)
-	if err != nil {
-		log.Fatal("htmlGenerator.convert: " + err.Error())
-	}
-
 	switch fmarkup.kind {
 	case markupKindAsciidoc:
-		cfg := configuration.NewConfiguration()
-		bufin := bytes.NewBuffer(in)
-
-		doc, err := parser.ParseDocument(bufin, cfg)
+		doc, err := asciidoctor.Open(fmarkup.path)
 		if err != nil {
 			log.Fatal(err)
 		}
 
-		bufin = bytes.NewBuffer(in)
-		md, err := libasciidoc.Convert(bufin, &fhtml.rawBody, cfg)
+		err = doc.ToHTML(&fhtml.rawBody)
 		if err != nil {
 			log.Fatal(err)
 		}
 
-		fhtml.unpackAdocMetadata(doc, md)
+		fhtml.unpackAdocMetadata(doc)
 
 	case markupKindMarkdown:
+		in, err := ioutil.ReadFile(fmarkup.path)
+		if err != nil {
+			log.Fatal("htmlGenerator.convert: " + err.Error())
+		}
+
 		ctx := mdparser.NewContext()
-		err := htmlg.mdg.Convert(in, &fhtml.rawBody, mdparser.WithContext(ctx))
+		err = htmlg.mdg.Convert(in, &fhtml.rawBody, mdparser.WithContext(ctx))
 		if err != nil {
 			log.Fatal(err)
 		}

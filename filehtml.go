@@ -8,10 +8,8 @@ import (
 	"fmt"
 	"html/template"
 	"strings"
-	"time"
 
-	"github.com/bytesparadise/libasciidoc/pkg/configuration"
-	"github.com/bytesparadise/libasciidoc/pkg/types"
+	"github.com/shuLhan/asciidoctor-go"
 )
 
 //
@@ -73,35 +71,18 @@ func (fhtml *fileHTML) unpackMarkup(fa *fileMarkup) {
 	fhtml.Body = template.HTML(fhtml.rawBody.String()) // nolint:gosec
 }
 
-func (fhtml *fileHTML) unpackAdocMetadata(doc types.Document, md types.Metadata) {
+func (fhtml *fileHTML) unpackAdocMetadata(doc *asciidoctor.Document) {
 	fhtml.Metadata = make(map[string]string)
-	fhtml.Date = md.LastUpdated
-	fhtml.Title = md.Title
+	fhtml.Date = doc.LastUpdated
+	fhtml.Title = doc.Title
+	fhtml.Author = doc.Author
 
 	for k, v := range doc.Attributes {
 		switch k {
-		case metadataAuthor:
-			fhtml.Author, _ = v.(string)
-		case metadataDate:
-			fhtml.Date, _ = v.(string)
-		case metadataTitle:
-			fhtml.Title, _ = v.(string)
 		case metadataStylesheet:
-			fhtml.Styles = append(fhtml.Styles, v.(string))
+			fhtml.Styles = append(fhtml.Styles, v)
 		default:
 			fhtml.Metadata[k] = fmt.Sprintf("%v", v)
 		}
-	}
-
-	if len(fhtml.Date) == 0 {
-		return
-	}
-
-	dt, err := time.Parse(configuration.LastUpdatedFormat, fhtml.Date)
-	if err == nil {
-		if dt.IsZero() {
-			fhtml.Date = ""
-		}
-		return
 	}
 }
