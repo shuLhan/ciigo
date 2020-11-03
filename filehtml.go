@@ -5,7 +5,6 @@
 package ciigo
 
 import (
-	"fmt"
 	"html/template"
 	"strings"
 
@@ -79,10 +78,14 @@ func (fhtml *fileHTML) unpackAdocMetadata(doc *asciidoctor.Document) {
 
 	for k, v := range doc.Attributes {
 		switch k {
+		case metadataAuthor:
+			fhtml.Author = v
+		case metadataDate:
+			fhtml.Date = v
 		case metadataStylesheet:
 			fhtml.Styles = append(fhtml.Styles, v)
 		default:
-			fhtml.Metadata[k] = fmt.Sprintf("%v", v)
+			fhtml.Metadata[k] = v
 		}
 	}
 }
