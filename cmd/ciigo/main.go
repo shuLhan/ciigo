@@ -75,7 +75,7 @@ func main() {
 	case "generate":
 		ciigo.Generate(dir, *outputFile, *htmlTemplate)
 	case "serve":
-		debug.Value = 2
+		debug.Value = 1
 		ciigo.Serve(dir, *address, *htmlTemplate)
 	default:
 		usage()
