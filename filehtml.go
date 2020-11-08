@@ -8,7 +8,7 @@ import (
 	"html/template"
 	"strings"
 
-	"github.com/shuLhan/asciidoctor-go"
+	"git.sr.ht/~shulhan/asciidoctor-go"
 )
 
 //

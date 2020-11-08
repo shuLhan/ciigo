@@ -10,7 +10,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/shuLhan/asciidoctor-go"
+	"git.sr.ht/~shulhan/asciidoctor-go"
 )
 
 //
