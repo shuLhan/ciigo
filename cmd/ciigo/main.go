@@ -37,7 +37,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/shuLhan/ciigo"
+	"git.sr.ht/~shulhan/ciigo"
 	"github.com/shuLhan/share/lib/debug"
 )
 

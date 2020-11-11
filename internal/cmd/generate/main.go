@@ -6,7 +6,7 @@
 
 package main
 
-import "github.com/shuLhan/ciigo"
+import "git.sr.ht/~shulhan/ciigo"
 
 func main() {
 	ciigo.Generate("./_example", "cmd/ciigo-example/static.go",

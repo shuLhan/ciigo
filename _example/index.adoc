@@ -1,11 +1,11 @@
 =  Welcome to ciigo
 :author: Shulhan
 :date: 25 September 2019
-:url-gocard: https://goreportcard.com/report/github.com/shuLhan/ciigo
-:url-godoc: https://pkg.go.dev/github.com/shuLhan/ciigo
+:url-gocard: https://goreportcard.com/report/git.sr.ht/~shulhan/ciigo
+:url-godoc: https://pkg.go.dev/git.sr.ht/~shulhan/ciigo
 
 image:https://img.shields.io/badge/go.dev-reference-007d9c?logo=go&logoColor=white&style=flat-square[GoDoc, link={url-godoc}]
-image:https://goreportcard.com/badge/github.com/shuLhan/ciigo[Go Report Card, link={url-gocard}]
+image:https://goreportcard.com/badge/git.sr.ht/~shulhan/ciigo[Go Report Card, link={url-gocard}]
 
 `ciigo` is a library and a program to write static web server with embedded
 files using
@@ -59,7 +59,7 @@ pages to be viewed for local development using `ciigo`.
 
 First, clone the `ciigo` repository.
 Let says that we have cloned the `ciigo` repository into
-`$HOME/go/src/github.com/shuLhan/ciigo`.
+`$HOME/go/src/git.sr.ht/~shulhan/ciigo`.
 
 Create new Go repository for building a website.
 For example, in directory `$HOME/go/src/remote.tld/user/mysite`.
@@ -86,8 +86,8 @@ $ mkdir -p _contents
 Copy the example of stylesheet and HTML template from `ciigo` repository,
 
 ----
-$ cp $HOME/go/src/github.com/shuLhan/ciigo/_example/index.css ./_contents/
-$ cp $HOME/go/src/github.com/shuLhan/ciigo/_example/html.tmpl ./_contents/
+$ cp $HOME/go/src/git.sr.ht/~shulhan/ciigo/_example/index.css ./_contents/
+$ cp $HOME/go/src/git.sr.ht/~shulhan/ciigo/_example/html.tmpl ./_contents/
 ----
 
 Create a Go source code in the root repository to generate all markup files
@@ -101,7 +101,7 @@ Lets named it `generate.go` with the following content,
 package main
 
 import (
-        "github.com/shuLhan/ciigo"
+        "git.sr.ht/~shulhan/ciigo"
 )
 
 func main() {
@@ -115,7 +115,7 @@ Create the main Go code inside `cmd/mysite`,
 package main
 
 import (
-        "github.com/shuLhan/ciigo"
+        "git.sr.ht/~shulhan/ciigo"
 )
 
 func main() {
@@ -201,5 +201,5 @@ Using symlink on ".adoc" file inside `content` directory is not supported yet.
 ==  Resources
 
 The source code for this software can be viewed at
-https://github.com/shuLhan/ciigo
+https://git.sr.ht/~shulhan/ciigo
 under custom link:/LICENSE[BSD license].

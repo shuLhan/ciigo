@@ -1,4 +1,4 @@
-module github.com/shuLhan/ciigo
+module git.sr.ht/~shulhan/ciigo
 
 go 1.13
 
@@ -7,4 +7,4 @@ require (
 	github.com/shuLhan/share v0.20.0
 )
 
-//replace github.com/shuLhan/asciidoctor-go => ../asciidoctor-go
+//replace git.sr.ht/~shulhan/asciidoctor-go => ../asciidoctor-go

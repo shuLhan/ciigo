@@ -7,7 +7,7 @@
 // using asciidoc and markdown markup languages.
 //
 // For more information see the README file at the page repository
-// https://github.com/shuLhan/ciigo.
+// https://sr.ht/~shulhan/ciigo.
 //
 package ciigo
 

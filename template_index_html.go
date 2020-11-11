@@ -52,7 +52,7 @@ const templateIndexHTML = `<!DOCTYPE html>
 
 		<div class="footer">
 			Powered by <a
-				href="https://github.com/shuLhan/ciigo"
+				href="https://git.sr.ht/shulhan/ciigo"
 			>
 				ciigo
 			</a>
