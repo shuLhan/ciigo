@@ -78,7 +78,7 @@ func (htmlg *htmlGenerator) convert(fmarkup *fileMarkup, fhtml *fileHTML, force 
 			log.Fatal(err)
 		}
 
-		err = doc.ToHTMLBody(&fhtml.rawBody)
+		err = doc.ToEmbeddedHTML(&fhtml.rawBody)
 		if err != nil {
 			log.Fatal(err)
 		}

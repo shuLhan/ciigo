@@ -72,16 +72,18 @@ func (fhtml *fileHTML) unpackMarkup(fa *fileMarkup) {
 
 func (fhtml *fileHTML) unpackAdocMetadata(doc *asciidoctor.Document) {
 	fhtml.Metadata = make(map[string]string)
-	fhtml.Date = doc.LastUpdated
-	fhtml.Title = doc.Title
-	fhtml.Author = doc.Author
+	if len(doc.Revision.Date) > 0 {
+		fhtml.Date = doc.Revision.Date
+	} else {
+		fhtml.Date = doc.LastUpdated
+	}
+	fhtml.Title = doc.Title.String()
+	if len(doc.Authors) > 0 {
+		fhtml.Author = doc.Authors[0].FullName()
+	}
 
 	for k, v := range doc.Attributes {
 		switch k {
-		case metadataAuthor:
-			fhtml.Author = v
-		case metadataDate:
-			fhtml.Date = v
 		case metadataStylesheet:
 			fhtml.Styles = append(fhtml.Styles, v)
 		default:
