@@ -90,7 +90,12 @@ func (htmlg *htmlGenerator) convert(fmarkup *fileMarkup, fhtml *fileHTML, force 
 		return
 	}
 
-	fhtml.unpackMarkup(fmarkup)
+	if len(fhtml.Styles) == 0 {
+		fhtml.EmbeddedCSS = embeddedCSS()
+	}
+
+	fhtml.Body = template.HTML(fhtml.rawBody.String()) // nolint:gosec
+
 	htmlg.write(fhtml)
 }
 
