@@ -1,5 +1,18 @@
 =  CHANGELOG
 
+==  ciigo v0.3.0 (2020-12-06)
+
+This release replace the asciidoc parsing from libasciidoc-go to
+https://sr.ht/~shulhan/asciidoctor-go[asciidoctor-go], which provide more
+control and stable APIs.
+
+We also remove support form markdown markup language and focus only to support
+asciidoctor format from now on.
+
+The Go module path and repository is also moved from github to
+git.sr.ht/~shulhan/ciigo.
+
+
 ==  ciigo v0.2.0 (2020-07-05)
 
 * all: simplify serving content using function Serve

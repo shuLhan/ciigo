@@ -45,7 +45,7 @@ const templateIndexHTML = `<!DOCTYPE html>
 
 		<div class="footer">
 			Powered by <a
-				href="https://git.sr.ht/shulhan/ciigo"
+				href="https://git.sr.ht/~shulhan/ciigo"
 			>
 				ciigo
 			</a>
