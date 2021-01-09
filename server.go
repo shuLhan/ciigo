@@ -19,6 +19,7 @@ import (
 	"github.com/shuLhan/share/lib/debug"
 	libhttp "github.com/shuLhan/share/lib/http"
 	libio "github.com/shuLhan/share/lib/io"
+	"github.com/shuLhan/share/lib/memfs"
 )
 
 //
@@ -39,15 +40,18 @@ type server struct {
 // The htmlTemplate parameter is optional, if not set its default to
 // embedded HTML template.
 //
-func newServer(root, address, htmlTemplate string) (srv *server) {
+func newServer(mfs *memfs.MemFS, root, address, htmlTemplate string) (srv *server) {
 	var err error
 
 	srv = &server{
 		opts: &libhttp.ServerOptions{
-			Address:     address,
-			Root:        root,
-			Excludes:    defExcludes,
-			Development: debug.Value > 0,
+			Options: memfs.Options{
+				Root:        root,
+				Excludes:    defExcludes,
+				Development: debug.Value > 0,
+			},
+			Memfs:   mfs,
+			Address: address,
 		},
 	}
 
@@ -98,17 +102,19 @@ func (srv *server) start() {
 
 func (srv *server) autoGenerate() {
 	srv.dw = &libio.DirWatcher{
-		Path:  srv.opts.Root,
-		Delay: time.Second,
-		Includes: []string{
-			`.*\.adoc$`,
-			`.*\.md$`,
+		Options: memfs.Options{
+			Root: srv.opts.Root,
+			Includes: []string{
+				`.*\.adoc$`,
+				`.*\.md$`,
+			},
+			Excludes: []string{
+				`assets/.*`,
+				`.*\.html$`,
+				`^\..*`,
+			},
 		},
-		Excludes: []string{
-			`assets/.*`,
-			`.*\.html$`,
-			`^\..*`,
-		},
+		Delay:    time.Second,
 		Callback: srv.onChangeFileMarkup,
 	}
 
@@ -145,7 +151,7 @@ func (srv *server) initHTMLGenerator(htmlTemplate string) {
 			log.Fatal("server.initHTMLGenerator: " + err.Error())
 		}
 	} else {
-		tmplNode, err := srv.http.Memfs.Get(htmlTemplate)
+		tmplNode, err := srv.http.Memfs.Get(internalTemplatePath)
 		if err != nil {
 			log.Fatalf("server.initHTMLGenerator: Memfs.Get %s: %s",
 				htmlTemplate, err.Error())

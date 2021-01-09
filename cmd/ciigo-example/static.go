@@ -6,9 +6,9 @@ import (
 	"github.com/shuLhan/share/lib/memfs"
 )
 
-func generate_() *memfs.Node {
+func generate__example() *memfs.Node {
 	node := &memfs.Node{
-		SysPath:         "./_example",
+		SysPath:         "_example",
 		Path:            "/",
 		ContentType:     "",
 		ContentEncoding: "",
@@ -16,18 +16,18 @@ func generate_() *memfs.Node {
 	node.SetMode(2147484141)
 	node.SetName("/")
 	node.SetSize(0)
-	node.AddChild(_getNode("/LICENSE", generate__LICENSE))
-	node.AddChild(_getNode("/custom.css", generate__custom_css))
-	node.AddChild(_getNode("/favicon.ico", generate__favicon_ico))
-	node.AddChild(_getNode("/html.tmpl", generate__html_tmpl))
-	node.AddChild(_getNode("/index.css", generate__index_css))
-	node.AddChild(_getNode("/index.html", generate__index_html))
-	node.AddChild(_getNode("/sub", generate__sub))
-	node.AddChild(_getNode("_example", generate__example))
+	node.AddChild(_ciigoFS_getNode(ciigoFS, "/LICENSE", generate__example_LICENSE))
+	node.AddChild(_ciigoFS_getNode(ciigoFS, "/custom.css", generate__example_custom_css))
+	node.AddChild(_ciigoFS_getNode(ciigoFS, "/favicon.ico", generate__example_favicon_ico))
+	node.AddChild(_ciigoFS_getNode(ciigoFS, "/html.tmpl", generate__example_html_tmpl))
+	node.AddChild(_ciigoFS_getNode(ciigoFS, "/index.css", generate__example_index_css))
+	node.AddChild(_ciigoFS_getNode(ciigoFS, "/index.html", generate__example_index_html))
+	node.AddChild(_ciigoFS_getNode(ciigoFS, "/sub", generate__example_sub))
+	node.AddChild(_ciigoFS_getNode(ciigoFS, "_internal", generate__internal))
 	return node
 }
 
-func generate__LICENSE() *memfs.Node {
+func generate__example_LICENSE() *memfs.Node {
 	node := &memfs.Node{
 		SysPath:         "_example/LICENSE",
 		Path:            "/LICENSE",
@@ -41,7 +41,7 @@ func generate__LICENSE() *memfs.Node {
 	return node
 }
 
-func generate__custom_css() *memfs.Node {
+func generate__example_custom_css() *memfs.Node {
 	node := &memfs.Node{
 		SysPath:         "_example/custom.css",
 		Path:            "/custom.css",
@@ -55,7 +55,7 @@ func generate__custom_css() *memfs.Node {
 	return node
 }
 
-func generate__favicon_ico() *memfs.Node {
+func generate__example_favicon_ico() *memfs.Node {
 	node := &memfs.Node{
 		SysPath:         "_example/favicon.ico",
 		Path:            "/favicon.ico",
@@ -69,7 +69,7 @@ func generate__favicon_ico() *memfs.Node {
 	return node
 }
 
-func generate__html_tmpl() *memfs.Node {
+func generate__example_html_tmpl() *memfs.Node {
 	node := &memfs.Node{
 		SysPath:         "_example/html.tmpl",
 		Path:            "/html.tmpl",
@@ -83,7 +83,7 @@ func generate__html_tmpl() *memfs.Node {
 	return node
 }
 
-func generate__index_css() *memfs.Node {
+func generate__example_index_css() *memfs.Node {
 	node := &memfs.Node{
 		SysPath:         "_example/index.css",
 		Path:            "/index.css",
@@ -97,7 +97,7 @@ func generate__index_css() *memfs.Node {
 	return node
 }
 
-func generate__index_html() *memfs.Node {
+func generate__example_index_html() *memfs.Node {
 	node := &memfs.Node{
 		SysPath:         "_example/index.html",
 		Path:            "/index.html",
@@ -111,7 +111,7 @@ func generate__index_html() *memfs.Node {
 	return node
 }
 
-func generate__sub() *memfs.Node {
+func generate__example_sub() *memfs.Node {
 	node := &memfs.Node{
 		SysPath:         "_example/sub",
 		Path:            "/sub",
@@ -121,11 +121,11 @@ func generate__sub() *memfs.Node {
 	node.SetMode(2147484141)
 	node.SetName("sub")
 	node.SetSize(0)
-	node.AddChild(_getNode("/sub/index.html", generate__sub_index_html))
+	node.AddChild(_ciigoFS_getNode(ciigoFS, "/sub/index.html", generate__example_sub_index_html))
 	return node
 }
 
-func generate__sub_index_html() *memfs.Node {
+func generate__example_sub_index_html() *memfs.Node {
 	node := &memfs.Node{
 		SysPath:         "_example/sub/index.html",
 		Path:            "/sub/index.html",
@@ -139,40 +139,40 @@ func generate__sub_index_html() *memfs.Node {
 	return node
 }
 
-func generate__example() *memfs.Node {
+func generate__internal() *memfs.Node {
 	node := &memfs.Node{
-		SysPath:         "_example",
-		Path:            "_example",
+		SysPath:         "_internal",
+		Path:            "_internal",
 		ContentType:     "",
 		ContentEncoding: "",
 	}
-	node.SetMode(2147484141)
-	node.SetName("_example")
+	node.SetMode(2147483648)
+	node.SetName("_internal")
 	node.SetSize(0)
-	node.AddChild(_getNode("_example/html.tmpl", generate__example_html_tmpl))
+	node.AddChild(_ciigoFS_getNode(ciigoFS, "_internal/.template", generate__internal__template))
 	return node
 }
 
-func generate__example_html_tmpl() *memfs.Node {
+func generate__internal__template() *memfs.Node {
 	node := &memfs.Node{
 		SysPath:         "_example/html.tmpl",
-		Path:            "_example/html.tmpl",
+		Path:            "_internal/.template",
 		ContentType:     "text/html; charset=utf-8",
 		ContentEncoding: "gzip",
 		V:               []byte("\x1F\x8B\x08\x00\x00\x00\x00\x00\x00\xFF\x8C\x53\x4D\x8F\xDB\x2C\x10\x3E\x67\x7F\x05\xCB\x7B\x7D\x31\xAA\xAA\xAA\x55\x8B\x23\x75\xB7\x7B\xEE\x4A\xC9\xA5\xA7\x8A\xC0\x24\xA0\x62\xF0\xC2\x38\x59\xCB\x72\x7F\x7B\x85\x71\x52\x37\x5D\x69\x7B\x32\xF0\xCC\xF3\x31\x83\x11\xB7\x5F\xBE\xDE\x6F\xBF\x3D\x3E\x10\x83\x8D\x5B\xDF\x88\xF2\x59\x09\x03\x52\xAF\x6F\x56\x2B\xD1\x00\x4A\x62\x10\x5B\x06\x4F\x9D\x3D\xD6\xF4\x3E\x78\x04\x8F\x6C\xDB\xB7\x40\x89\x2A\xBB\x9A\x22\x3C\x23\xCF\xEC\x4F\x44\x19\x19\x13\x60\xDD\xE1\x9E\x7D\xA0\x84\xFF\xD6\xF1\xB2\x81\x9A\x1E\x2D\x9C\xDA\x10\x71\xC1\x3E\x59\x8D\xA6\xD6\x70\xB4\x0A\xD8\xB4\xF9\x9F\x58\x6F\xD1\x4A\xC7\x92\x92\x0E\xEA\x37\x2F\x08\xA1\x81\x06\x98\x0A\x2E\xC4\x85\xD6\x7F\x6F\xDF\xBF\x7B\xF8\x7C\x37\xD5\x67\x02\x5A\x74\xB0\x1E\x86\x6A\x9B\x17\xE3\x28\x78\x39\xC9\x98\xB3\xFE\x07\x89\xE0\x6A\x9A\xB0\x77\x90\x0C\x00\x52\x62\x22\xEC\x6B\xCA\xAD\xD7\xF0\x5C\xA9\x94\x66\xEB\x61\x60\x24\x4A\x7F\x00\x52\x6D\xA6\xEA\x71\x7C\x4D\x63\x18\xAA\x71\x5C\xD0\xC1\xEB\x4C\x12\x7C\x9E\xAF\xD8\x05\xDD\x4F\x49\xB4\x3D\x12\xE5\x64\x4A\x35\xC5\xD0\xEE\x64\xA4\xF9\xF8\x8F\xF3\xDC\xA1\xB4\x1E\x66\xE8\x9A\xC3\xB2\xA6\xF5\x87\x19\x5D\x09\x79\x6E\x84\xAE\x95\xB5\x87\x20\xB8\x9C\x89\x5C\xDB\xE3\xDF\x1A\x0D\xF8\xEE\x42\xDE\x87\xD8\x9C\x01\x8B\xD0\x50\x22\x15\xDA\xE0\x6B\xCA\xBF\x5B\x8F\x10\xBD\x74\x3C\x81\x8C\xCA\x9C\x39\x2B\x61\x7D\xDB\x21\xC1\xBE\x85\xF2\x43\xD0\xF9\xA2\x9E\x28\x69\x9D\x54\x60\x82\xD3\x10\x6B\xBA\x29\xBC\x32\x97\x29\x50\xB6\xFB\xF7\x70\x97\xCE\x52\xB7\xA3\xEB\x4D\xB7\x7B\xA1\xB5\xCB\x6A\x5E\x5C\x0D\xB9\x95\x07\x78\x7D\xC4\xC3\x50\xDD\x05\xDD\x4F\x17\xBD\xD4\xBE\x65\x8C\x54\x97\x62\xC2\xD8\xC2\xE8\x0C\x67\x87\x09\xB9\x72\xDE\x87\x80\x67\x83\xC7\x70\x82\x08\x9A\xEC\x7A\x22\xE4\xE4\x58\x1A\xCB\x0F\x2E\x7D\xE4\x3C\xC5\xCA\x20\xFF\x99\x4C\xE7\x8C\xF4\x7C\xBA\x46\x9A\xEB\x4A\xBC\x69\x5F\xA2\xC9\x65\x02\xC1\xCB\x7F\x25\x78\x79\xCF\xBF\x02\x00\x00\xFF\xFF\x24\xFC\xFC\x47\xE7\x03\x00\x00"),
 	}
 	node.SetMode(420)
-	node.SetName("html.tmpl")
+	node.SetName(".template")
 	node.SetSize(482)
 	return node
 }
 
 //
 // _getNode is internal function to minimize duplicate node created on
-// Node.AddChild() and on GeneratedPathNode.Set().
+// Node.AddChild() and on generatedPathNode.Set().
 //
-func _getNode(path string, fn func() *memfs.Node) *memfs.Node {
-	node := memfs.GeneratedPathNode.Get(path)
+func _ciigoFS_getNode(mfs *memfs.MemFS, path string, fn func() *memfs.Node) (node *memfs.Node) {
+	node = mfs.PathNodes.Get(path)
 	if node != nil {
 		return node
 	}
@@ -180,27 +180,41 @@ func _getNode(path string, fn func() *memfs.Node) *memfs.Node {
 }
 
 func init() {
-	memfs.GeneratedPathNode = memfs.NewPathNode()
-	memfs.GeneratedPathNode.Set("/",
-		_getNode("/", generate_))
-	memfs.GeneratedPathNode.Set("/LICENSE",
-		_getNode("/LICENSE", generate__LICENSE))
-	memfs.GeneratedPathNode.Set("/custom.css",
-		_getNode("/custom.css", generate__custom_css))
-	memfs.GeneratedPathNode.Set("/favicon.ico",
-		_getNode("/favicon.ico", generate__favicon_ico))
-	memfs.GeneratedPathNode.Set("/html.tmpl",
-		_getNode("/html.tmpl", generate__html_tmpl))
-	memfs.GeneratedPathNode.Set("/index.css",
-		_getNode("/index.css", generate__index_css))
-	memfs.GeneratedPathNode.Set("/index.html",
-		_getNode("/index.html", generate__index_html))
-	memfs.GeneratedPathNode.Set("/sub",
-		_getNode("/sub", generate__sub))
-	memfs.GeneratedPathNode.Set("/sub/index.html",
-		_getNode("/sub/index.html", generate__sub_index_html))
-	memfs.GeneratedPathNode.Set("_example",
-		_getNode("_example", generate__example))
-	memfs.GeneratedPathNode.Set("_example/html.tmpl",
-		_getNode("_example/html.tmpl", generate__example_html_tmpl))
+	ciigoFS = &memfs.MemFS{
+		PathNodes: memfs.NewPathNode(),
+		Opts: &memfs.Options{
+			Root: "_example",
+			MaxFileSize: 5242880,
+			Includes: []string{
+			},
+			Excludes: []string{
+				`.*\.adoc$`,
+				`^\..*`,
+			},
+		},
+	}
+	ciigoFS.PathNodes.Set("/",
+		_ciigoFS_getNode(ciigoFS, "/", generate__example))
+	ciigoFS.PathNodes.Set("/LICENSE",
+		_ciigoFS_getNode(ciigoFS, "/LICENSE", generate__example_LICENSE))
+	ciigoFS.PathNodes.Set("/custom.css",
+		_ciigoFS_getNode(ciigoFS, "/custom.css", generate__example_custom_css))
+	ciigoFS.PathNodes.Set("/favicon.ico",
+		_ciigoFS_getNode(ciigoFS, "/favicon.ico", generate__example_favicon_ico))
+	ciigoFS.PathNodes.Set("/html.tmpl",
+		_ciigoFS_getNode(ciigoFS, "/html.tmpl", generate__example_html_tmpl))
+	ciigoFS.PathNodes.Set("/index.css",
+		_ciigoFS_getNode(ciigoFS, "/index.css", generate__example_index_css))
+	ciigoFS.PathNodes.Set("/index.html",
+		_ciigoFS_getNode(ciigoFS, "/index.html", generate__example_index_html))
+	ciigoFS.PathNodes.Set("/sub",
+		_ciigoFS_getNode(ciigoFS, "/sub", generate__example_sub))
+	ciigoFS.PathNodes.Set("/sub/index.html",
+		_ciigoFS_getNode(ciigoFS, "/sub/index.html", generate__example_sub_index_html))
+	ciigoFS.PathNodes.Set("_internal",
+		_ciigoFS_getNode(ciigoFS, "_internal", generate__internal))
+	ciigoFS.PathNodes.Set("_internal/.template",
+		_ciigoFS_getNode(ciigoFS, "_internal/.template", generate__internal__template))
+
+	ciigoFS.Root = ciigoFS.PathNodes.Get("/")
 }

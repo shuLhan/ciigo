@@ -65,7 +65,7 @@ func main() {
 
 	dir := flag.Arg(1)
 	if len(dir) == 0 {
-		dir = "."
+		dir = ciigo.DefaultRoot
 	}
 
 	command = strings.ToLower(command)
@@ -73,10 +73,15 @@ func main() {
 	case "convert":
 		ciigo.Convert(dir, *htmlTemplate)
 	case "generate":
-		ciigo.Generate(dir, *outputFile, *htmlTemplate)
+		genOpts := ciigo.GenerateOptions{
+			Root:          dir,
+			HTMLTemplate:  *htmlTemplate,
+			GenGoFileName: *outputFile,
+		}
+		ciigo.Generate(&genOpts)
 	case "serve":
 		debug.Value = 1
-		ciigo.Serve(dir, *address, *htmlTemplate)
+		ciigo.Serve(nil, dir, *address, *htmlTemplate)
 	default:
 		usage()
 		os.Exit(1)

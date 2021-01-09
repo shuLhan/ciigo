@@ -9,9 +9,13 @@
 package main
 
 import (
+	"github.com/shuLhan/share/lib/memfs"
+
 	"git.sr.ht/~shulhan/ciigo"
 )
 
+var ciigoFS *memfs.MemFS
+
 func main() {
-	ciigo.Serve("_example", ":8080", "_example/html.tmpl")
+	ciigo.Serve(ciigoFS, "_example", ":8080", "_example/html.tmpl")
 }

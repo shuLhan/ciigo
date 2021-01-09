@@ -22,10 +22,11 @@ import (
 )
 
 const (
-	defAddress  = ":8080"
-	defDir      = "."
-	dirAssets   = "assets"
-	extAsciidoc = ".adoc"
+	defAddress           = ":8080"
+	defDir               = "."
+	dirAssets            = "assets"
+	extAsciidoc          = ".adoc"
+	internalTemplatePath = "_internal/.template"
 )
 
 const (
@@ -86,35 +87,46 @@ func Convert(dir, htmlTemplate string) {
 // If htmlTemplate is empty it will default to use embedded HTML template.
 // See template_index_html.go for template format.
 //
-func Generate(dir, out, htmlTemplate string) {
+func Generate(opts *GenerateOptions) {
+	if opts == nil {
+		opts = &GenerateOptions{}
+	}
+	opts.init()
+
 	contentHTML := templateIndexHTML
 
-	if len(htmlTemplate) > 0 {
-		b, err := ioutil.ReadFile(htmlTemplate)
+	if len(opts.HTMLTemplate) > 0 {
+		b, err := ioutil.ReadFile(opts.HTMLTemplate)
 		if err != nil {
 			log.Fatal("ciigo.Generate: " + err.Error())
 		}
 		contentHTML = string(b)
 	}
 
-	htmlg := newHTMLGenerator(htmlTemplate, contentHTML)
-	fileMarkups := listFileMarkups(dir)
+	htmlg := newHTMLGenerator(opts.HTMLTemplate, contentHTML)
+	fileMarkups := listFileMarkups(opts.Root)
 
-	htmlg.convertFileMarkups(fileMarkups, len(htmlTemplate) == 0)
+	htmlg.convertFileMarkups(fileMarkups, len(opts.HTMLTemplate) == 0)
 
-	mfs, err := memfs.New(dir, nil, defExcludes, true)
+	memfsOpts := &memfs.Options{
+		Root:     opts.Root,
+		Excludes: defExcludes,
+	}
+	mfs, err := memfs.New(memfsOpts)
 	if err != nil {
 		log.Fatal("ciigo.Generate: " + err.Error())
 	}
 
-	if len(htmlTemplate) > 0 {
-		_, err = mfs.AddFile(htmlTemplate)
+	if len(opts.HTMLTemplate) > 0 {
+		_, err = mfs.AddFile(internalTemplatePath, opts.HTMLTemplate)
 		if err != nil {
-			log.Fatalf("ciigo.Generate: AddFile %s: %s", htmlTemplate, err.Error())
+			log.Fatalf("ciigo.Generate: AddFile %s: %s",
+				opts.HTMLTemplate, err.Error())
 		}
 	}
 
-	err = mfs.GoGenerate("", out, memfs.EncodingGzip)
+	err = mfs.GoGenerate(opts.GenPackageName, opts.GenVarName,
+		opts.GenGoFileName, memfs.EncodingGzip)
 	if err != nil {
 		log.Fatal("ciigo.Generate: " + err.Error())
 	}
@@ -124,14 +136,14 @@ func Generate(dir, out, htmlTemplate string) {
 // Serve the content at directory "dir" using HTTP server at specific
 // "address".
 //
-func Serve(dir, address, htmlTemplate string) {
+func Serve(mfs *memfs.MemFS, dir, address, htmlTemplate string) {
 	if len(dir) == 0 {
 		dir = defDir
 	}
 	if len(address) == 0 {
 		address = defAddress
 	}
-	srv := newServer(dir, address, htmlTemplate)
+	srv := newServer(mfs, dir, address, htmlTemplate)
 	srv.start()
 }
 

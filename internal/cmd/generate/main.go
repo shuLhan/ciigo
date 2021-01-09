@@ -9,6 +9,12 @@ package main
 import "git.sr.ht/~shulhan/ciigo"
 
 func main() {
-	ciigo.Generate("./_example", "cmd/ciigo-example/static.go",
-		"_example/html.tmpl")
+	opts := ciigo.GenerateOptions{
+		Root:           "_example",
+		HTMLTemplate:   "_example/html.tmpl",
+		GenPackageName: "main",
+		GenVarName:     "ciigoFS",
+		GenGoFileName:  "cmd/ciigo-example/static.go",
+	}
+	ciigo.Generate(&opts)
 }

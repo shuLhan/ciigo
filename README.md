@@ -96,11 +96,18 @@ Lets named it `generate.go` with the following content,
 package main
 
 import (
-        "git.sr.ht/~shulhan/ciigo"
+	"git.sr.ht/~shulhan/ciigo"
 )
 
 func main() {
-        ciigo.Generate("./_contents", "cmd/mysite/static.go", "_contents/html.tmpl")
+	opts := &GenerateOptions{
+		Root:           "./_contents",
+		HTMLTemplate:   "_contents/html.tmpl",
+		GenPackageName: "main",
+		GenVarName:     "mysiteFS",
+		GenGoFileName:  "cmd/mysite/static.go",
+	}
+	ciigo.Generate(opts)
 }
 ```
 
@@ -110,11 +117,13 @@ Create the main Go code inside `cmd/mysite`,
 package main
 
 import (
-        "git.sr.ht/~shulhan/ciigo"
+	"git.sr.ht/~shulhan/ciigo"
 )
 
+var mysiteFS *memfs.PathNode
+
 func main() {
-        ciigo.Serve("./_contents", ":8080", "_contents/html.tmpl")
+	ciigo.Serve(mysiteFS, "./_contents", ":8080", "_contents/html.tmpl")
 }
 ```
 
@@ -130,13 +139,13 @@ Hello, world!
 ```
 
 Run `go generate` to convert all files with extension `.adoc`
-into HTML and embed it into `./cmd/mysite/static.go`
+into HTML and embed it into Go source code at `./cmd/mysite/static.go`
 
 ```
 $ go generate
 ```
 
-Now run the `./cmd/mysite` with `DEBUG` environment variable is set,
+Now run the `./cmd/mysite` with `DEBUG` environment variable set to non-zero,
 
 ```
 $ DEBUG=1 go run ./cmd/mysite
@@ -182,7 +191,6 @@ Finally, deploy the program to your server.
 
 *NOTE:* By default, server will listen on address `0.0.0.0` at port `8080`.
 If you need to use another port, you can change it at `cmd/mysite/main.go`.
-
 
 
 ##  Limitations and Known Bugs
