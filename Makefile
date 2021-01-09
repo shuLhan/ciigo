@@ -1,34 +1,32 @@
-RELEASES= _bin/ciigo-linux-amd64 \
+RELEASES:= \
+	_bin/ciigo-linux-amd64 \
 	_bin/ciigo-darwin-amd64
 
-.PHONY: all lint install serve build build-release
+.PHONY: all lint test install serve build build-release
+.FORCE:
 
-all: install
+all: lint test
 
 lint:
-	golangci-lint run --enable-all \
-		--disable=wsl --disable=gomnd --disable=funlen ./...
+	golangci-lint run ./...
+
+test:
+	go test -v -race ./...	
 
 install:
-	go run ./internal/cmd/generate
-	go install ./cmd/ciigo-example
 	go install ./cmd/ciigo
 
-serve:
-	find _example -name "*.html" -delete
-	rm -f ./cmd/ciigo-example/static.go
-	go run ./internal/cmd/generate
+run-example:
 	DEBUG=1 go run ./cmd/ciigo-example
 
-build-release: _bin $(RELEASES)
+build-release: $(RELEASES)
 
-_bin:
-	mkdir -p _bin
-
+_bin/ciigo-linux-amd64: .FORCE
 _bin/ciigo-linux-amd64:
 	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 \
 		go build -o $@ ./cmd/ciigo
 
+_bin/ciigo-darwin-amd64: .FORCE
 _bin/ciigo-darwin-amd64:
 	CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 \
 		go build -o $@ ./cmd/ciigo
