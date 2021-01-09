@@ -24,7 +24,6 @@ import (
 const (
 	defAddress           = ":8080"
 	defDir               = "."
-	dirAssets            = "assets"
 	extAsciidoc          = ".adoc"
 	internalTemplatePath = "_internal/.template"
 )
@@ -166,9 +165,6 @@ func listFileMarkups(dir string) (fileMarkups []*fileMarkup) {
 	for _, fi := range fis {
 		name := fi.Name()
 
-		if name == dirAssets {
-			continue
-		}
 		if fi.IsDir() && name[0] != '.' {
 			newdir := filepath.Join(dir, fi.Name())
 			fileMarkups = append(fileMarkups, listFileMarkups(newdir)...)
