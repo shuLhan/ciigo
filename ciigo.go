@@ -30,10 +30,7 @@ const (
 )
 
 const (
-	metadataAuthor     = "author"
-	metadataDate       = "date"
 	metadataStylesheet = "stylesheet"
-	metadataTitle      = "title"
 )
 
 const (
