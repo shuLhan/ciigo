@@ -1,5 +1,13 @@
 =  CHANGELOG
 
+==  ciigo v0.4.1 (2021-01-21)
+
+Update to latest share module.
+
+Fix the HTTP server not auto-reload the new changes if DEBUG value is
+non-zero.
+
+
 ==  ciigo v0.4.0 (2021-01-21)
 
 Refactoring due to change on memfs package.
