@@ -8,12 +8,6 @@ files using
 markup format.
 
 
-##  ciigo as library
-
-For an up to date documentation of how to use the library see the
-[Go documentation page](https://pkg.go.dev/git.sr.ht/~shulhan/ciigo).
-
-
 ##  ciigo as CLI
 
 ciigo as CLI can convert, generate, and/or serve a directory that contains
@@ -47,7 +41,7 @@ changes on markup files and convert them to HTML files automatically.
 If the address is not set, its default to ":8080".
 
 
-##  Example
+##  ciigo as library
 
 This section describe step by step instructions on how to build and create
 pages to be viewed for local development using `ciigo`.
@@ -85,32 +79,6 @@ $ cp $HOME/go/src/git.sr.ht/~shulhan/ciigo/_example/index.css ./_contents/
 $ cp $HOME/go/src/git.sr.ht/~shulhan/ciigo/_example/html.tmpl ./_contents/
 ```
 
-Create a Go source code in the root repository to generate all markup files
-inside the "_contents" directory into HTML and dump all of their contents into
-"static.go" file.
-Lets named it `generate.go` with the following content,
-
-```
-//go:generate go run generate.go
-
-package main
-
-import (
-	"git.sr.ht/~shulhan/ciigo"
-)
-
-func main() {
-	opts := &GenerateOptions{
-		Root:           "./_contents",
-		HTMLTemplate:   "_contents/html.tmpl",
-		GenPackageName: "main",
-		GenVarName:     "mysiteFS",
-		GenGoFileName:  "cmd/mysite/static.go",
-	}
-	ciigo.Generate(opts)
-}
-```
-
 Create the main Go code inside `cmd/mysite`,
 
 ```
@@ -118,9 +86,10 @@ package main
 
 import (
 	"git.sr.ht/~shulhan/ciigo"
+	"github.com/shuLhan/share/lib/memfs"
 )
 
-var mysiteFS *memfs.PathNode
+var mysiteFS *memfs.MemFS
 
 func main() {
 	ciigo.Serve(mysiteFS, "./_contents", ":8080", "_contents/html.tmpl")
@@ -133,16 +102,8 @@ accessed by browser,
 
 ```
 =  Test
-:stylesheet: /_contents/index.css
 
 Hello, world!
-```
-
-Run `go generate` to convert all files with extension `.adoc`
-into HTML and embed it into Go source code at `./cmd/mysite/static.go`
-
-```
-$ go generate
 ```
 
 Now run the `./cmd/mysite` with `DEBUG` environment variable set to non-zero,
@@ -160,19 +121,46 @@ You should see "Hello, world!" as the main page.
 
 Thats it!
 
-Create or update any ".adoc" or ",md" files inside "_contents" directory, the
-program will automatically generated the HTML file, but you still need to
-refresh the web browser to load the new generated file.
+Create or update any ".adoc" files inside "_contents" directory, the
+program will automatically generated the HTML file.
+Refresh the web browser to load the new generated file.
 
 
 ###  Deployment
 
 First, we need to make sure that all markup files inside "_contents" are
-converted to HTML and regenerate the static Go code,
+converted to HTML and embed it into the static Go code.
+
+Create another Go source code, lets save it in `internal/generate.go` with the
+following content,
 
 ```
-$ go generate
+package main
+
+import (
+	"git.sr.ht/~shulhan/ciigo"
+)
+
+func main() {
+	opts := &ciigo.GenerateOptions{
+		Root:           "./_contents",
+		HTMLTemplate:   "_contents/html.tmpl",
+		GenPackageName: "main",
+		GenVarName:     "mysiteFS",
+		GenGoFileName:  "cmd/mysite/static.go",
+	}
+	ciigo.Generate(opts)
+}
 ```
+
+And then run,
+
+```
+$ go run ./internal
+```
+
+The above command will generate Go source code `cmd/mysite/static.go` that
+embed all files inside the "_contents" directory.
 
 Second, build the web server that serve static contents in `static.go`,
 
@@ -192,11 +180,12 @@ Finally, deploy the program to your server.
 *NOTE:* By default, server will listen on address `0.0.0.0` at port `8080`.
 If you need to use another port, you can change it at `cmd/mysite/main.go`.
 
+That's it!
 
 ##  Limitations and Known Bugs
 
 `ciigo` will not handle automatic certificate (e.g. using LetsEncrypt), its
-up to administrator how the certificate are gathered or generated.
+up to the user how the certificate are gathered, generated, or served.
 
 Using symlink on ".adoc" file inside `content` directory is not supported yet.
 
