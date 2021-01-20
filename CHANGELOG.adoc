@@ -1,5 +1,23 @@
 =  CHANGELOG
 
+==  ciigo v0.4.0 (2021-01-21)
+
+Refactoring due to change on memfs package.
+
+This changes affect the exported functions Generate() and Serve().
+
+Previously, the Generate() function accept three options: dir, out,
+and htmlTemplate; this release changes the parameter into single struct
+Options with two additional options: GenPackageName and GenVarName.
+The GenPackageName allow to set the package name in Go generate source
+code, default to "main" if not set.
+The GenVarName set the instance of memfs.MemFS where the embedded
+files will be stored.
+
+On the Serve() function, we add parameter to pass the instance of
+memfs.MemFS (the one that passed on GenVarName).
+
+
 ==  ciigo v0.3.0 (2020-12-06)
 
 This release replace the asciidoc parsing from libasciidoc-go to
