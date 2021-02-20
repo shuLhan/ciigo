@@ -32,11 +32,6 @@ const (
 	metadataStylesheet = "stylesheet"
 )
 
-const (
-	markupKindUnknown byte = iota
-	markupKindAsciidoc
-)
-
 //nolint: gochecknoglobals
 var (
 	defExcludes = []string{
@@ -180,7 +175,6 @@ func listFileMarkups(dir string) (fileMarkups []*fileMarkup) {
 		}
 
 		markupf := &fileMarkup{
-			kind:     markupKind(ext),
 			path:     filepath.Join(dir, name),
 			info:     fi,
 			basePath: filepath.Join(dir, strings.TrimSuffix(name, ext)),
@@ -189,12 +183,4 @@ func listFileMarkups(dir string) (fileMarkups []*fileMarkup) {
 	}
 
 	return fileMarkups
-}
-
-func markupKind(ext string) byte {
-	switch ext {
-	case extAsciidoc:
-		return markupKindAsciidoc
-	}
-	return markupKindUnknown
 }

@@ -13,7 +13,6 @@ import (
 )
 
 type fileMarkup struct {
-	kind     byte                   // kind define the type of markup file.
 	path     string                 // path contains full path to markup file.
 	info     os.FileInfo            // info contains FileInfo of markup file.
 	basePath string                 // basePath contains full path to file without markup extension.
@@ -34,12 +33,8 @@ func newFileMarkup(filePath string, fi os.FileInfo) (fmarkup *fileMarkup, err er
 	ext := strings.ToLower(path.Ext(filePath))
 
 	fmarkup = &fileMarkup{
-		kind: markupKind(ext),
 		path: filePath,
 		info: fi,
-	}
-	if fmarkup.kind == markupKindUnknown {
-		return nil, fmt.Errorf("newFileMarkup: unknown markup file " + filePath)
 	}
 
 	fmarkup.basePath = strings.TrimSuffix(filePath, ext)

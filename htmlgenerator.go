@@ -71,20 +71,17 @@ func (htmlg *htmlGenerator) convert(fmarkup *fileMarkup, fhtml *fileHTML, force 
 		return
 	}
 
-	switch fmarkup.kind {
-	case markupKindAsciidoc:
-		doc, err := asciidoctor.Open(fmarkup.path)
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		err = doc.ToHTMLBody(&fhtml.rawBody)
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		fhtml.unpackAdocMetadata(doc)
+	doc, err := asciidoctor.Open(fmarkup.path)
+	if err != nil {
+		log.Fatal(err)
 	}
+
+	err = doc.ToHTMLBody(&fhtml.rawBody)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fhtml.unpackAdocMetadata(doc)
 	if fhtml.rawBody.Len() == 0 {
 		fmt.Println("skip")
 		return
