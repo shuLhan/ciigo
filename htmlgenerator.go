@@ -58,7 +58,6 @@ func (htmlg *htmlGenerator) convertFileMarkups(fileMarkups []*fileMarkup, force 
 		htmlg.convert(fmarkup, force)
 
 		fmt.Println("OK")
-		fmt.Printf("  metadata: %+v\n", fmarkup.metadata)
 	}
 }
 
