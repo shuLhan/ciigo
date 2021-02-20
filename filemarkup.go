@@ -17,6 +17,7 @@ type fileMarkup struct {
 	info     os.FileInfo            // info contains FileInfo of markup file.
 	basePath string                 // basePath contains full path to file without markup extension.
 	metadata map[string]interface{} // metadata contains markup metadata.
+	fhtml    *fileHTML              // The HTML output of this markup.
 }
 
 func newFileMarkup(filePath string, fi os.FileInfo) (fmarkup *fileMarkup, err error) {
@@ -33,11 +34,13 @@ func newFileMarkup(filePath string, fi os.FileInfo) (fmarkup *fileMarkup, err er
 	ext := strings.ToLower(path.Ext(filePath))
 
 	fmarkup = &fileMarkup{
-		path: filePath,
-		info: fi,
+		path:     filePath,
+		info:     fi,
+		basePath: strings.TrimSuffix(filePath, ext),
+		fhtml:    &fileHTML{},
 	}
 
-	fmarkup.basePath = strings.TrimSuffix(filePath, ext)
+	fmarkup.fhtml.path = fmarkup.basePath + ".html"
 
 	return fmarkup, nil
 }
@@ -47,13 +50,13 @@ func newFileMarkup(filePath string, fi os.FileInfo) (fmarkup *fileMarkup, err er
 // modification time is equal or greater than their markup file; otherwise
 // it will return false.
 //
-func (fa *fileMarkup) isHTMLLatest(htmlPath string) bool {
-	htmlInfo, err := os.Stat(htmlPath)
+func (fa *fileMarkup) isHTMLLatest() bool {
+	htmlInfo, err := os.Stat(fa.fhtml.path)
 	if err != nil {
 		if os.IsNotExist(err) {
 			return false
 		}
-		log.Printf("ciigo: os.Stat(%q): %s\n", htmlPath, err)
+		log.Printf("ciigo: os.Stat(%q): %s\n", fa.fhtml.path, err)
 		return false
 	}
 	if htmlInfo == nil {

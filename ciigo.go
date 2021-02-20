@@ -174,12 +174,18 @@ func listFileMarkups(dir string) (fileMarkups []*fileMarkup) {
 			continue
 		}
 
-		markupf := &fileMarkup{
-			path:     filepath.Join(dir, name),
+		filePath := filepath.Join(dir, name)
+
+		fmarkup := &fileMarkup{
+			path:     filePath,
 			info:     fi,
-			basePath: filepath.Join(dir, strings.TrimSuffix(name, ext)),
+			basePath: strings.TrimSuffix(filePath, ext),
+			fhtml:    &fileHTML{},
 		}
-		fileMarkups = append(fileMarkups, markupf)
+
+		fmarkup.fhtml.path = fmarkup.basePath + ".html"
+
+		fileMarkups = append(fileMarkups, fmarkup)
 	}
 
 	return fileMarkups

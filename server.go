@@ -220,12 +220,7 @@ func (srv *server) onChangeFileMarkup(ns *libio.NodeState) {
 		}
 	}
 
-	fhtml := &fileHTML{
-		path: fmarkup.basePath + ".html",
-	}
-
-	fhtml.rawBody.Reset()
-	srv.htmlg.convert(fmarkup, fhtml, true)
+	srv.htmlg.convert(fmarkup, true)
 }
 
 func (srv *server) onChangeHTMLTemplate(ns *libio.NodeState) {

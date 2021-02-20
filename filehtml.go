@@ -25,22 +25,10 @@ type fileHTML struct {
 	rawBody strings.Builder
 }
 
-//
-// reset all fields to its empty values.
-//
-func (fhtml *fileHTML) reset() {
-	fhtml.Title = ""
-	fhtml.EmbeddedCSS = nil
-	fhtml.Styles = fhtml.Styles[:0]
-	fhtml.Body = template.HTML("")
-
-	fhtml.path = ""
-	fhtml.rawBody.Reset()
-}
-
 func (fhtml *fileHTML) unpackAdocMetadata(doc *asciidoctor.Document) {
-	fhtml.Metadata = make(map[string]string)
 	fhtml.Title = doc.Title.String()
+	fhtml.Styles = fhtml.Styles[:0]
+	fhtml.Metadata = make(map[string]string, len(doc.Attributes))
 
 	for k, v := range doc.Attributes {
 		switch k {
@@ -50,4 +38,10 @@ func (fhtml *fileHTML) unpackAdocMetadata(doc *asciidoctor.Document) {
 			fhtml.Metadata[k] = v
 		}
 	}
+
+	if len(fhtml.Styles) == 0 {
+		fhtml.EmbeddedCSS = embeddedCSS()
+	}
+
+	fhtml.Body = template.HTML(fhtml.rawBody.String())
 }

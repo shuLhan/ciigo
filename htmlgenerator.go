@@ -51,23 +51,19 @@ func (htmlg *htmlGenerator) reloadTemplate() (err error) {
 }
 
 func (htmlg *htmlGenerator) convertFileMarkups(fileMarkups []*fileMarkup, force bool) {
-	fhtml := &fileHTML{}
-
 	for _, fmarkup := range fileMarkups {
-		fhtml.reset()
-		fhtml.path = fmarkup.basePath + ".html"
+		fmt.Printf("ciigo: converting %q to %q ... ", fmarkup.path,
+			fmarkup.fhtml.path)
 
-		fmt.Printf("ciigo: converting %q to %q ... ", fmarkup.path, fhtml.path)
-
-		htmlg.convert(fmarkup, fhtml, force)
+		htmlg.convert(fmarkup, force)
 
 		fmt.Println("OK")
 		fmt.Printf("  metadata: %+v\n", fmarkup.metadata)
 	}
 }
 
-func (htmlg *htmlGenerator) convert(fmarkup *fileMarkup, fhtml *fileHTML, force bool) {
-	if fmarkup.isHTMLLatest(fhtml.path) && !force {
+func (htmlg *htmlGenerator) convert(fmarkup *fileMarkup, force bool) {
+	if fmarkup.isHTMLLatest() && !force {
 		return
 	}
 
@@ -76,24 +72,15 @@ func (htmlg *htmlGenerator) convert(fmarkup *fileMarkup, fhtml *fileHTML, force 
 		log.Fatal(err)
 	}
 
-	err = doc.ToHTMLBody(&fhtml.rawBody)
+	fmarkup.fhtml.rawBody.Reset()
+	err = doc.ToHTMLBody(&fmarkup.fhtml.rawBody)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	fhtml.unpackAdocMetadata(doc)
-	if fhtml.rawBody.Len() == 0 {
-		fmt.Println("skip")
-		return
-	}
+	fmarkup.fhtml.unpackAdocMetadata(doc)
 
-	if len(fhtml.Styles) == 0 {
-		fhtml.EmbeddedCSS = embeddedCSS()
-	}
-
-	fhtml.Body = template.HTML(fhtml.rawBody.String()) // nolint:gosec
-
-	htmlg.write(fhtml)
+	htmlg.write(fmarkup.fhtml)
 }
 
 //
