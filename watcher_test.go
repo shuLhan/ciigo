@@ -32,7 +32,12 @@ func TestWatcher(t *testing.T) {
 		os.RemoveAll(testDir)
 	})
 
-	testWatcher, err = newWatcher(testDir, "testdata/html.tmpl")
+	htmlg, err := newHTMLGenerator(nil, "testdata/html.tmpl", true)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	testWatcher, err = newWatcher(htmlg, testDir)
 	if err != nil {
 		t.Fatal(err)
 	}

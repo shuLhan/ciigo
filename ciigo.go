@@ -4,7 +4,7 @@
 
 //
 // Package ciigo is a program to write static web server with embedded files
-// using asciidoc and markdown markup languages.
+// using asciidoc markup languages.
 //
 // For more information see the README file at the page repository
 // https://sr.ht/~shulhan/ciigo.
@@ -13,7 +13,6 @@ package ciigo
 
 import (
 	"fmt"
-	"io/ioutil"
 	"log"
 	"os"
 	"path/filepath"
@@ -52,21 +51,14 @@ func Convert(dir, htmlTemplate string) {
 		dir = "."
 	}
 
-	contentHTML := templateIndexHTML
-
-	if len(htmlTemplate) > 0 {
-		b, err := ioutil.ReadFile(htmlTemplate)
-		if err != nil {
-			log.Fatal("ciigo.Convert: " + err.Error())
-		}
-		contentHTML = string(b)
+	htmlg, err := newHTMLGenerator(nil, htmlTemplate, true)
+	if err != nil {
+		log.Fatalf("Convert: %s", err)
 	}
-
-	htmlg := newHTMLGenerator(htmlTemplate, contentHTML)
 
 	fileMarkups := listFileMarkups(dir)
 
-	htmlg.convertFileMarkups(fileMarkups, true)
+	htmlg.convertFileMarkups(fileMarkups)
 }
 
 //
@@ -85,20 +77,14 @@ func Generate(opts *GenerateOptions) {
 	}
 	opts.init()
 
-	contentHTML := templateIndexHTML
-
-	if len(opts.HTMLTemplate) > 0 {
-		b, err := ioutil.ReadFile(opts.HTMLTemplate)
-		if err != nil {
-			log.Fatal("ciigo.Generate: " + err.Error())
-		}
-		contentHTML = string(b)
+	htmlg, err := newHTMLGenerator(nil, opts.HTMLTemplate, true)
+	if err != nil {
+		log.Fatal("ciigo.Generate: " + err.Error())
 	}
 
-	htmlg := newHTMLGenerator(opts.HTMLTemplate, contentHTML)
 	fileMarkups := listFileMarkups(opts.Root)
 
-	htmlg.convertFileMarkups(fileMarkups, len(opts.HTMLTemplate) == 0)
+	htmlg.convertFileMarkups(fileMarkups)
 
 	memfsOpts := &memfs.Options{
 		Root:     opts.Root,
@@ -150,14 +136,21 @@ func Serve(mfs *memfs.MemFS, dir, address, htmlTemplate string) {
 // default HTML template.
 //
 func Watch(dir, htmlTemplate string) (err error) {
-	w, err := newWatcher(dir, htmlTemplate)
+	htmlg, err := newHTMLGenerator(nil, htmlTemplate, true)
 	if err != nil {
 		return fmt.Errorf("Watch: %w", err)
 	}
+
+	w, err := newWatcher(htmlg, dir)
+	if err != nil {
+		return fmt.Errorf("Watch: %w", err)
+	}
+
 	err = w.start()
 	if err != nil {
 		return fmt.Errorf("Watch: %w", err)
 	}
+
 	return nil
 }
 
@@ -169,7 +162,7 @@ func isExtensionMarkup(ext string) bool {
 // listFileMarkups find any markup files inside the content directory,
 // recursively.
 //
-func listFileMarkups(dir string) (fileMarkups []*fileMarkup) {
+func listFileMarkups(dir string) (fileMarkups map[string]*fileMarkup) {
 	d, err := os.Open(dir)
 	if err != nil {
 		log.Fatal("ciigo: listFileMarkups: os.Open: ", err)
@@ -180,12 +173,16 @@ func listFileMarkups(dir string) (fileMarkups []*fileMarkup) {
 		log.Fatal("generate: " + err.Error())
 	}
 
+	fileMarkups = make(map[string]*fileMarkup)
+
 	for _, fi := range fis {
 		name := fi.Name()
 
 		if fi.IsDir() && name[0] != '.' {
 			newdir := filepath.Join(dir, fi.Name())
-			fileMarkups = append(fileMarkups, listFileMarkups(newdir)...)
+			for k, v := range listFileMarkups(newdir) {
+				fileMarkups[k] = v
+			}
 			continue
 		}
 
@@ -208,7 +205,7 @@ func listFileMarkups(dir string) (fileMarkups []*fileMarkup) {
 
 		fmarkup.fhtml.path = fmarkup.basePath + ".html"
 
-		fileMarkups = append(fileMarkups, fmarkup)
+		fileMarkups[filePath] = fmarkup
 	}
 
 	return fileMarkups

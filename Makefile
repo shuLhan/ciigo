@@ -5,7 +5,7 @@ RELEASES:= \
 .PHONY: all lint test install serve build build-release
 .FORCE:
 
-all: lint test
+all: test lint
 
 lint:
 	golangci-lint run ./...

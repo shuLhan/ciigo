@@ -7,97 +7,147 @@ package ciigo
 import (
 	"fmt"
 	"html/template"
-	"log"
+	"io/ioutil"
 	"os"
+	"path/filepath"
 
 	"git.sr.ht/~shulhan/asciidoctor-go"
+	"github.com/shuLhan/share/lib/memfs"
 )
 
 //
 // htmlGenerator provide a template to write full HTML file.
 //
 type htmlGenerator struct {
-	path       string
-	tmpl       *template.Template
-	tmplSearch *template.Template
+	htmlTemplate string
+	tmpl         *template.Template
+	tmplSearch   *template.Template
 }
 
-func newHTMLGenerator(file, content string) (htmlg *htmlGenerator) {
-	var err error
+func newHTMLGenerator(mfs *memfs.MemFS, htmlTemplate string, devel bool) (
+	htmlg *htmlGenerator, err error,
+) {
+	var logp = "newHTMLGenerator"
 
-	htmlg = &htmlGenerator{
-		path: file,
-	}
+	htmlg = &htmlGenerator{}
 
 	htmlg.tmpl = template.New("")
-	htmlg.tmpl, err = htmlg.tmpl.Parse(content)
-	if err != nil {
-		log.Fatal("newHTMLGenerator: ", err.Error())
+
+	if len(htmlTemplate) == 0 {
+		htmlg.tmpl, err = htmlg.tmpl.Parse(templateIndexHTML)
+		if err != nil {
+			return nil, fmt.Errorf("%s: %w", logp, err)
+		}
+	} else if mfs == nil || devel {
+		htmlg.htmlTemplate = filepath.Clean(htmlTemplate)
+
+		bhtml, err := ioutil.ReadFile(htmlg.htmlTemplate)
+		if err != nil {
+			return nil, fmt.Errorf("%s: %w", logp, err)
+		}
+
+		htmlg.tmpl, err = htmlg.tmpl.Parse(string(bhtml))
+		if err != nil {
+			return nil, fmt.Errorf("%s: %s", logp, err)
+		}
+	} else {
+		// Load HTML template from memory file system.
+		tmplNode, err := mfs.Get(internalTemplatePath)
+		if err != nil {
+			return nil, fmt.Errorf("%s: %w", logp, err)
+		}
+
+		bhtml, err := tmplNode.Decode()
+		if err != nil {
+			return nil, fmt.Errorf("%s: %sw", logp, err)
+		}
+
+		htmlg.tmpl, err = htmlg.tmpl.Parse(string(bhtml))
+		if err != nil {
+			return nil, fmt.Errorf("%s: %s", logp, err)
+		}
 	}
 
 	htmlg.tmplSearch = template.New("search")
 	htmlg.tmplSearch, err = htmlg.tmplSearch.Parse(templateSearch)
 	if err != nil {
-		log.Fatal("newHTMLGenerator: " + err.Error())
+		return nil, fmt.Errorf("%s: %w", logp, err)
 	}
 
-	return
+	return htmlg, nil
 }
 
-func (htmlg *htmlGenerator) reloadTemplate() (err error) {
-	htmlg.tmpl, err = template.ParseFiles(htmlg.path)
-
-	return
-}
-
-func (htmlg *htmlGenerator) convertFileMarkups(fileMarkups []*fileMarkup, force bool) {
-	for _, fmarkup := range fileMarkups {
-		fmt.Printf("ciigo: converting %q to %q ... ", fmarkup.path,
-			fmarkup.fhtml.path)
-
-		htmlg.convert(fmarkup, force)
-
-		fmt.Println("OK")
-	}
-}
-
-func (htmlg *htmlGenerator) convert(fmarkup *fileMarkup, force bool) {
-	if fmarkup.isHTMLLatest() && !force {
-		return
-	}
-
+//
+// convert the markup into HTML.
+//
+func (htmlg *htmlGenerator) convert(fmarkup *fileMarkup) (err error) {
 	doc, err := asciidoctor.Open(fmarkup.path)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 
 	fmarkup.fhtml.rawBody.Reset()
 	err = doc.ToHTMLBody(&fmarkup.fhtml.rawBody)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 
 	fmarkup.fhtml.unpackAdocMetadata(doc)
 
-	htmlg.write(fmarkup.fhtml)
+	return htmlg.write(fmarkup.fhtml)
+}
+
+//
+// convertFileMarkups convert markup files into HTML.
+//
+func (htmlg *htmlGenerator) convertFileMarkups(fileMarkups map[string]*fileMarkup) {
+	for _, fmarkup := range fileMarkups {
+		fmt.Printf("ciigo: converting %q to %q => ", fmarkup.path,
+			fmarkup.fhtml.path)
+
+		err := htmlg.convert(fmarkup)
+		if err != nil {
+			fmt.Println(err)
+		} else {
+			fmt.Println("OK")
+		}
+	}
+}
+
+func (htmlg *htmlGenerator) htmlTemplateReload() (err error) {
+	htmlg.tmpl, err = template.ParseFiles(htmlg.htmlTemplate)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (htmlg *htmlGenerator) htmlTemplateUseInternal() (err error) {
+	htmlg.tmpl, err = htmlg.tmpl.Parse(templateIndexHTML)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 //
 // write the HTML file.
 //
-func (htmlg *htmlGenerator) write(fhtml *fileHTML) {
+func (htmlg *htmlGenerator) write(fhtml *fileHTML) (err error) {
 	f, err := os.Create(fhtml.path)
 	if err != nil {
-		log.Fatal("htmlGenerator: write: os.Create: " + err.Error())
+		return err
 	}
 
 	err = htmlg.tmpl.Execute(f, fhtml)
 	if err != nil {
-		log.Fatal("htmlGenerator: write: Execute: " + err.Error())
+		return err
 	}
 
 	err = f.Close()
 	if err != nil {
-		log.Fatal("htmlGenerator: write: Close: " + err.Error())
+		return err
 	}
+
+	return nil
 }

@@ -6,9 +6,8 @@ package ciigo
 
 import (
 	"fmt"
-	"log"
 	"os"
-	"path"
+	"path/filepath"
 	"strings"
 )
 
@@ -30,7 +29,7 @@ func newFileMarkup(filePath string, fi os.FileInfo) (fmarkup *fileMarkup, err er
 		}
 	}
 
-	ext := strings.ToLower(path.Ext(filePath))
+	ext := strings.ToLower(filepath.Ext(filePath))
 
 	fmarkup = &fileMarkup{
 		path:     filePath,
@@ -42,28 +41,4 @@ func newFileMarkup(filePath string, fi os.FileInfo) (fmarkup *fileMarkup, err er
 	fmarkup.fhtml.path = fmarkup.basePath + ".html"
 
 	return fmarkup, nil
-}
-
-//
-// isHTMLLatest will return true if generated HTML is exist and its
-// modification time is equal or greater than their markup file; otherwise
-// it will return false.
-//
-func (fa *fileMarkup) isHTMLLatest() bool {
-	htmlInfo, err := os.Stat(fa.fhtml.path)
-	if err != nil {
-		if os.IsNotExist(err) {
-			return false
-		}
-		log.Printf("ciigo: os.Stat(%q): %s\n", fa.fhtml.path, err)
-		return false
-	}
-	if htmlInfo == nil {
-		return false
-	}
-
-	infoTime := fa.info.ModTime()
-	htmlTime := htmlInfo.ModTime()
-
-	return htmlTime.Equal(infoTime) || htmlTime.After(infoTime)
 }

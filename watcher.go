@@ -6,15 +6,11 @@ package ciigo
 
 import (
 	"fmt"
-	"html/template"
-	"io/ioutil"
 	"log"
-	"os"
 	"path/filepath"
 	"strings"
 	"time"
 
-	"git.sr.ht/~shulhan/asciidoctor-go"
 	"github.com/shuLhan/share/lib/clise"
 	libio "github.com/shuLhan/share/lib/io"
 	"github.com/shuLhan/share/lib/memfs"
@@ -25,24 +21,34 @@ import (
 // automatically.
 //
 type watcher struct {
-	dir          string
-	htmlTemplate string
-	dw           *libio.DirWatcher
-	fileMarkups  map[string]*fileMarkup
-	tmpl         *template.Template
-	changes      *clise.Clise
+	dir         string
+	htmlg       *htmlGenerator
+	dw          *libio.DirWatcher
+	fileMarkups map[string]*fileMarkup
+	changes     *clise.Clise
 }
 
 //
 // newWatcher create a watcher that monitor every files changes in directory
 // "dir" for new, modified, and deleted asciidoc files and HTML template file.
 //
-func newWatcher(dir, htmlTemplate string) (w *watcher, err error) {
+// The watcher depends on htmlGenerator to convert the markup to HTML using
+// the HTML template in htmlGenerator.
+//
+//	watcher
+//	|
+//	+-- onChangeFileMarkup --> UPDATE --> htmlGenerator.convert()
+//	|
+//	+-- onChangeHTMLTemplate +--> DELETE --> htmlGenerator.htmlTemplateUseInternal()
+//	                         |
+//	                         +--> UPDATE --> htmlGenerated.htmlTemplateReload()
+//
+func newWatcher(htmlg *htmlGenerator, dir string) (w *watcher, err error) {
 	w = &watcher{
-		dir:          dir,
-		htmlTemplate: htmlTemplate,
-		fileMarkups:  make(map[string]*fileMarkup),
-		changes:      clise.New(1),
+		dir:         dir,
+		htmlg:       htmlg,
+		fileMarkups: make(map[string]*fileMarkup),
+		changes:     clise.New(1),
 	}
 	w.dw = &libio.DirWatcher{
 		Options: memfs.Options{
@@ -55,77 +61,7 @@ func newWatcher(dir, htmlTemplate string) (w *watcher, err error) {
 		Callback: w.onChangeFileMarkup,
 	}
 
-	err = w.initTemplate()
-	if err != nil {
-		return nil, fmt.Errorf("newWatcher: %w", err)
-	}
-
 	return w, nil
-}
-
-//
-// convert the markup into HTML.
-//
-func (w *watcher) convert(fmarkup *fileMarkup) (err error) {
-	doc, err := asciidoctor.Open(fmarkup.path)
-	if err != nil {
-		return err
-	}
-
-	fmarkup.fhtml.rawBody.Reset()
-	err = doc.ToHTMLBody(&fmarkup.fhtml.rawBody)
-	if err != nil {
-		return err
-	}
-
-	fmarkup.fhtml.unpackAdocMetadata(doc)
-
-	return w.write(fmarkup.fhtml)
-}
-
-//
-// convertFileMarkups convert markup files into HTML.
-//
-func (w *watcher) convertFileMarkups(fileMarkups map[string]*fileMarkup) {
-	for _, fmarkup := range fileMarkups {
-		fmt.Printf("ciigo: converting %q to %q => ", fmarkup.path,
-			fmarkup.fhtml.path)
-
-		err := w.convert(fmarkup)
-		if err != nil {
-			fmt.Println(err)
-		} else {
-			fmt.Println("OK")
-		}
-	}
-}
-
-func (w *watcher) initTemplate() (err error) {
-	logp := "initTemplate"
-
-	w.tmpl = template.New("")
-
-	if len(w.htmlTemplate) == 0 {
-		w.tmpl, err = w.tmpl.Parse(templateIndexHTML)
-		if err != nil {
-			return fmt.Errorf("%s: %w", logp, err)
-		}
-		return nil
-	}
-
-	w.htmlTemplate = filepath.Clean(w.htmlTemplate)
-
-	bhtml, err := ioutil.ReadFile(w.htmlTemplate)
-	if err != nil {
-		return fmt.Errorf("%s: %w", logp, err)
-	}
-
-	w.tmpl, err = w.tmpl.Parse(string(bhtml))
-	if err != nil {
-		return fmt.Errorf("%s: %s", logp, err)
-	}
-
-	return nil
 }
 
 //
@@ -138,6 +74,11 @@ func (w *watcher) onChangeFileMarkup(ns *libio.NodeState) {
 		err  error
 	)
 
+	ext := strings.ToLower(filepath.Ext(ns.Node.SysPath))
+	if !isExtensionMarkup(ext) {
+		return
+	}
+
 	if ns.State == libio.FileStateDeleted {
 		fmt.Printf("ciigo: %s: %q deleted\n", logp, ns.Node.SysPath)
 		fmarkup, ok := w.fileMarkups[ns.Node.SysPath]
@@ -145,11 +86,6 @@ func (w *watcher) onChangeFileMarkup(ns *libio.NodeState) {
 			delete(w.fileMarkups, ns.Node.SysPath)
 			w.changes.Push(fmarkup)
 		}
-		return
-	}
-
-	ext := strings.ToLower(filepath.Ext(ns.Node.SysPath))
-	if !isExtensionMarkup(ext) {
 		return
 	}
 
@@ -167,7 +103,7 @@ func (w *watcher) onChangeFileMarkup(ns *libio.NodeState) {
 		fmt.Printf("ciigo: %s: %s updated\n", logp, ns.Node.SysPath)
 	}
 
-	err = w.convert(fmarkup)
+	err = w.htmlg.convert(fmarkup)
 	if err != nil {
 		log.Printf("%s: %s\n", logp, err)
 	}
@@ -186,23 +122,19 @@ func (w *watcher) onChangeHTMLTemplate(ns *libio.NodeState) {
 	if ns.State == libio.FileStateDeleted {
 		log.Printf("ciigo: HTML template file %q has been deleted\n",
 			ns.Node.SysPath)
-		// Use the internal HTML template.
-		w.tmpl, err = w.tmpl.Parse(templateIndexHTML)
-		if err != nil {
-			log.Printf("%s: %s", logp, err)
-			return
-		}
+		err = w.htmlg.htmlTemplateUseInternal()
 	} else {
-		fmt.Printf("ciigo: recompiling HTML template %q ...\n", w.htmlTemplate)
-		w.tmpl, err = template.ParseFiles(w.htmlTemplate)
-		if err != nil {
-			log.Printf("%s: %s\n", logp, err)
-			return
-		}
+		fmt.Printf("ciigo: recompiling HTML template %q ...\n",
+			ns.Node.SysPath)
+		err = w.htmlg.htmlTemplateReload()
+	}
+	if err != nil {
+		log.Printf("%s: %s\n", logp, err)
+		return
 	}
 
 	fmt.Printf("ciigo: regenerate all markup files ...\n")
-	w.convertFileMarkups(w.fileMarkups)
+	w.htmlg.convertFileMarkups(w.fileMarkups)
 }
 
 //
@@ -213,33 +145,11 @@ func (w *watcher) start() (err error) {
 	if err != nil {
 		return fmt.Errorf("start: %w", err)
 	}
-	if len(w.htmlTemplate) > 0 {
-		_, err = libio.NewWatcher(w.htmlTemplate, 0, w.onChangeHTMLTemplate)
+	if len(w.htmlg.htmlTemplate) > 0 {
+		_, err = libio.NewWatcher(w.htmlg.htmlTemplate, 0, w.onChangeHTMLTemplate)
 		if err != nil {
 			return fmt.Errorf("start: %w", err)
 		}
 	}
-	return nil
-}
-
-//
-// write the HTML file.
-//
-func (w *watcher) write(fhtml *fileHTML) (err error) {
-	f, err := os.Create(fhtml.path)
-	if err != nil {
-		return err
-	}
-
-	err = w.tmpl.Execute(f, fhtml)
-	if err != nil {
-		return err
-	}
-
-	err = f.Close()
-	if err != nil {
-		return err
-	}
-
 	return nil
 }
