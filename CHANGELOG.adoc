@@ -1,5 +1,43 @@
 =  CHANGELOG
 
+==  ciigo v0.5.0 (2021-02-21)
+
+=== New features
+
+* all: implement Watch functionality
+
+  The Watch function, watch any changes on asciidoc files on directory
+  "dir" recursively and changes on the HTML template file.
+  If there is new or modified asciidoc files it will convert them into HTML
+  files using HTML template automatically.
+
+  If the HTML template file modified, it will re-convert all asciidoc files.
+  If the HTML template file deleted, it will replace them with internal,
+  default HTML template.
+
+=== Breaking changes
+
+* all: return error instead of call log.Fatal on non main packages
+
+  The library, non-main packages, should never call Fatal or panic,
+  its up to the main package or the caller on how to handle it.
+
+  While at it, fix the returned error to use log prefix and the error
+  value, remove the "ciigo: " prefix.
+
+=== Chores
+
+* all: rewrite to use the watcher
+
+  Now that we have the watcher which task are to watch the asciidoc
+  files and template files, we can use it in server to minimize duplicate
+  code.
+
+  This changes refactoring the htmlGenerator to initialize the HTML
+  template from internal or memfs, so the caller did not need to check by
+  itself.
+
+
 ==  ciigo v0.4.1 (2021-01-21)
 
 Update to latest share module.
