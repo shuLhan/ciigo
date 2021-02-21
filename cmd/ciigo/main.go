@@ -34,6 +34,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"log"
 	"os"
 	"strings"
 
@@ -68,23 +69,28 @@ func main() {
 		dir = ciigo.DefaultRoot
 	}
 
+	var err error
 	command = strings.ToLower(command)
+
 	switch command {
 	case "convert":
-		ciigo.Convert(dir, *htmlTemplate)
+		err = ciigo.Convert(dir, *htmlTemplate)
 	case "generate":
 		genOpts := ciigo.GenerateOptions{
 			Root:          dir,
 			HTMLTemplate:  *htmlTemplate,
 			GenGoFileName: *outputFile,
 		}
-		ciigo.Generate(&genOpts)
+		err = ciigo.Generate(&genOpts)
 	case "serve":
 		debug.Value = 1
-		ciigo.Serve(nil, dir, *address, *htmlTemplate)
+		err = ciigo.Serve(nil, dir, *address, *htmlTemplate)
 	default:
 		usage()
 		os.Exit(1)
+	}
+	if err != nil {
+		log.Fatal(err)
 	}
 }
 

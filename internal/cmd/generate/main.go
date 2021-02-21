@@ -6,7 +6,11 @@
 
 package main
 
-import "git.sr.ht/~shulhan/ciigo"
+import (
+	"log"
+
+	"git.sr.ht/~shulhan/ciigo"
+)
 
 func main() {
 	opts := ciigo.GenerateOptions{
@@ -16,5 +20,8 @@ func main() {
 		GenVarName:     "ciigoFS",
 		GenGoFileName:  "cmd/ciigo-example/static.go",
 	}
-	ciigo.Generate(&opts)
+	err := ciigo.Generate(&opts)
+	if err != nil {
+		log.Fatal(err)
+	}
 }

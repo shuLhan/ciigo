@@ -13,7 +13,6 @@ package ciigo
 
 import (
 	"fmt"
-	"log"
 	"os"
 	"path/filepath"
 	"strings"
@@ -46,19 +45,26 @@ var (
 // If htmlTemplate is empty it will default to use embedded HTML template.
 // See template_index_html.go for template format.
 //
-func Convert(dir, htmlTemplate string) {
+func Convert(dir, htmlTemplate string) (err error) {
+	logp := "Convert"
+
 	if len(dir) == 0 {
 		dir = "."
 	}
 
 	htmlg, err := newHTMLGenerator(nil, htmlTemplate, true)
 	if err != nil {
-		log.Fatalf("Convert: %s", err)
+		return fmt.Errorf("%s: %w", logp, err)
 	}
 
-	fileMarkups := listFileMarkups(dir)
+	fileMarkups, err := listFileMarkups(dir)
+	if err != nil {
+		return fmt.Errorf("%s: %w", logp, err)
+	}
 
 	htmlg.convertFileMarkups(fileMarkups)
+
+	return nil
 }
 
 //
@@ -71,7 +77,9 @@ func Convert(dir, htmlTemplate string) {
 // If htmlTemplate is empty it will default to use embedded HTML template.
 // See template_index_html.go for template format.
 //
-func Generate(opts *GenerateOptions) {
+func Generate(opts *GenerateOptions) (err error) {
+	logp := "Generate"
+
 	if opts == nil {
 		opts = &GenerateOptions{}
 	}
@@ -79,10 +87,13 @@ func Generate(opts *GenerateOptions) {
 
 	htmlg, err := newHTMLGenerator(nil, opts.HTMLTemplate, true)
 	if err != nil {
-		log.Fatal("ciigo.Generate: " + err.Error())
+		return fmt.Errorf("%s: %w", logp, err)
 	}
 
-	fileMarkups := listFileMarkups(opts.Root)
+	fileMarkups, err := listFileMarkups(opts.Root)
+	if err != nil {
+		return fmt.Errorf("%s: %w", logp, err)
+	}
 
 	htmlg.convertFileMarkups(fileMarkups)
 
@@ -92,37 +103,45 @@ func Generate(opts *GenerateOptions) {
 	}
 	mfs, err := memfs.New(memfsOpts)
 	if err != nil {
-		log.Fatal("ciigo.Generate: " + err.Error())
+		return fmt.Errorf("%s: %w", logp, err)
 	}
 
 	if len(opts.HTMLTemplate) > 0 {
 		_, err = mfs.AddFile(internalTemplatePath, opts.HTMLTemplate)
 		if err != nil {
-			log.Fatalf("ciigo.Generate: AddFile %s: %s",
-				opts.HTMLTemplate, err.Error())
+			return fmt.Errorf("%s: %w", logp, err)
 		}
 	}
 
 	err = mfs.GoGenerate(opts.GenPackageName, opts.GenVarName,
 		opts.GenGoFileName, memfs.EncodingGzip)
 	if err != nil {
-		log.Fatal("ciigo.Generate: " + err.Error())
+		return fmt.Errorf("%s: %w", logp, err)
 	}
+
+	return nil
 }
 
 //
 // Serve the content at directory "dir" using HTTP server at specific
 // "address".
 //
-func Serve(mfs *memfs.MemFS, dir, address, htmlTemplate string) {
+func Serve(mfs *memfs.MemFS, dir, address, htmlTemplate string) (err error) {
 	if len(dir) == 0 {
 		dir = defDir
 	}
 	if len(address) == 0 {
 		address = defAddress
 	}
-	srv := newServer(mfs, dir, address, htmlTemplate)
-	srv.start()
+	srv, err := newServer(mfs, dir, address, htmlTemplate)
+	if err != nil {
+		return fmt.Errorf("Serve: %w", err)
+	}
+	err = srv.start()
+	if err != nil {
+		return fmt.Errorf("Serve: %w", err)
+	}
+	return nil
 }
 
 //
@@ -162,15 +181,17 @@ func isExtensionMarkup(ext string) bool {
 // listFileMarkups find any markup files inside the content directory,
 // recursively.
 //
-func listFileMarkups(dir string) (fileMarkups map[string]*fileMarkup) {
+func listFileMarkups(dir string) (fileMarkups map[string]*fileMarkup, err error) {
+	logp := "listFileMarkups"
+
 	d, err := os.Open(dir)
 	if err != nil {
-		log.Fatal("ciigo: listFileMarkups: os.Open: ", err)
+		return nil, fmt.Errorf("%s: %w", logp, err)
 	}
 
 	fis, err := d.Readdir(0)
 	if err != nil {
-		log.Fatal("generate: " + err.Error())
+		return nil, fmt.Errorf("%s: %w", logp, err)
 	}
 
 	fileMarkups = make(map[string]*fileMarkup)
@@ -180,7 +201,11 @@ func listFileMarkups(dir string) (fileMarkups map[string]*fileMarkup) {
 
 		if fi.IsDir() && name[0] != '.' {
 			newdir := filepath.Join(dir, fi.Name())
-			for k, v := range listFileMarkups(newdir) {
+			fmarkups, err := listFileMarkups(newdir)
+			if err != nil {
+				return nil, fmt.Errorf("%s: %w", logp, err)
+			}
+			for k, v := range fmarkups {
 				fileMarkups[k] = v
 			}
 			continue
@@ -208,5 +233,5 @@ func listFileMarkups(dir string) (fileMarkups map[string]*fileMarkup) {
 		fileMarkups[filePath] = fmarkup
 	}
 
-	return fileMarkups
+	return fileMarkups, nil
 }

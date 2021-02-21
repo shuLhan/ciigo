@@ -19,13 +19,14 @@ type fileMarkup struct {
 }
 
 func newFileMarkup(filePath string, fi os.FileInfo) (fmarkup *fileMarkup, err error) {
+	logp := "newFileMarkup"
 	if len(filePath) == 0 {
-		return nil, fmt.Errorf("ciigo: newFileMarkup: empty path")
+		return nil, fmt.Errorf("%s: empty path", logp)
 	}
 	if fi == nil {
 		fi, err = os.Stat(filePath)
 		if err != nil {
-			return nil, fmt.Errorf("newFileMarkup: " + err.Error())
+			return nil, fmt.Errorf("%s: %w", logp, err)
 		}
 	}
 

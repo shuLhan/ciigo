@@ -80,7 +80,7 @@ func (w *watcher) onChangeFileMarkup(ns *libio.NodeState) {
 	}
 
 	if ns.State == libio.FileStateDeleted {
-		fmt.Printf("ciigo: %s: %q deleted\n", logp, ns.Node.SysPath)
+		fmt.Printf("%s: %q deleted\n", logp, ns.Node.SysPath)
 		fmarkup, ok := w.fileMarkups[ns.Node.SysPath]
 		if ok {
 			delete(w.fileMarkups, ns.Node.SysPath)
@@ -91,7 +91,7 @@ func (w *watcher) onChangeFileMarkup(ns *libio.NodeState) {
 
 	fmarkup := w.fileMarkups[ns.Node.SysPath]
 	if fmarkup == nil {
-		fmt.Printf("ciigo: %s: %s created\n", logp, ns.Node.SysPath)
+		fmt.Printf("%s: %s created\n", logp, ns.Node.SysPath)
 		fmarkup, err = newFileMarkup(ns.Node.SysPath, nil)
 		if err != nil {
 			log.Printf("%s: %s\n", logp, err)
@@ -100,7 +100,7 @@ func (w *watcher) onChangeFileMarkup(ns *libio.NodeState) {
 
 		w.fileMarkups[ns.Node.SysPath] = fmarkup
 	} else {
-		fmt.Printf("ciigo: %s: %s updated\n", logp, ns.Node.SysPath)
+		fmt.Printf("%s: %s updated\n", logp, ns.Node.SysPath)
 	}
 
 	err = w.htmlg.convert(fmarkup)
@@ -120,11 +120,11 @@ func (w *watcher) onChangeHTMLTemplate(ns *libio.NodeState) {
 	logp := "onChangeHTMLTemplate"
 
 	if ns.State == libio.FileStateDeleted {
-		log.Printf("ciigo: HTML template file %q has been deleted\n",
-			ns.Node.SysPath)
+		log.Printf("%s: HTML template file %q has been deleted\n",
+			logp, ns.Node.SysPath)
 		err = w.htmlg.htmlTemplateUseInternal()
 	} else {
-		fmt.Printf("ciigo: recompiling HTML template %q ...\n",
+		fmt.Printf("%s: recompiling HTML template %q ...\n", logp,
 			ns.Node.SysPath)
 		err = w.htmlg.htmlTemplateReload()
 	}
@@ -133,7 +133,7 @@ func (w *watcher) onChangeHTMLTemplate(ns *libio.NodeState) {
 		return
 	}
 
-	fmt.Printf("ciigo: regenerate all markup files ...\n")
+	fmt.Printf("%s: regenerate all markup files ...\n", logp)
 	w.htmlg.convertFileMarkups(w.fileMarkups)
 }
 

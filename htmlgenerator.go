@@ -101,8 +101,9 @@ func (htmlg *htmlGenerator) convert(fmarkup *fileMarkup) (err error) {
 // convertFileMarkups convert markup files into HTML.
 //
 func (htmlg *htmlGenerator) convertFileMarkups(fileMarkups map[string]*fileMarkup) {
+	logp := "convertFileMarkups"
 	for _, fmarkup := range fileMarkups {
-		fmt.Printf("ciigo: converting %q to %q => ", fmarkup.path,
+		fmt.Printf("%s: converting %q to %q => ", logp, fmarkup.path,
 			fmarkup.fhtml.path)
 
 		err := htmlg.convert(fmarkup)

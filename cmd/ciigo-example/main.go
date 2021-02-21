@@ -9,6 +9,8 @@
 package main
 
 import (
+	"log"
+
 	"github.com/shuLhan/share/lib/memfs"
 
 	"git.sr.ht/~shulhan/ciigo"
@@ -17,5 +19,8 @@ import (
 var ciigoFS *memfs.MemFS
 
 func main() {
-	ciigo.Serve(ciigoFS, "_example", ":8080", "_example/html.tmpl")
+	err := ciigo.Serve(ciigoFS, "_example", ":8080", "_example/html.tmpl")
+	if err != nil {
+		log.Fatal(err)
+	}
 }

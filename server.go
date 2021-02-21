@@ -8,7 +8,6 @@ import (
 	"bytes"
 	"fmt"
 	"html/template"
-	"log"
 	"net/http"
 	"strings"
 
@@ -34,8 +33,8 @@ type server struct {
 // The htmlTemplate parameter is optional, if not set its default to
 // embedded HTML template.
 //
-func newServer(mfs *memfs.MemFS, root, address, htmlTemplate string) (srv *server) {
-	var err error
+func newServer(mfs *memfs.MemFS, root, address, htmlTemplate string) (srv *server, err error) {
+	logp := "newServer"
 
 	srv = &server{
 		opts: &libhttp.ServerOptions{
@@ -51,7 +50,7 @@ func newServer(mfs *memfs.MemFS, root, address, htmlTemplate string) (srv *serve
 
 	srv.http, err = libhttp.NewServer(srv.opts)
 	if err != nil {
-		log.Fatal("ciigo: libhttp.NewServer: " + err.Error())
+		return nil, fmt.Errorf("%s: %w", logp, err)
 	}
 
 	epInSearch := &libhttp.Endpoint{
@@ -64,58 +63,67 @@ func newServer(mfs *memfs.MemFS, root, address, htmlTemplate string) (srv *serve
 
 	err = srv.http.RegisterEndpoint(epInSearch)
 	if err != nil {
-		log.Fatal("ciigo: " + err.Error())
+		return nil, fmt.Errorf("%s: %w", logp, err)
 	}
 
 	srv.htmlg, err = newHTMLGenerator(mfs, htmlTemplate, srv.opts.Development)
 	if err != nil {
-		log.Fatal("ciigo: " + err.Error())
+		return nil, fmt.Errorf("%s: %w", logp, err)
 	}
 
 	if srv.opts.Development {
 		srv.watcher, err = newWatcher(srv.htmlg, root)
 		if err != nil {
-			log.Fatal("ciigo: " + err.Error())
+			return nil, fmt.Errorf("%s: %w", logp, err)
 		}
 
-		srv.watcher.fileMarkups = listFileMarkups(root)
+		srv.watcher.fileMarkups, err = listFileMarkups(root)
+		if err != nil {
+			return nil, fmt.Errorf("%s: %w", logp, err)
+		}
+
 		srv.htmlg.convertFileMarkups(srv.watcher.fileMarkups)
 	}
 
-	return srv
+	return srv, nil
 }
 
 //
 // start the web server.
 //
-func (srv *server) start() {
+func (srv *server) start() (err error) {
+	logp := "start"
+
 	if srv.opts.Development {
 		err := srv.watcher.start()
 		if err != nil {
-			log.Fatal("ciigo: " + err.Error())
+			return fmt.Errorf("%s: %w", logp, err)
 		}
 	}
 
 	fmt.Printf("ciigo: starting HTTP server at %q for %q\n",
 		srv.opts.Address, srv.opts.Root)
 
-	err := srv.http.Start()
+	err = srv.http.Start()
 	if err != nil {
-		log.Fatal("ciigo: " + err.Error())
+		return fmt.Errorf("%s: %w", logp, err)
 	}
+
+	return nil
 }
 
 func (srv *server) onSearch(res http.ResponseWriter, req *http.Request, reqBody []byte) (
 	resBody []byte, err error,
 ) {
 	var bufSearch, buf bytes.Buffer
+	logp := "onSearch"
 
 	q := req.Form.Get("q")
 	results := srv.http.Memfs.Search(strings.Fields(q), 0)
 
 	err = srv.htmlg.tmplSearch.Execute(&bufSearch, results)
 	if err != nil {
-		return nil, fmt.Errorf("ciigo.onSearch: " + err.Error())
+		return nil, fmt.Errorf("%s: %w", logp, err)
 	}
 
 	fhtml := &fileHTML{
@@ -124,7 +132,7 @@ func (srv *server) onSearch(res http.ResponseWriter, req *http.Request, reqBody 
 
 	err = srv.htmlg.tmpl.Execute(&buf, fhtml)
 	if err != nil {
-		return nil, fmt.Errorf("ciigo.onSearch: " + err.Error())
+		return nil, fmt.Errorf("%s: %w", logp, err)
 	}
 
 	resBody = buf.Bytes()
