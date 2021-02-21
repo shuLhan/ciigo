@@ -12,6 +12,7 @@
 package ciigo
 
 import (
+	"fmt"
 	"io/ioutil"
 	"log"
 	"os"
@@ -136,6 +137,28 @@ func Serve(mfs *memfs.MemFS, dir, address, htmlTemplate string) {
 	}
 	srv := newServer(mfs, dir, address, htmlTemplate)
 	srv.start()
+}
+
+//
+// Watch any changes on asciidoc files on directory "dir" recursively and
+// changes on the HTML template file.
+// If there is new or modified asciidoc files it will convert them into HTML
+// files using HTML template automatically.
+//
+// If the HTML template file modified, it will re-convert all asciidoc files.
+// If the HTML template file deleted, it will replace them with internal,
+// default HTML template.
+//
+func Watch(dir, htmlTemplate string) (err error) {
+	w, err := newWatcher(dir, htmlTemplate)
+	if err != nil {
+		return fmt.Errorf("Watch: %w", err)
+	}
+	err = w.start()
+	if err != nil {
+		return fmt.Errorf("Watch: %w", err)
+	}
+	return nil
 }
 
 func isExtensionMarkup(ext string) bool {
