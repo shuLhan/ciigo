@@ -8,7 +8,6 @@ import (
 	"bytes"
 	"fmt"
 	"html/template"
-	"net/http"
 	"strings"
 
 	"github.com/shuLhan/share/lib/debug"
@@ -112,13 +111,11 @@ func (srv *server) start() (err error) {
 	return nil
 }
 
-func (srv *server) onSearch(res http.ResponseWriter, req *http.Request, reqBody []byte) (
-	resBody []byte, err error,
-) {
+func (srv *server) onSearch(epr *libhttp.EndpointRequest) (resBody []byte, err error) {
 	var bufSearch, buf bytes.Buffer
 	logp := "onSearch"
 
-	q := req.Form.Get("q")
+	q := epr.HttpRequest.Form.Get("q")
 	results := srv.http.Memfs.Search(strings.Fields(q), 0)
 
 	err = srv.htmlg.tmplSearch.Execute(&bufSearch, results)
