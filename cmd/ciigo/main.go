@@ -92,7 +92,14 @@ func main() {
 
 	case "serve":
 		debug.Value = 1
-		err = ciigo.Serve(nil, dir, *address, *htmlTemplate)
+		opts := ciigo.ServeOptions{
+			ConvertOptions: ciigo.ConvertOptions{
+				Root:         dir,
+				HtmlTemplate: *htmlTemplate,
+			},
+			Address: *address,
+		}
+		err = ciigo.Serve(&opts)
 
 	default:
 		usage()

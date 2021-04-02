@@ -19,7 +19,16 @@ import (
 var ciigoFS *memfs.MemFS
 
 func main() {
-	err := ciigo.Serve(ciigoFS, "_example", ":8080", "_example/html.tmpl")
+	opts := &ciigo.ServeOptions{
+		ConvertOptions: ciigo.ConvertOptions{
+			Root:         "_example",
+			HtmlTemplate: "_example/html.tmpl",
+		},
+		Mfs:     ciigoFS,
+		Address: ":8080",
+	}
+
+	err := ciigo.Serve(opts)
 	if err != nil {
 		log.Fatal(err)
 	}

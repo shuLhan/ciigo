@@ -32,18 +32,18 @@ type server struct {
 // The htmlTemplate parameter is optional, if not set its default to
 // embedded HTML template.
 //
-func newServer(mfs *memfs.MemFS, root, address, htmlTemplate string) (srv *server, err error) {
+func newServer(opts *ServeOptions) (srv *server, err error) {
 	logp := "newServer"
 
 	srv = &server{
 		opts: &libhttp.ServerOptions{
 			Options: memfs.Options{
-				Root:        root,
+				Root:        opts.Root,
 				Excludes:    defExcludes,
 				Development: debug.Value > 0,
 			},
-			Memfs:   mfs,
-			Address: address,
+			Memfs:   opts.Mfs,
+			Address: opts.Address,
 		},
 	}
 
@@ -65,18 +65,18 @@ func newServer(mfs *memfs.MemFS, root, address, htmlTemplate string) (srv *serve
 		return nil, fmt.Errorf("%s: %w", logp, err)
 	}
 
-	srv.htmlg, err = newHTMLGenerator(mfs, htmlTemplate, srv.opts.Development)
+	srv.htmlg, err = newHTMLGenerator(opts.Mfs, opts.HtmlTemplate, srv.opts.Development)
 	if err != nil {
 		return nil, fmt.Errorf("%s: %w", logp, err)
 	}
 
 	if srv.opts.Development {
-		srv.watcher, err = newWatcher(srv.htmlg, root)
+		srv.watcher, err = newWatcher(srv.htmlg, opts.Root)
 		if err != nil {
 			return nil, fmt.Errorf("%s: %w", logp, err)
 		}
 
-		srv.watcher.fileMarkups, err = listFileMarkups(root)
+		srv.watcher.fileMarkups, err = listFileMarkups(opts.Root)
 		if err != nil {
 			return nil, fmt.Errorf("%s: %w", logp, err)
 		}

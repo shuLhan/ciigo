@@ -21,8 +21,6 @@ import (
 )
 
 const (
-	defAddress           = ":8080"
-	defDir               = "."
 	extAsciidoc          = ".adoc"
 	internalTemplatePath = "_internal/.template"
 )
@@ -127,20 +125,24 @@ func Generate(opts *GenerateOptions) (err error) {
 // Serve the content at directory "dir" using HTTP server at specific
 // "address".
 //
-func Serve(mfs *memfs.MemFS, dir, address, htmlTemplate string) (err error) {
-	if len(dir) == 0 {
-		dir = defDir
+func Serve(opts *ServeOptions) (err error) {
+	var (
+		logp = "Serve"
+		srv  *server
+	)
+
+	if opts == nil {
+		opts = &ServeOptions{}
 	}
-	if len(address) == 0 {
-		address = defAddress
-	}
-	srv, err := newServer(mfs, dir, address, htmlTemplate)
+	opts.init()
+
+	srv, err = newServer(opts)
 	if err != nil {
-		return fmt.Errorf("Serve: %w", err)
+		return fmt.Errorf("%s: %w", logp, err)
 	}
 	err = srv.start()
 	if err != nil {
-		return fmt.Errorf("Serve: %w", err)
+		return fmt.Errorf("%s: %w", logp, err)
 	}
 	return nil
 }
