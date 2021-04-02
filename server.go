@@ -71,12 +71,12 @@ func newServer(opts *ServeOptions) (srv *server, err error) {
 	}
 
 	if srv.opts.Development {
-		srv.watcher, err = newWatcher(srv.htmlg, opts.Root)
+		srv.watcher, err = newWatcher(srv.htmlg, opts.Root, opts.Exclude)
 		if err != nil {
 			return nil, fmt.Errorf("%s: %w", logp, err)
 		}
 
-		srv.watcher.fileMarkups, err = listFileMarkups(opts.Root)
+		srv.watcher.fileMarkups, err = listFileMarkups(opts.Root, opts.excRE)
 		if err != nil {
 			return nil, fmt.Errorf("%s: %w", logp, err)
 		}

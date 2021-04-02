@@ -15,6 +15,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strings"
 
 	"github.com/shuLhan/share/lib/memfs"
@@ -44,19 +45,26 @@ var (
 // See template_index_html.go for template format.
 //
 func Convert(opts *ConvertOptions) (err error) {
-	logp := "Convert"
+	var (
+		logp        = "Convert"
+		htmlg       *htmlGenerator
+		fileMarkups map[string]*fileMarkup
+	)
 
 	if opts == nil {
 		opts = &ConvertOptions{}
 	}
-	opts.init()
-
-	htmlg, err := newHTMLGenerator(nil, opts.HtmlTemplate, true)
+	err = opts.init()
 	if err != nil {
 		return fmt.Errorf("%s: %w", logp, err)
 	}
 
-	fileMarkups, err := listFileMarkups(opts.Root)
+	htmlg, err = newHTMLGenerator(nil, opts.HtmlTemplate, true)
+	if err != nil {
+		return fmt.Errorf("%s: %w", logp, err)
+	}
+
+	fileMarkups, err = listFileMarkups(opts.Root, opts.excRE)
 	if err != nil {
 		return fmt.Errorf("%s: %w", logp, err)
 	}
@@ -77,19 +85,27 @@ func Convert(opts *ConvertOptions) (err error) {
 // See template_index_html.go for template format.
 //
 func Generate(opts *GenerateOptions) (err error) {
-	logp := "Generate"
+	var (
+		logp        = "Generate"
+		htmlg       *htmlGenerator
+		fileMarkups map[string]*fileMarkup
+		mfs         *memfs.MemFS
+	)
 
 	if opts == nil {
 		opts = &GenerateOptions{}
 	}
-	opts.init()
-
-	htmlg, err := newHTMLGenerator(nil, opts.HtmlTemplate, true)
+	err = opts.init()
 	if err != nil {
 		return fmt.Errorf("%s: %w", logp, err)
 	}
 
-	fileMarkups, err := listFileMarkups(opts.Root)
+	htmlg, err = newHTMLGenerator(nil, opts.HtmlTemplate, true)
+	if err != nil {
+		return fmt.Errorf("%s: %w", logp, err)
+	}
+
+	fileMarkups, err = listFileMarkups(opts.Root, opts.excRE)
 	if err != nil {
 		return fmt.Errorf("%s: %w", logp, err)
 	}
@@ -100,7 +116,7 @@ func Generate(opts *GenerateOptions) (err error) {
 		Root:     opts.Root,
 		Excludes: defExcludes,
 	}
-	mfs, err := memfs.New(memfsOpts)
+	mfs, err = memfs.New(memfsOpts)
 	if err != nil {
 		return fmt.Errorf("%s: %w", logp, err)
 	}
@@ -134,7 +150,10 @@ func Serve(opts *ServeOptions) (err error) {
 	if opts == nil {
 		opts = &ServeOptions{}
 	}
-	opts.init()
+	err = opts.init()
+	if err != nil {
+		return fmt.Errorf("%s: %w", logp, err)
+	}
 
 	srv, err = newServer(opts)
 	if err != nil {
@@ -167,14 +186,17 @@ func Watch(opts *ConvertOptions) (err error) {
 	if opts == nil {
 		opts = &ConvertOptions{}
 	}
-	opts.init()
+	err = opts.init()
+	if err != nil {
+		return fmt.Errorf("%s: %w", logp, err)
+	}
 
 	htmlg, err = newHTMLGenerator(nil, opts.HtmlTemplate, true)
 	if err != nil {
 		return fmt.Errorf("%s: %w", logp, err)
 	}
 
-	w, err = newWatcher(htmlg, opts.Root)
+	w, err = newWatcher(htmlg, opts.Root, opts.Exclude)
 	if err != nil {
 		return fmt.Errorf("%s: %w", logp, err)
 	}
@@ -195,15 +217,21 @@ func isExtensionMarkup(ext string) bool {
 // listFileMarkups find any markup files inside the content directory,
 // recursively.
 //
-func listFileMarkups(dir string) (fileMarkups map[string]*fileMarkup, err error) {
-	logp := "listFileMarkups"
+func listFileMarkups(dir string, excRE []*regexp.Regexp) (
+	fileMarkups map[string]*fileMarkup, err error,
+) {
+	var (
+		logp = "listFileMarkups"
+		d    *os.File
+		fis  []os.FileInfo
+	)
 
-	d, err := os.Open(dir)
+	d, err = os.Open(dir)
 	if err != nil {
 		return nil, fmt.Errorf("%s: %w", logp, err)
 	}
 
-	fis, err := d.Readdir(0)
+	fis, err = d.Readdir(0)
 	if err != nil {
 		return nil, fmt.Errorf("%s: %w", logp, err)
 	}
@@ -215,7 +243,7 @@ func listFileMarkups(dir string) (fileMarkups map[string]*fileMarkup, err error)
 
 		if fi.IsDir() && name[0] != '.' {
 			newdir := filepath.Join(dir, fi.Name())
-			fmarkups, err := listFileMarkups(newdir)
+			fmarkups, err := listFileMarkups(newdir, excRE)
 			if err != nil {
 				return nil, fmt.Errorf("%s: %w", logp, err)
 			}
@@ -235,6 +263,10 @@ func listFileMarkups(dir string) (fileMarkups map[string]*fileMarkup, err error)
 
 		filePath := filepath.Join(dir, name)
 
+		if isExcluded(filePath, excRE) {
+			continue
+		}
+
 		fmarkup := &fileMarkup{
 			path:     filePath,
 			info:     fi,
@@ -248,4 +280,16 @@ func listFileMarkups(dir string) (fileMarkups map[string]*fileMarkup, err error)
 	}
 
 	return fileMarkups, nil
+}
+
+func isExcluded(path string, excs []*regexp.Regexp) bool {
+	if len(excs) == 0 {
+		return false
+	}
+	for _, re := range excs {
+		if re.MatchString(path) {
+			return true
+		}
+	}
+	return false
 }

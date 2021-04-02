@@ -43,7 +43,7 @@ type watcher struct {
 //	                         |
 //	                         +--> UPDATE --> htmlGenerated.htmlTemplateReload()
 //
-func newWatcher(htmlg *htmlGenerator, dir string) (w *watcher, err error) {
+func newWatcher(htmlg *htmlGenerator, dir, exclude string) (w *watcher, err error) {
 	w = &watcher{
 		dir:         dir,
 		htmlg:       htmlg,
@@ -64,6 +64,10 @@ func newWatcher(htmlg *htmlGenerator, dir string) (w *watcher, err error) {
 		},
 		Delay:    time.Second,
 		Callback: w.onChangeFileMarkup,
+	}
+
+	if len(exclude) > 0 {
+		w.dw.Options.Excludes = append(w.dw.Options.Excludes, exclude)
 	}
 
 	return w, nil

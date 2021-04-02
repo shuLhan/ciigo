@@ -10,20 +10,20 @@
 //
 // The following section describe how to use ciigo CLI.
 //
-//	ciigo [-template <file>] convert <dir>
+//	ciigo [-template <file>] [-exclude <regex>] convert <dir>
 //
 // Scan the "dir" recursively to find markup files and convert them into HTML
 // files.
 // The template "file" is optional, default to embedded HTML template.
 //
-//	ciigo [-template <file>] [-out <file>] generate <dir>
+//	ciigo [-template <file>] [-exclude <regex>] [-out <file>] generate <dir>
 //
 // Convert all the markup files inside directory "dir" recursively and then
 // embed them into ".go" source file.
 // The output file is optional, default to "ciigo_static.go" in current
 // directory.
 //
-//	ciigo [-template <file>] [-address <ip:port>] serve <dir>
+//	ciigo [-template <file>] [-exclude <regex>] [-address <ip:port>] serve <dir>
 //
 // Serve all files inside directory "dir" using HTTP server, watch changes on
 // markup files and convert them to HTML files.
@@ -50,6 +50,8 @@ func main() {
 		"path to output of .go generated file")
 	address := flag.String("address", ":8080",
 		"the binding address for HTTP server")
+	exclude := flag.String("exclude", "",
+		"a regex to exclude certain paths from being scanned during covert, generate, watch, or serve")
 
 	flag.Parse()
 
@@ -77,6 +79,7 @@ func main() {
 		opts := ciigo.ConvertOptions{
 			Root:         dir,
 			HtmlTemplate: *htmlTemplate,
+			Exclude:      *exclude,
 		}
 		err = ciigo.Convert(&opts)
 
@@ -85,6 +88,7 @@ func main() {
 			ConvertOptions: ciigo.ConvertOptions{
 				Root:         dir,
 				HtmlTemplate: *htmlTemplate,
+				Exclude:      *exclude,
 			},
 			GenGoFileName: *outputFile,
 		}
@@ -96,6 +100,7 @@ func main() {
 			ConvertOptions: ciigo.ConvertOptions{
 				Root:         dir,
 				HtmlTemplate: *htmlTemplate,
+				Exclude:      *exclude,
 			},
 			Address: *address,
 		}
@@ -119,20 +124,20 @@ files, as HTML files.
 
 ==  Usage
 
-ciigo [-template <file>] convert <dir>
+ciigo [-template <file>] [-exclude <regex>] convert <dir>
 
 	Scan the "dir" recursively to find markup files.
 	and convert them into HTML files.
 	The template "file" is optional, default to embedded HTML template.
 
-ciigo [-template <file>] [-out <file>] generate <dir>
+ciigo [-template <file>] [-exclude <regex>] [-out <file>] generate <dir>
 
 	Convert all markup files inside directory "dir" recursively and then
 	embed them into ".go" source file.
 	The output file is optional, default to "ciigo_static.go" in current
 	directory.
 
-ciigo [-template <file>] [-address <ip:port>] serve <dir>
+ciigo [-template <file>]  [-exclude <regex>] [-address <ip:port>] serve <dir>
 
 	Serve all files inside directory "dir" using HTTP server, watch
 	changes on markup files and convert them to HTML files automatically.

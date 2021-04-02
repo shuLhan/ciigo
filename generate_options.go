@@ -26,9 +26,11 @@ type GenerateOptions struct {
 	GenGoFileName string
 }
 
-func (opts *GenerateOptions) init() {
-	opts.ConvertOptions.init()
-
+func (opts *GenerateOptions) init() (err error) {
+	err = opts.ConvertOptions.init()
+	if err != nil {
+		return err
+	}
 	if len(opts.GenPackageName) == 0 {
 		opts.GenPackageName = memfs.DefaultGenPackageName
 	}
@@ -38,4 +40,5 @@ func (opts *GenerateOptions) init() {
 	if len(opts.GenGoFileName) == 0 {
 		opts.GenGoFileName = memfs.DefaultGenGoFileName
 	}
+	return nil
 }

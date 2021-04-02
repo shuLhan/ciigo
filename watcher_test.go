@@ -37,7 +37,7 @@ func TestWatcher(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	testWatcher, err = newWatcher(htmlg, testDir)
+	testWatcher, err = newWatcher(htmlg, testDir, "")
 	if err != nil {
 		t.Fatal(err)
 	}

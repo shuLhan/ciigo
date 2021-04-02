@@ -24,10 +24,13 @@ type ServeOptions struct {
 	Address string
 }
 
-func (opts *ServeOptions) init() {
-	opts.ConvertOptions.init()
-
+func (opts *ServeOptions) init() (err error) {
+	err = opts.ConvertOptions.init()
+	if err != nil {
+		return err
+	}
 	if len(opts.Address) == 0 {
 		opts.Address = defAddress
 	}
+	return nil
 }
