@@ -148,7 +148,7 @@ func Serve(opts *ServeOptions) (err error) {
 }
 
 //
-// Watch any changes on asciidoc files on directory "dir" recursively and
+// Watch any changes on asciidoc files on directory Root recursively and
 // changes on the HTML template file.
 // If there is new or modified asciidoc files it will convert them into HTML
 // files using HTML template automatically.
@@ -157,20 +157,31 @@ func Serve(opts *ServeOptions) (err error) {
 // If the HTML template file deleted, it will replace them with internal,
 // default HTML template.
 //
-func Watch(dir, htmlTemplate string) (err error) {
-	htmlg, err := newHTMLGenerator(nil, htmlTemplate, true)
+func Watch(opts *ConvertOptions) (err error) {
+	var (
+		logp  = "Watch"
+		htmlg *htmlGenerator
+		w     *watcher
+	)
+
+	if opts == nil {
+		opts = &ConvertOptions{}
+	}
+	opts.init()
+
+	htmlg, err = newHTMLGenerator(nil, opts.HtmlTemplate, true)
 	if err != nil {
-		return fmt.Errorf("Watch: %w", err)
+		return fmt.Errorf("%s: %w", logp, err)
 	}
 
-	w, err := newWatcher(htmlg, dir)
+	w, err = newWatcher(htmlg, opts.Root)
 	if err != nil {
-		return fmt.Errorf("Watch: %w", err)
+		return fmt.Errorf("%s: %w", logp, err)
 	}
 
 	err = w.start()
 	if err != nil {
-		return fmt.Errorf("Watch: %w", err)
+		return fmt.Errorf("%s: %w", logp, err)
 	}
 
 	return nil
