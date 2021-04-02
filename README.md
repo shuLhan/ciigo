@@ -16,7 +16,7 @@ markup files, as HTML files.
 ###  Usage
 
 ```
-$ ciigo [-template <file>] convert <dir>
+$ ciigo [-template <file>] [-exclude <regex>] convert <dir>
 ```
 
 Scan the "dir" recursively to find markup files (.adoc) and convert them into
@@ -24,7 +24,7 @@ HTML files.
 The template "file" is optional, default to embedded HTML template.
 
 ```
-$ ciigo [-template <file>] [-out <file>] generate <dir>
+$ ciigo [-template <file>] [-exclude <regex>] [-out <file>] generate <dir>
 ```
 
 Convert all markup files inside directory "dir" recursively and then
@@ -33,7 +33,7 @@ The output file is optional, default to "ciigo_static.go" in current
 directory.
 
 ```
-$ ciigo [-template <file>] [-address <ip:port>] serve <dir>
+$ ciigo [-template <file>] [-exclude <regex>] [-address <ip:port>] serve <dir>
 ```
 
 Serve all files inside directory "dir" using HTTP server, watch
@@ -92,7 +92,18 @@ import (
 var mysiteFS *memfs.MemFS
 
 func main() {
-	ciigo.Serve(mysiteFS, "./_contents", ":8080", "_contents/html.tmpl")
+	opts := &ciigo.ServeOptions{
+		ConvertOptions: ciigo.ConvertOptions{
+			Root: "_contents",
+			HtmlTemplate: "_contents/html.tmpl",
+		},
+		Address: ":8080",
+		Mfs: mysiteFS,
+	}
+	err := ciigo.Serve(opts)
+	if err != nil {
+		log.Fatal(err)
+	}
 }
 ```
 
@@ -189,11 +200,38 @@ That's it!
 `ciigo` will not handle automatic certificate (e.g. using LetsEncrypt), its
 up to the user how the certificate are gathered, generated, or served.
 
-Using symlink on ".adoc" file inside `content` directory is not supported yet.
+Using symlink on ".adoc" file inside Root directory that reference file
+outside of Root is not supported, yet.
 
 
-##  Resources
+## License
 
-The source code for this software can be viewed at
-https://git.sr.ht/~shulhan/ciigo
-under custom [BSD license](/LICENSE).
+```
+Copyright 2019-2021, M. Shulhan (ms@kilabit.info).
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+1. Redistributions of source code must retain the above copyright notice, this
+   list of conditions and the following disclaimer.
+
+2. Redistributions in binary form must reproduce the above copyright notice,
+   this list of conditions and the following disclaimer in the documentation
+   and/or other materials provided with the distribution.
+
+3. Neither the name of copyright holder nor the names of its contributors may
+   be used to endorse or promote products derived from this software without
+   specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDERS OR CONTRIBUTORS BE LIABLE
+FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+```
