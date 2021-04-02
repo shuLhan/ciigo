@@ -1,26 +1,16 @@
+// Copyright 2021, Shulhan <ms@kilabit.info>. All rights reserved.
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
+
 package ciigo
 
 import "github.com/shuLhan/share/lib/memfs"
-
-const (
-	// DefaultRoot define default Root value for GenerateOptions.
-	DefaultRoot = "."
-)
 
 //
 // GenerateOptions define the options for calling Generate function.
 //
 type GenerateOptions struct {
-	// Root directory where its content will be embedded into Go source
-	// code.
-	// Default to DefaultRoot if its empty.
-	Root string
-
-	// HTMLTemplate the HTML template to be used when converting asciidoc
-	// file into HTML.
-	// If empty it will default to use embedded HTML template.
-	// See template_index_html.go for template format.
-	HTMLTemplate string
+	ConvertOptions
 
 	// GenPackageName the name of package in Go generated source code.
 	// Default to memfs.DefaultGenPackageName if its empty.
@@ -37,9 +27,8 @@ type GenerateOptions struct {
 }
 
 func (opts *GenerateOptions) init() {
-	if len(opts.Root) == 0 {
-		opts.Root = DefaultRoot
-	}
+	opts.ConvertOptions.init()
+
 	if len(opts.GenPackageName) == 0 {
 		opts.GenPackageName = memfs.DefaultGenPackageName
 	}

@@ -39,7 +39,7 @@ type watcher struct {
 //	|
 //	+-- onChangeFileMarkup --> UPDATE --> htmlGenerator.convert()
 //	|
-//	+-- onChangeHTMLTemplate +--> DELETE --> htmlGenerator.htmlTemplateUseInternal()
+//	+-- onChangeHtmlTemplate +--> DELETE --> htmlGenerator.htmlTemplateUseInternal()
 //	                         |
 //	                         +--> UPDATE --> htmlGenerated.htmlTemplateReload()
 //
@@ -112,12 +112,12 @@ func (w *watcher) onChangeFileMarkup(ns *libio.NodeState) {
 }
 
 //
-// onChangeHTMLTemplate reload the HTML template and re-convert all markup
+// onChangeHtmlTemplate reload the HTML template and re-convert all markup
 // files.
 //
-func (w *watcher) onChangeHTMLTemplate(ns *libio.NodeState) {
+func (w *watcher) onChangeHtmlTemplate(ns *libio.NodeState) {
 	var err error
-	logp := "onChangeHTMLTemplate"
+	logp := "onChangeHtmlTemplate"
 
 	if ns.State == libio.FileStateDeleted {
 		log.Printf("%s: HTML template file %q has been deleted\n",
@@ -146,7 +146,7 @@ func (w *watcher) start() (err error) {
 		return fmt.Errorf("start: %w", err)
 	}
 	if len(w.htmlg.htmlTemplate) > 0 {
-		_, err = libio.NewWatcher(w.htmlg.htmlTemplate, 0, w.onChangeHTMLTemplate)
+		_, err = libio.NewWatcher(w.htmlg.htmlTemplate, 0, w.onChangeHtmlTemplate)
 		if err != nil {
 			return fmt.Errorf("start: %w", err)
 		}

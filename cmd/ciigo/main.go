@@ -74,17 +74,26 @@ func main() {
 
 	switch command {
 	case "convert":
-		err = ciigo.Convert(dir, *htmlTemplate)
+		opts := ciigo.ConvertOptions{
+			Root:         dir,
+			HtmlTemplate: *htmlTemplate,
+		}
+		err = ciigo.Convert(&opts)
+
 	case "generate":
 		genOpts := ciigo.GenerateOptions{
-			Root:          dir,
-			HTMLTemplate:  *htmlTemplate,
+			ConvertOptions: ciigo.ConvertOptions{
+				Root:         dir,
+				HtmlTemplate: *htmlTemplate,
+			},
 			GenGoFileName: *outputFile,
 		}
 		err = ciigo.Generate(&genOpts)
+
 	case "serve":
 		debug.Value = 1
 		err = ciigo.Serve(nil, dir, *address, *htmlTemplate)
+
 	default:
 		usage()
 		os.Exit(1)

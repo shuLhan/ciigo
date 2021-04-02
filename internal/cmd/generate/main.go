@@ -14,8 +14,10 @@ import (
 
 func main() {
 	opts := ciigo.GenerateOptions{
-		Root:           "_example",
-		HTMLTemplate:   "_example/html.tmpl",
+		ConvertOptions: ciigo.ConvertOptions{
+			Root:         "_example",
+			HtmlTemplate: "_example/html.tmpl",
+		},
 		GenPackageName: "main",
 		GenVarName:     "ciigoFS",
 		GenGoFileName:  "cmd/ciigo-example/static.go",

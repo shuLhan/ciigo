@@ -143,8 +143,10 @@ import (
 
 func main() {
 	opts := &ciigo.GenerateOptions{
-		Root:           "./_contents",
-		HTMLTemplate:   "_contents/html.tmpl",
+		ConvertOptions: ciigo.ConvertOptions{
+			Root:           "./_contents",
+			HtmlTemplate:   "_contents/html.tmpl",
+		},
 		GenPackageName: "main",
 		GenVarName:     "mysiteFS",
 		GenGoFileName:  "cmd/mysite/static.go",

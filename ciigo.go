@@ -45,19 +45,20 @@ var (
 // If htmlTemplate is empty it will default to use embedded HTML template.
 // See template_index_html.go for template format.
 //
-func Convert(dir, htmlTemplate string) (err error) {
+func Convert(opts *ConvertOptions) (err error) {
 	logp := "Convert"
 
-	if len(dir) == 0 {
-		dir = "."
+	if opts == nil {
+		opts = &ConvertOptions{}
 	}
+	opts.init()
 
-	htmlg, err := newHTMLGenerator(nil, htmlTemplate, true)
+	htmlg, err := newHTMLGenerator(nil, opts.HtmlTemplate, true)
 	if err != nil {
 		return fmt.Errorf("%s: %w", logp, err)
 	}
 
-	fileMarkups, err := listFileMarkups(dir)
+	fileMarkups, err := listFileMarkups(opts.Root)
 	if err != nil {
 		return fmt.Errorf("%s: %w", logp, err)
 	}
@@ -85,7 +86,7 @@ func Generate(opts *GenerateOptions) (err error) {
 	}
 	opts.init()
 
-	htmlg, err := newHTMLGenerator(nil, opts.HTMLTemplate, true)
+	htmlg, err := newHTMLGenerator(nil, opts.HtmlTemplate, true)
 	if err != nil {
 		return fmt.Errorf("%s: %w", logp, err)
 	}
@@ -106,8 +107,8 @@ func Generate(opts *GenerateOptions) (err error) {
 		return fmt.Errorf("%s: %w", logp, err)
 	}
 
-	if len(opts.HTMLTemplate) > 0 {
-		_, err = mfs.AddFile(internalTemplatePath, opts.HTMLTemplate)
+	if len(opts.HtmlTemplate) > 0 {
+		_, err = mfs.AddFile(internalTemplatePath, opts.HtmlTemplate)
 		if err != nil {
 			return fmt.Errorf("%s: %w", logp, err)
 		}
