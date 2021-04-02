@@ -56,6 +56,11 @@ func newWatcher(htmlg *htmlGenerator, dir string) (w *watcher, err error) {
 			Includes: []string{
 				`.*\.adoc$`,
 			},
+			Excludes: []string{
+				`^\..*`,
+				`node_modules/.*`,
+				`vendor/.*`,
+			},
 		},
 		Delay:    time.Second,
 		Callback: w.onChangeFileMarkup,
