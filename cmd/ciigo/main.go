@@ -12,8 +12,8 @@
 //
 //	ciigo [-template <file>] convert <dir>
 //
-// Scan the "dir" recursively to find markup files (.adoc or .md) and convert
-// them into HTML files.
+// Scan the "dir" recursively to find markup files and convert them into HTML
+// files.
 // The template "file" is optional, default to embedded HTML template.
 //
 //	ciigo [-template <file>] [-out <file>] generate <dir>
@@ -121,7 +121,7 @@ files, as HTML files.
 
 ciigo [-template <file>] convert <dir>
 
-	Scan the "dir" recursively to find markup files (.adoc or .md)
+	Scan the "dir" recursively to find markup files.
 	and convert them into HTML files.
 	The template "file" is optional, default to embedded HTML template.
 
