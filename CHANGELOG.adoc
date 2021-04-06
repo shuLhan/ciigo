@@ -1,5 +1,57 @@
 =  CHANGELOG
 
+==  ciigo v0.6.0 (2021-04-07)
+
+===  Breaking changes
+
+* all: change the Convert function to use type ConvertOptions
+
+  Previously, we pass the directory to be scanned for asciidoc markup files
+  and path to HTML template on Convert function.  Adding new option to
+  Convert will cause changes on the Convert signature.
+
+  To prevent this, we changes the Convert signature from multiple parameters
+  into single parameter ConvertOptions.
+
+  While at it, change the variable name HTMLTemplate to HtmlTemplate.
+
+* all: change the Serve signature to ServeOptions
+
+  Previously, we pass four parameters to Serve function: the instance
+  to memfs.MemFS, the root directory, the address to listen, and
+  path to HTML template.
+
+  In case we need to add new parameter in the future, the Serve function
+  signature will changes and this is not good for consumer of API.
+
+  This commit changes the Serve function parameters to ServeOptions
+  so we can add optional parameter in the future without changes to its
+  signature.
+
+* all: changes the Watch signature to use ConvertOptions
+
+  Just like changes on Convert function, this is to prevent additional
+  parameter added on Watch function affect the consumer of API in the
+  future.
+
+===  New features
+
+* all: add option to exclude certain paths using regular expression
+
+  The ConvertOptions now has the Exclude field that can contains regular
+  expression.  If the Exclude is not empty, it will be compiled and use
+  in Convert, Generate, Watch, and Serve; to ignore specific paths
+  being scanned.
+
+=== Enhancements
+
+* all: exclude common file and directories names for being watched
+
+  By default, any hidden files on Unix like system, which start with dot '.'
+  should not be watched for any changes.  So does "node_modules" from npm
+  and "vendor" directory which may contains many unrelated files.
+
+
 ==  ciigo v0.5.0 (2021-02-21)
 
 === New features
