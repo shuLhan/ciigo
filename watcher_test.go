@@ -64,7 +64,7 @@ func testCreate(t *testing.T) {
 
 	got := waitChanges()
 
-	test.Assert(t, "New adoc file created", testFileAdoc, got.path, true)
+	test.Assert(t, "New adoc file created", testFileAdoc, got.path)
 
 	expBody := `
 <div id="header">
@@ -78,7 +78,7 @@ func testCreate(t *testing.T) {
 </div>
 </div>`
 	gotBody := removeFooter(string(got.fhtml.Body))
-	test.Assert(t, "HTML body", expBody, gotBody, true)
+	test.Assert(t, "HTML body", expBody, gotBody)
 }
 
 func testUpdate(t *testing.T) {
@@ -92,7 +92,7 @@ func testUpdate(t *testing.T) {
 	}
 
 	got := waitChanges()
-	test.Assert(t, "adoc file updated", testFileAdoc, got.path, true)
+	test.Assert(t, "adoc file updated", testFileAdoc, got.path)
 
 	expBody := `
 <div id="header">
@@ -107,7 +107,7 @@ func testUpdate(t *testing.T) {
 </div>
 </div>`
 	gotBody := removeFooter(string(got.fhtml.Body))
-	test.Assert(t, "HTML body", expBody, gotBody, true)
+	test.Assert(t, "HTML body", expBody, gotBody)
 }
 
 func testDelete(t *testing.T) {
@@ -122,10 +122,10 @@ func testDelete(t *testing.T) {
 	}
 
 	got := waitChanges()
-	test.Assert(t, "adoc file updated", testFileAdoc, got.path, true)
+	test.Assert(t, "adoc file updated", testFileAdoc, got.path)
 
 	_, gotIsExist := testWatcher.fileMarkups[testFileAdoc]
-	test.Assert(t, "adoc file deleted", false, gotIsExist, true)
+	test.Assert(t, "adoc file deleted", false, gotIsExist)
 }
 
 //
