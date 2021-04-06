@@ -4,7 +4,7 @@
 
 //
 // Package ciigo is a program to write static web server with embedded files
-// using asciidoc markup languages.
+// using the asciidoc markup languages.
 //
 // For more information see the README file at the page repository
 // https://sr.ht/~shulhan/ciigo.
@@ -167,12 +167,12 @@ func Serve(opts *ServeOptions) (err error) {
 }
 
 //
-// Watch any changes on asciidoc files on directory Root recursively and
+// Watch any changes on markup files on directory Root recursively and
 // changes on the HTML template file.
-// If there is new or modified asciidoc files it will convert them into HTML
+// If there is new or modified markup files it will convert them into HTML
 // files using HTML template automatically.
 //
-// If the HTML template file modified, it will re-convert all asciidoc files.
+// If the HTML template file modified, it will re-convert all markup files.
 // If the HTML template file deleted, it will replace them with internal,
 // default HTML template.
 //

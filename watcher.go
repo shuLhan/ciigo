@@ -17,8 +17,8 @@ import (
 )
 
 //
-// watcher watch for changes on all asciidoc file and convert them
-// automatically.
+// watcher watch for changes on all markup files and convert them
+// automatically to HTML.
 //
 type watcher struct {
 	dir         string
@@ -30,7 +30,7 @@ type watcher struct {
 
 //
 // newWatcher create a watcher that monitor every files changes in directory
-// "dir" for new, modified, and deleted asciidoc files and HTML template file.
+// "dir" for new, modified, and deleted markup files and HTML template file.
 //
 // The watcher depends on htmlGenerator to convert the markup to HTML using
 // the HTML template in htmlGenerator.

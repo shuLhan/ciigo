@@ -192,7 +192,7 @@ dd {
 	margin: 2.5rem 0;
 }
 
-/** Custom classes for asciidoc */
+/** Custom classes */
 #toctitle {
 	display: none;
 }
