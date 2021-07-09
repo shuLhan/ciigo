@@ -116,7 +116,7 @@ func (srv *server) onSearch(epr *libhttp.EndpointRequest) (resBody []byte, err e
 	logp := "onSearch"
 
 	q := epr.HttpRequest.Form.Get("q")
-	results := srv.http.Memfs.Search(strings.Fields(q), 0)
+	results := srv.http.Options.Memfs.Search(strings.Fields(q), 0)
 
 	err = srv.htmlg.tmplSearch.Execute(&bufSearch, results)
 	if err != nil {
