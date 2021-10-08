@@ -79,8 +79,9 @@ func newWatcher(htmlg *htmlGenerator, dir, exclude string) (w *watcher, err erro
 //
 func (w *watcher) onChangeFileMarkup(ns *libio.NodeState) {
 	var (
-		logp = "onChangeFileMarkup"
-		err  error
+		logp    = "onChangeFileMarkup"
+		fmarkup *fileMarkup
+		err     error
 	)
 
 	ext := strings.ToLower(filepath.Ext(ns.Node.SysPath))
@@ -88,7 +89,8 @@ func (w *watcher) onChangeFileMarkup(ns *libio.NodeState) {
 		return
 	}
 
-	if ns.State == libio.FileStateDeleted {
+	switch ns.State {
+	case libio.FileStateDeleted:
 		fmt.Printf("%s: %q deleted\n", logp, ns.Node.SysPath)
 		fmarkup, ok := w.fileMarkups[ns.Node.SysPath]
 		if ok {
@@ -96,10 +98,8 @@ func (w *watcher) onChangeFileMarkup(ns *libio.NodeState) {
 			w.changes.Push(fmarkup)
 		}
 		return
-	}
 
-	fmarkup := w.fileMarkups[ns.Node.SysPath]
-	if fmarkup == nil {
+	case libio.FileStateCreated:
 		fmt.Printf("%s: %s created\n", logp, ns.Node.SysPath)
 		fmarkup, err = newFileMarkup(ns.Node.SysPath, nil)
 		if err != nil {
@@ -108,8 +108,18 @@ func (w *watcher) onChangeFileMarkup(ns *libio.NodeState) {
 		}
 
 		w.fileMarkups[ns.Node.SysPath] = fmarkup
-	} else {
-		fmt.Printf("%s: %s updated\n", logp, ns.Node.SysPath)
+
+	case libio.FileStateUpdateMode:
+		fmt.Printf("%s: %s mode updated\n", logp, ns.Node.SysPath)
+		return
+
+	case libio.FileStateUpdateContent:
+		fmt.Printf("%s: %s content updated\n", logp, ns.Node.SysPath)
+		fmarkup = w.fileMarkups[ns.Node.SysPath]
+		if fmarkup == nil {
+			fmt.Printf("%s: %s not found\n", logp, ns.Node.SysPath)
+			return
+		}
 	}
 
 	err = w.htmlg.convert(fmarkup)

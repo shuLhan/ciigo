@@ -23,7 +23,12 @@ var (
 func TestWatcher(t *testing.T) {
 	testDir := "testdata/watcher"
 
-	err := os.MkdirAll(testDir, 0700)
+	err := os.RemoveAll(testDir)
+	if err != nil {
+		t.Logf(err.Error())
+	}
+
+	err = os.MkdirAll(testDir, 0700)
 	if err != nil {
 		t.Fatal(err)
 	}
