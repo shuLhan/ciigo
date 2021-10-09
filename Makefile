@@ -11,6 +11,7 @@ lint:
 	golangci-lint run ./...
 
 test:
+	go run ./internal/cmd/goembed
 	go test -v -race ./...	
 
 install:

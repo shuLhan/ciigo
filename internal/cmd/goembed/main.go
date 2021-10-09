@@ -13,16 +13,16 @@ import (
 )
 
 func main() {
-	opts := ciigo.GenerateOptions{
+	opts := ciigo.EmbedOptions{
 		ConvertOptions: ciigo.ConvertOptions{
 			Root:         "_example",
 			HtmlTemplate: "_example/html.tmpl",
 		},
-		GenPackageName: "main",
-		GenVarName:     "ciigoFS",
-		GenGoFileName:  "cmd/ciigo-example/static.go",
+		PackageName: "main",
+		VarName:     "ciigoFS",
+		GoFileName:  "cmd/ciigo-example/static.go",
 	}
-	err := ciigo.Generate(&opts)
+	err := ciigo.GoEmbed(&opts)
 	if err != nil {
 		log.Fatal(err)
 	}
