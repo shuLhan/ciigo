@@ -135,7 +135,7 @@ func (htmlg *htmlGenerator) htmlTemplateUseInternal() (err error) {
 //
 // write the HTML file.
 //
-func (htmlg *htmlGenerator) write(fhtml *fileHTML) (err error) {
+func (htmlg *htmlGenerator) write(fhtml *fileHtml) (err error) {
 	f, err := os.Create(fhtml.path)
 	if err != nil {
 		return err

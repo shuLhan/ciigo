@@ -14,9 +14,9 @@ import (
 )
 
 //
-// fileHTML represent an HTML metadata for header and its body.
+// fileHtml represent an HTML metadata for header and its body.
 //
-type fileHTML struct {
+type fileHtml struct {
 	Title       string
 	EmbeddedCSS *template.CSS
 	Styles      []string
@@ -28,15 +28,15 @@ type fileHTML struct {
 	rawBody strings.Builder
 }
 
-func newFileHtml(path string) (fhtml *fileHTML) {
-	fhtml = &fileHTML{
+func newFileHtml(path string) (fhtml *fileHtml) {
+	fhtml = &fileHtml{
 		path: path,
 	}
 	fhtml.finfo, _ = os.Stat(path)
 	return fhtml
 }
 
-func (fhtml *fileHTML) unpackAdocMetadata(doc *asciidoctor.Document) {
+func (fhtml *fileHtml) unpackAdocMetadata(doc *asciidoctor.Document) {
 	fhtml.Title = doc.Title.String()
 	fhtml.Styles = fhtml.Styles[:0]
 	fhtml.Metadata = make(map[string]string, len(doc.Attributes))

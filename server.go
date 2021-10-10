@@ -123,7 +123,7 @@ func (srv *server) onSearch(epr *libhttp.EndpointRequest) (resBody []byte, err e
 		return nil, fmt.Errorf("%s: %w", logp, err)
 	}
 
-	fhtml := &fileHTML{
+	fhtml := &fileHtml{
 		Body: template.HTML(bufSearch.String()), //nolint: gosec
 	}
 
