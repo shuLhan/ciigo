@@ -6,6 +6,8 @@ package ciigo
 
 import (
 	"html/template"
+	"io/fs"
+	"os"
 	"strings"
 
 	"git.sr.ht/~shulhan/asciidoctor-go"
@@ -22,7 +24,16 @@ type fileHTML struct {
 	Metadata    map[string]string
 
 	path    string
+	finfo   fs.FileInfo
 	rawBody strings.Builder
+}
+
+func newFileHtml(path string) (fhtml *fileHTML) {
+	fhtml = &fileHTML{
+		path: path,
+	}
+	fhtml.finfo, _ = os.Stat(path)
+	return fhtml
 }
 
 func (fhtml *fileHTML) unpackAdocMetadata(doc *asciidoctor.Document) {

@@ -36,10 +36,17 @@ func newFileMarkup(filePath string, fi os.FileInfo) (fmarkup *fileMarkup, err er
 		path:     filePath,
 		info:     fi,
 		basePath: strings.TrimSuffix(filePath, ext),
-		fhtml:    &fileHTML{},
 	}
 
-	fmarkup.fhtml.path = fmarkup.basePath + ".html"
+	fmarkup.fhtml = newFileHtml(fmarkup.basePath + ".html")
 
 	return fmarkup, nil
+}
+
+// isNewerThanHtml return true if the markup file is newer than HTML file.
+func (fm *fileMarkup) isNewerThanHtml() bool {
+	if fm.fhtml.finfo == nil {
+		return true
+	}
+	return fm.info.ModTime().After(fm.fhtml.finfo.ModTime())
 }

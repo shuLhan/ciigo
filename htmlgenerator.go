@@ -103,14 +103,15 @@ func (htmlg *htmlGenerator) convert(fmarkup *fileMarkup) (err error) {
 func (htmlg *htmlGenerator) convertFileMarkups(fileMarkups map[string]*fileMarkup) {
 	logp := "convertFileMarkups"
 	for _, fmarkup := range fileMarkups {
-		fmt.Printf("%s: converting %q to %q => ", logp, fmarkup.path,
-			fmarkup.fhtml.path)
+		if !fmarkup.isNewerThanHtml() {
+			continue
+		}
 
 		err := htmlg.convert(fmarkup)
 		if err != nil {
-			fmt.Println(err)
+			fmt.Printf("%s: %s", logp, err)
 		} else {
-			fmt.Println("OK")
+			fmt.Printf("%s: converting %s", logp, fmarkup.path)
 		}
 	}
 }

@@ -241,12 +241,16 @@ func listFileMarkups(dir string, excRE []*regexp.Regexp) (
 
 	for _, fi := range fis {
 		name := fi.Name()
+		filePath := filepath.Join(dir, name)
 
-		if fi.IsDir() && name[0] != '.' {
-			newdir := filepath.Join(dir, fi.Name())
-			fmarkups, err := listFileMarkups(newdir, excRE)
+		if fi.IsDir() {
+			if name[0] == '.' {
+				// Skip any directory start with '.'.
+				continue
+			}
+			fmarkups, err := listFileMarkups(filePath, excRE)
 			if err != nil {
-				return nil, fmt.Errorf("%s: %w", logp, err)
+				return nil, fmt.Errorf("%s: %s: %w", logp, filePath, err)
 			}
 			for k, v := range fmarkups {
 				fileMarkups[k] = v
@@ -261,22 +265,13 @@ func listFileMarkups(dir string, excRE []*regexp.Regexp) (
 		if fi.Size() == 0 {
 			continue
 		}
-
-		filePath := filepath.Join(dir, name)
-
 		if isExcluded(filePath, excRE) {
 			continue
 		}
-
-		fmarkup := &fileMarkup{
-			path:     filePath,
-			info:     fi,
-			basePath: strings.TrimSuffix(filePath, ext),
-			fhtml:    &fileHTML{},
+		fmarkup, err := newFileMarkup(filePath, fi)
+		if err != nil {
+			return nil, fmt.Errorf("%s: %s: %w", logp, filePath, err)
 		}
-
-		fmarkup.fhtml.path = fmarkup.basePath + ".html"
-
 		fileMarkups[filePath] = fmarkup
 	}
 
