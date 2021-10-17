@@ -21,11 +21,16 @@ import (
 // automatically to HTML.
 //
 type watcher struct {
-	dir         string
-	htmlg       *htmlGenerator
-	dw          *libio.DirWatcher
+	dir   string
+	htmlg *htmlGenerator
+	dw    *libio.DirWatcher
+
+	// fileMarkups contains all markup files found inside "dir".
+	// Its used to convert all markup files when the template file
+	// changes.
 	fileMarkups map[string]*fileMarkup
-	changes     *clise.Clise
+
+	changes *clise.Clise
 }
 
 //
@@ -43,16 +48,17 @@ type watcher struct {
 //	                         |
 //	                         +--> UPDATE --> htmlGenerated.htmlTemplateReload()
 //
-func newWatcher(htmlg *htmlGenerator, dir, exclude string) (w *watcher, err error) {
+func newWatcher(htmlg *htmlGenerator, convertOpts *ConvertOptions) (w *watcher, err error) {
+	logp := "newWatcher"
+
 	w = &watcher{
-		dir:         dir,
-		htmlg:       htmlg,
-		fileMarkups: make(map[string]*fileMarkup),
-		changes:     clise.New(1),
+		dir:     convertOpts.Root,
+		htmlg:   htmlg,
+		changes: clise.New(1),
 	}
 	w.dw = &libio.DirWatcher{
 		Options: memfs.Options{
-			Root: dir,
+			Root: convertOpts.Root,
 			Includes: []string{
 				`.*\.adoc$`,
 			},
@@ -66,8 +72,13 @@ func newWatcher(htmlg *htmlGenerator, dir, exclude string) (w *watcher, err erro
 		Callback: w.onChangeFileMarkup,
 	}
 
-	if len(exclude) > 0 {
-		w.dw.Options.Excludes = append(w.dw.Options.Excludes, exclude)
+	if len(convertOpts.Exclude) > 0 {
+		w.dw.Options.Excludes = append(w.dw.Options.Excludes, convertOpts.Exclude)
+	}
+
+	w.fileMarkups, err = listFileMarkups(convertOpts.Root, convertOpts.excRE)
+	if err != nil {
+		return nil, fmt.Errorf("%s: %w", logp, err)
 	}
 
 	return w, nil
@@ -117,8 +128,15 @@ func (w *watcher) onChangeFileMarkup(ns *libio.NodeState) {
 		fmt.Printf("%s: %s content updated\n", logp, ns.Node.SysPath)
 		fmarkup = w.fileMarkups[ns.Node.SysPath]
 		if fmarkup == nil {
-			fmt.Printf("%s: %s not found\n", logp, ns.Node.SysPath)
-			return
+			log.Printf("%s: %s not found\n", logp, ns.Node.SysPath)
+
+			fmarkup, err = newFileMarkup(ns.Node.SysPath, nil)
+			if err != nil {
+				log.Printf("%s: %s\n", logp, err)
+				return
+			}
+
+			w.fileMarkups[ns.Node.SysPath] = fmarkup
 		}
 	}
 

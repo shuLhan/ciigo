@@ -42,7 +42,15 @@ func TestWatcher(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	testWatcher, err = newWatcher(htmlg, testDir, "")
+	convertOpts := ConvertOptions{
+		Root: testDir,
+	}
+	err = convertOpts.init()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	testWatcher, err = newWatcher(htmlg, &convertOpts)
 	if err != nil {
 		t.Fatal(err)
 	}

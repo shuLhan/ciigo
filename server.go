@@ -71,12 +71,7 @@ func newServer(opts *ServeOptions) (srv *server, err error) {
 	}
 
 	if srv.opts.Development {
-		srv.watcher, err = newWatcher(srv.htmlg, opts.Root, opts.Exclude)
-		if err != nil {
-			return nil, fmt.Errorf("%s: %w", logp, err)
-		}
-
-		srv.watcher.fileMarkups, err = listFileMarkups(opts.Root, opts.excRE)
+		srv.watcher, err = newWatcher(srv.htmlg, &opts.ConvertOptions)
 		if err != nil {
 			return nil, fmt.Errorf("%s: %w", logp, err)
 		}

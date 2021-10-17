@@ -197,7 +197,7 @@ func Watch(opts *ConvertOptions) (err error) {
 		return fmt.Errorf("%s: %w", logp, err)
 	}
 
-	w, err = newWatcher(htmlg, opts.Root, opts.Exclude)
+	w, err = newWatcher(htmlg, opts)
 	if err != nil {
 		return fmt.Errorf("%s: %w", logp, err)
 	}
