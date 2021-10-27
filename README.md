@@ -153,16 +153,18 @@ import (
 )
 
 func main() {
-	opts := &ciigo.GenerateOptions{
+	opts := &ciigo.EmbedOptions{
 		ConvertOptions: ciigo.ConvertOptions{
 			Root:           "./_contents",
 			HtmlTemplate:   "_contents/html.tmpl",
 		},
-		GenPackageName: "main",
-		GenVarName:     "mysiteFS",
-		GenGoFileName:  "cmd/mysite/static.go",
+		EmbedOptions: memfs.EmbedOptions{
+			PackageName: "main",
+			VarName:     "mysiteFS",
+			GoFileName:  "cmd/mysite/static.go",
+		},
 	}
-	ciigo.Generate(opts)
+	ciigo.GoEmbed(opts)
 }
 ```
 

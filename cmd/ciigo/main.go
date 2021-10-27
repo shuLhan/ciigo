@@ -40,6 +40,7 @@ import (
 
 	"git.sr.ht/~shulhan/ciigo"
 	"github.com/shuLhan/share/lib/debug"
+	"github.com/shuLhan/share/lib/memfs"
 )
 
 func main() {
@@ -91,7 +92,9 @@ func main() {
 				HtmlTemplate: *htmlTemplate,
 				Exclude:      *exclude,
 			},
-			GoFileName: *outputFile,
+			EmbedOptions: memfs.EmbedOptions{
+				GoFileName: *outputFile,
+			},
 		}
 		err = ciigo.GoEmbed(&genOpts)
 

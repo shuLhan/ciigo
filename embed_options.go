@@ -11,19 +11,7 @@ import "github.com/shuLhan/share/lib/memfs"
 //
 type EmbedOptions struct {
 	ConvertOptions
-
-	// PackageName the name of package in Go generated source code.
-	// Default to memfs.DefaultEmbedPackageName if its empty.
-	PackageName string
-
-	// GenVarName the name of variable where all files in Root will be
-	// stored.
-	// Default to memfs.DefaultEmbedVarName if its empty.
-	VarName string
-
-	// GenGoFileName the file name of Go source code will be written.
-	// Default to memfs.DefaultEmbedGoFileName if its empty.
-	GoFileName string
+	memfs.EmbedOptions
 }
 
 func (opts *EmbedOptions) init() (err error) {

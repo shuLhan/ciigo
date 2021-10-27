@@ -10,6 +10,7 @@ import (
 	"log"
 
 	"git.sr.ht/~shulhan/ciigo"
+	"github.com/shuLhan/share/lib/memfs"
 )
 
 func main() {
@@ -18,9 +19,11 @@ func main() {
 			Root:         "_example",
 			HtmlTemplate: "_example/html.tmpl",
 		},
-		PackageName: "main",
-		VarName:     "ciigoFS",
-		GoFileName:  "cmd/ciigo-example/static.go",
+		EmbedOptions: memfs.EmbedOptions{
+			PackageName: "main",
+			VarName:     "ciigoFS",
+			GoFileName:  "cmd/ciigo-example/static.go",
+		},
 	}
 	err := ciigo.GoEmbed(&opts)
 	if err != nil {
