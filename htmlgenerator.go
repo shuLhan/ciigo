@@ -109,9 +109,9 @@ func (htmlg *htmlGenerator) convertFileMarkups(fileMarkups map[string]*fileMarku
 
 		err := htmlg.convert(fmarkup)
 		if err != nil {
-			fmt.Printf("%s: %s", logp, err)
+			fmt.Printf("%s: %s\n", logp, err)
 		} else {
-			fmt.Printf("%s: converting %s", logp, fmarkup.path)
+			fmt.Printf("%s: converting %s\n", logp, fmarkup.path)
 		}
 	}
 }
