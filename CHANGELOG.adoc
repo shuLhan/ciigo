@@ -1,5 +1,58 @@
 =  CHANGELOG
 
+==  ciigo v0.7.0 (2021-12-06)
+
+Changes on asciidoctor-go,
+
+*  all: fix parsing and rendering cross reference
+*  all: allow colon ':' and  period '.' on the ID
+
+===  Breaking changes
+
+*  all: refactoring with latest share module
+
+   The latest share module use the term GoEmbed to generate Go source file.
+   In order for this repo in sync with upstream terminology and to minimize
+   confusion, we changes the exported function and command name from
+   "generate" to "embed", this includes
+
+   * Command "ciigo generate" become "ciigo embed"
+   * Exported function to generate Go renamed from "Generate" to "GoEmbed".
+     This include the parameter GenerateOptions which renamed to
+     EmbedOptions.
+   * The internal command to generate example renamed from "generate" to
+     "goembed"
+
+===  Bug fixes
+
+*  all: add missing new line when printing file to be converted
+
+*  all: fix empty fileMarkups on watcher
+
+   Previously, when user call ciigo.Watch(), and the markup file changes,
+   the onChangeFileMarkup method will print an error "xyz not found" which
+   cause the markup file not converted.
+
+   This is caused by watcher.fileMarkups is empty.
+
+   This changes fix this issue by initializing the fileMarkups field using
+   listFileMarkups, so the next callback to onChangeFileMarkup can detect
+   the changed file and convert it.
+
+*  This update fix HTTP server caching using ETag.
+
+===  Enhancements
+
+*  all: check markup modification time before converting to HTML
+
+   Previously, when the Convert, Watch or Serve running it will convert
+   all markup files into HTML without checking if the adoc has been modified
+   or newer than HTML file.
+
+   This changes check the modification time of markup file first before
+   converting them, to minimize unnecessary operation.
+
+
 ==  ciigo v0.6.0 (2021-04-07)
 
 ===  Breaking changes
