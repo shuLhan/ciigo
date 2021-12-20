@@ -119,7 +119,6 @@ func GoEmbed(opts *EmbedOptions) (err error) {
 		Excludes: defExcludes,
 		Embed:    opts.EmbedOptions,
 	}
-	memfsOpts.Embed.ContentEncoding = memfs.EncodingGzip
 
 	mfs, err = memfs.New(memfsOpts)
 	if err != nil {

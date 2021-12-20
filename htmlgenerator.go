@@ -57,12 +57,7 @@ func newHTMLGenerator(mfs *memfs.MemFS, htmlTemplate string, devel bool) (
 			return nil, fmt.Errorf("%s: %w", logp, err)
 		}
 
-		bhtml, err := tmplNode.Decode()
-		if err != nil {
-			return nil, fmt.Errorf("%s: %sw", logp, err)
-		}
-
-		htmlg.tmpl, err = htmlg.tmpl.Parse(string(bhtml))
+		htmlg.tmpl, err = htmlg.tmpl.Parse(string(tmplNode.Content))
 		if err != nil {
 			return nil, fmt.Errorf("%s: %s", logp, err)
 		}
