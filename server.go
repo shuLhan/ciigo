@@ -20,7 +20,6 @@ import (
 //
 type server struct {
 	http    *libhttp.Server
-	opts    *libhttp.ServerOptions
 	htmlg   *htmlGenerator
 	watcher *watcher
 }
@@ -33,21 +32,29 @@ type server struct {
 // embedded HTML template.
 //
 func newServer(opts *ServeOptions) (srv *server, err error) {
-	logp := "newServer"
+	var (
+		logp          = "newServer"
+		isDevelopment = debug.Value > 0
+	)
 
-	srv = &server{
-		opts: &libhttp.ServerOptions{
-			Options: memfs.Options{
+	if opts.Mfs == nil {
+		opts.Mfs = &memfs.MemFS{
+			Opts: &memfs.Options{
 				Root:        opts.Root,
 				Excludes:    defExcludes,
-				Development: debug.Value > 0,
+				Development: isDevelopment,
 			},
-			Memfs:   opts.Mfs,
-			Address: opts.Address,
-		},
+		}
 	}
 
-	srv.http, err = libhttp.NewServer(srv.opts)
+	srv = &server{}
+
+	httpdOpts := &libhttp.ServerOptions{
+		Memfs:   opts.Mfs,
+		Address: opts.Address,
+	}
+
+	srv.http, err = libhttp.NewServer(httpdOpts)
 	if err != nil {
 		return nil, fmt.Errorf("%s: %w", logp, err)
 	}
@@ -65,12 +72,12 @@ func newServer(opts *ServeOptions) (srv *server, err error) {
 		return nil, fmt.Errorf("%s: %w", logp, err)
 	}
 
-	srv.htmlg, err = newHTMLGenerator(opts.Mfs, opts.HtmlTemplate, srv.opts.Development)
+	srv.htmlg, err = newHTMLGenerator(opts.Mfs, opts.HtmlTemplate, isDevelopment)
 	if err != nil {
 		return nil, fmt.Errorf("%s: %w", logp, err)
 	}
 
-	if srv.opts.Development {
+	if isDevelopment {
 		srv.watcher, err = newWatcher(srv.htmlg, &opts.ConvertOptions)
 		if err != nil {
 			return nil, fmt.Errorf("%s: %w", logp, err)
@@ -88,7 +95,7 @@ func newServer(opts *ServeOptions) (srv *server, err error) {
 func (srv *server) start() (err error) {
 	logp := "start"
 
-	if srv.opts.Development {
+	if srv.http.Options.Memfs.Opts.Development {
 		err := srv.watcher.start()
 		if err != nil {
 			return fmt.Errorf("%s: %w", logp, err)
@@ -96,7 +103,7 @@ func (srv *server) start() (err error) {
 	}
 
 	fmt.Printf("ciigo: starting HTTP server at %q for %q\n",
-		srv.opts.Address, srv.opts.Root)
+		srv.http.Options.Address, srv.http.Options.Memfs.Opts.Root)
 
 	err = srv.http.Start()
 	if err != nil {
