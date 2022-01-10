@@ -1,5 +1,10 @@
 =  CHANGELOG
 
+==  ciigo v0.7.1 (2022-01-10)
+
+This release update all dependencies and codes affected by updated.
+
+
 ==  ciigo v0.7.0 (2021-12-06)
 
 Changes on asciidoctor-go,
