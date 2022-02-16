@@ -12,7 +12,7 @@ lint:
 
 test:
 	go run ./internal/cmd/goembed
-	go test -v -race ./...	
+	CGO_ENABLED=1 go test -v -race ./...
 
 install:
 	go install ./cmd/ciigo
