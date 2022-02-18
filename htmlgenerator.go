@@ -95,11 +95,13 @@ func (htmlg *htmlGenerator) convert(fmarkup *fileMarkup) (err error) {
 //
 // convertFileMarkups convert markup files into HTML.
 //
-func (htmlg *htmlGenerator) convertFileMarkups(fileMarkups map[string]*fileMarkup) {
+func (htmlg *htmlGenerator) convertFileMarkups(fileMarkups map[string]*fileMarkup, isForce bool) {
 	logp := "convertFileMarkups"
 	for _, fmarkup := range fileMarkups {
 		if !fmarkup.isNewerThanHtml() {
-			continue
+			if !isForce {
+				continue
+			}
 		}
 
 		err := htmlg.convert(fmarkup)

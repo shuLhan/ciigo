@@ -85,7 +85,7 @@ func newServer(opts *ServeOptions) (srv *server, err error) {
 			return nil, fmt.Errorf("%s: %w", logp, err)
 		}
 
-		srv.htmlg.convertFileMarkups(srv.watcher.fileMarkups)
+		srv.htmlg.convertFileMarkups(srv.watcher.fileMarkups, false)
 	}
 
 	return srv, nil

@@ -69,7 +69,7 @@ func Convert(opts *ConvertOptions) (err error) {
 		return fmt.Errorf("%s: %w", logp, err)
 	}
 
-	htmlg.convertFileMarkups(fileMarkups)
+	htmlg.convertFileMarkups(fileMarkups, false)
 
 	return nil
 }
@@ -112,7 +112,7 @@ func GoEmbed(opts *EmbedOptions) (err error) {
 		return fmt.Errorf("%s: %w", logp, err)
 	}
 
-	htmlg.convertFileMarkups(fileMarkups)
+	htmlg.convertFileMarkups(fileMarkups, false)
 
 	memfsOpts := &memfs.Options{
 		Root:     opts.Root,

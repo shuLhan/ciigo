@@ -171,7 +171,7 @@ func (w *watcher) onChangeHtmlTemplate(ns *libio.NodeState) {
 	}
 
 	fmt.Printf("%s: regenerate all markup files ...\n", logp)
-	w.htmlg.convertFileMarkups(w.fileMarkups)
+	w.htmlg.convertFileMarkups(w.fileMarkups, true)
 }
 
 //
