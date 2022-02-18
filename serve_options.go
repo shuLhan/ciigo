@@ -14,14 +14,20 @@ const (
 // ServeOptions contains the options to use on Serve function.
 //
 type ServeOptions struct {
-	ConvertOptions
-
 	// Mfs contains pointer to variable generated from Generate.
 	// This option is used to use embedded files for serving on HTTP.
 	Mfs *memfs.MemFS
 
 	// Address to listen and serve for HTTP request.
 	Address string
+
+	ConvertOptions
+
+	// IsDevelopment if set to true, it will serve the ConvertOptions.Root
+	// directory directly and watch all asciidoc files for changes and
+	// convert it.
+	// This is like running Watch, Convert and Serve at the same time.
+	IsDevelopment bool
 }
 
 func (opts *ServeOptions) init() (err error) {

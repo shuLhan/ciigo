@@ -39,7 +39,6 @@ import (
 	"strings"
 
 	"git.sr.ht/~shulhan/ciigo"
-	"github.com/shuLhan/share/lib/debug"
 	"github.com/shuLhan/share/lib/memfs"
 )
 
@@ -99,14 +98,14 @@ func main() {
 		err = ciigo.GoEmbed(&genOpts)
 
 	case "serve":
-		debug.Value = 1
 		opts := ciigo.ServeOptions{
 			ConvertOptions: ciigo.ConvertOptions{
 				Root:         dir,
 				HtmlTemplate: *htmlTemplate,
 				Exclude:      *exclude,
 			},
-			Address: *address,
+			Address:       *address,
+			IsDevelopment: true,
 		}
 		err = ciigo.Serve(&opts)
 

@@ -10,7 +10,6 @@ import (
 	"html/template"
 	"strings"
 
-	"github.com/shuLhan/share/lib/debug"
 	libhttp "github.com/shuLhan/share/lib/http"
 	"github.com/shuLhan/share/lib/memfs"
 )
@@ -22,6 +21,7 @@ type server struct {
 	http    *libhttp.Server
 	htmlg   *htmlGenerator
 	watcher *watcher
+	opts    ServeOptions
 }
 
 //
@@ -33,21 +33,23 @@ type server struct {
 //
 func newServer(opts *ServeOptions) (srv *server, err error) {
 	var (
-		logp          = "newServer"
-		isDevelopment = debug.Value > 0
+		logp = "newServer"
 	)
 
 	if opts.Mfs == nil {
 		opts.Mfs = &memfs.MemFS{
 			Opts: &memfs.Options{
-				Root:        opts.Root,
-				Excludes:    defExcludes,
-				Development: isDevelopment,
+				Root:     opts.Root,
+				Excludes: defExcludes,
 			},
 		}
 	}
 
-	srv = &server{}
+	opts.Mfs.Opts.Development = opts.IsDevelopment
+
+	srv = &server{
+		opts: *opts,
+	}
 
 	httpdOpts := &libhttp.ServerOptions{
 		Memfs:   opts.Mfs,
@@ -72,12 +74,12 @@ func newServer(opts *ServeOptions) (srv *server, err error) {
 		return nil, fmt.Errorf("%s: %w", logp, err)
 	}
 
-	srv.htmlg, err = newHTMLGenerator(opts.Mfs, opts.HtmlTemplate, isDevelopment)
+	srv.htmlg, err = newHTMLGenerator(opts.Mfs, opts.HtmlTemplate, opts.IsDevelopment)
 	if err != nil {
 		return nil, fmt.Errorf("%s: %w", logp, err)
 	}
 
-	if isDevelopment {
+	if opts.IsDevelopment {
 		srv.watcher, err = newWatcher(srv.htmlg, &opts.ConvertOptions)
 		if err != nil {
 			return nil, fmt.Errorf("%s: %w", logp, err)
@@ -95,7 +97,7 @@ func newServer(opts *ServeOptions) (srv *server, err error) {
 func (srv *server) start() (err error) {
 	logp := "start"
 
-	if srv.http.Options.Memfs.Opts.Development {
+	if srv.opts.IsDevelopment {
 		err := srv.watcher.start()
 		if err != nil {
 			return fmt.Errorf("%s: %w", logp, err)
