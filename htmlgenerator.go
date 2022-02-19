@@ -19,9 +19,9 @@ import (
 // htmlGenerator provide a template to write full HTML file.
 //
 type htmlGenerator struct {
-	htmlTemplate string
 	tmpl         *template.Template
 	tmplSearch   *template.Template
+	htmlTemplate string
 }
 
 func newHTMLGenerator(mfs *memfs.MemFS, htmlTemplate string, devel bool) (

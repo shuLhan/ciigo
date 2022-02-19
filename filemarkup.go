@@ -12,10 +12,12 @@ import (
 )
 
 type fileMarkup struct {
-	path     string      // path contains full path to markup file.
-	info     os.FileInfo // info contains FileInfo of markup file.
-	basePath string      // basePath contains full path to file without markup extension.
-	fhtml    *fileHtml   // The HTML output of this markup.
+	fhtml *fileHtml   // The HTML output of this markup.
+	info  os.FileInfo // info contains FileInfo of markup file.
+
+	basePath string // basePath contains full path to file without markup extension.
+	path     string // path contains full path to markup file.
+
 }
 
 func newFileMarkup(filePath string, fi os.FileInfo) (fmarkup *fileMarkup, err error) {

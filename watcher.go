@@ -21,16 +21,16 @@ import (
 // automatically to HTML.
 //
 type watcher struct {
-	dir   string
-	htmlg *htmlGenerator
-	dw    *libio.DirWatcher
+	changes *clise.Clise
+	dw      *libio.DirWatcher
+	htmlg   *htmlGenerator
 
 	// fileMarkups contains all markup files found inside "dir".
 	// Its used to convert all markup files when the template file
 	// changes.
 	fileMarkups map[string]*fileMarkup
 
-	changes *clise.Clise
+	dir string
 }
 
 //
