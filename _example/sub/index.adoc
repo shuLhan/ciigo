@@ -1,3 +1,5 @@
+// SPDX-FileCopyrightText: 2020 Shulhan <ms@kilabit.info>
+// SPDX-License-Identifier: GPL-3.0-or-later
 = Sub directory
 Second Author <m.shulhan@gmail.com>
 24 November 2020

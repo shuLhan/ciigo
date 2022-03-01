@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2019 Shulhan <ms@kilabit.info>
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 module git.sr.ht/~shulhan/ciigo
 
 go 1.16

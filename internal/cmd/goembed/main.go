@@ -20,6 +20,9 @@ func main() {
 			HtmlTemplate: "_example/html.tmpl",
 		},
 		EmbedOptions: memfs.EmbedOptions{
+			CommentHeader: `// SPDX-FileCopyrightText: 2019 Shulhan <ms@kilabit.info>
+// SPDX-License-Identifier: GPL-3.0-or-later
+`,
 			PackageName: "main",
 			VarName:     "ciigoFS",
 			GoFileName:  "cmd/ciigo-example/static.go",

@@ -1,3 +1,6 @@
+## SPDX-FileCopyrightText: 2019 Shulhan <ms@kilabit.info>
+## SPDX-License-Identifier: GPL-3.0-or-later
+
 RELEASES:= \
 	_bin/ciigo-linux-amd64 \
 	_bin/ciigo-darwin-amd64

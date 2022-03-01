@@ -1,3 +1,7 @@
+<!--
+// SPDX-FileCopyrightText: 2020 Shulhan <ms@kilabit.info>
+// SPDX-License-Identifier: GPL-3.0-or-later
+--!>
 #  Welcome to ciigo
 
 [![PkgGoDev](https://pkg.go.dev/badge/git.sr.ht/~shulhan/ciigo)](https://pkg.go.dev/git.sr.ht/~shulhan/ciigo)
