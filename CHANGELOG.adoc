@@ -1,6 +1,53 @@
 // SPDX-FileCopyrightText: 2020 Shulhan <ms@kilabit.info>
 // SPDX-License-Identifier: GPL-3.0-or-later
 =  Changelog for ciigo
+Shulhan <ms@kilabit.info>
+:toc:
+:sectanchors:
+:sectlinks:
+
+[#v0.8.0]
+==  ciigo v0.8.0 (2022-03-04)
+
+This release changes the license of this software to GPL-3.0 or later.
+
+[#v0.8.0_bug_fixes]
+===  Bug fixes
+
+*  all: fix adoc files not re-converted when template file changes
++
+In commit 06d03f6afe37 we skip converting files if the generated HTML
+is newer than adoc file.
++
+This cause an issue where the template file changes during Watch or
+Serve, but the HTML files is not regenerated.
+
+*  go.mod: update module asciidoctor-go to the tip
++
+The latest tip fix rendering list check box text that get cut one
+character in the beginning.
+
+[#v0.8.0_enhancements]
+===  Enhancements
+
+*  all: re-convert markup files if HTML template is newer on GoEmbed
++
+Calling GoEmbed with updated HTML template will reconvert all markup
+files automatically, as long as the generated Go file is older than
+the HTML template file.
+
+*  all: add 1em to the bottom margin of paragraph under list
++
+This is to make the list content readable and indistinguishable,
+especially when we have many list items with paragraphs.
+
+*  all: add option IsDevelopment to ServeOptions
++
+If the IsDevelopment option set to true, the serve function will serve
+the root directory directly and watch all asciidoc files for changes
+and convert it.
++
+This is like running Watch, Convert and Serve at the same time.
 
 ==  ciigo v0.7.1 (2022-01-10)
 
