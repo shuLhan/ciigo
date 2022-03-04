@@ -12,6 +12,8 @@ package ciigo
 
 import (
 	"fmt"
+	"io/fs"
+	"log"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -45,7 +47,8 @@ var (
 //
 func Convert(opts *ConvertOptions) (err error) {
 	var (
-		logp        = "Convert"
+		logp = "Convert"
+
 		htmlg       *htmlGenerator
 		fileMarkups map[string]*fileMarkup
 	)
@@ -87,10 +90,12 @@ func Convert(opts *ConvertOptions) (err error) {
 //
 func GoEmbed(opts *EmbedOptions) (err error) {
 	var (
-		logp        = "GoEmbed"
-		htmlg       *htmlGenerator
-		fileMarkups map[string]*fileMarkup
-		mfs         *memfs.MemFS
+		logp = "GoEmbed"
+
+		htmlg        *htmlGenerator
+		fileMarkups  map[string]*fileMarkup
+		mfs          *memfs.MemFS
+		convertForce bool
 	)
 
 	if opts == nil {
@@ -111,7 +116,11 @@ func GoEmbed(opts *EmbedOptions) (err error) {
 		return fmt.Errorf("%s: %w", logp, err)
 	}
 
-	htmlg.convertFileMarkups(fileMarkups, false)
+	if isHtmlTemplateNewer(opts) {
+		convertForce = true
+	}
+
+	htmlg.convertFileMarkups(fileMarkups, convertForce)
 
 	memfsOpts := &memfs.Options{
 		Root:     opts.Root,
@@ -209,6 +218,44 @@ func Watch(opts *ConvertOptions) (err error) {
 	}
 
 	return nil
+}
+
+//
+// isHtmlTemplateNewer will return true if HtmlTemplate is not defined or
+// newer than embedded GoFileName.
+//
+func isHtmlTemplateNewer(opts *EmbedOptions) bool {
+	var (
+		logp = "isHtmlTemplateNewer"
+
+		fiHtmlTmpl fs.FileInfo
+		fiGoEmbed  fs.FileInfo
+		err        error
+	)
+
+	if len(opts.HtmlTemplate) == 0 {
+		return true
+	}
+
+	fiHtmlTmpl, err = os.Stat(opts.HtmlTemplate)
+	if err != nil {
+		log.Fatalf("%s: %s", logp, err)
+	}
+
+	if len(opts.EmbedOptions.GoFileName) == 0 {
+		// No output file for GoEmbed.
+		return false
+	}
+
+	fiGoEmbed, err = os.Stat(opts.EmbedOptions.GoFileName)
+	if err != nil {
+		if os.IsNotExist(err) {
+			return false
+		}
+		log.Fatalf("%s: %s", logp, err)
+	}
+
+	return fiHtmlTmpl.ModTime().After(fiGoEmbed.ModTime())
 }
 
 func isExtensionMarkup(ext string) bool {
