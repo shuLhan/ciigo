@@ -191,6 +191,14 @@ dd {
 	margin: 2.5rem 0;
 }
 
+.ulist li .paragraph {
+	margin-bottom: 1em;
+}
+
+.ulist li .paragraph {
+	margin-bottom: 1em;
+}
+
 /** Custom classes */
 #toctitle {
 	display: none;
