@@ -11,7 +11,6 @@ import (
 	"time"
 
 	"github.com/shuLhan/share/lib/clise"
-	libio "github.com/shuLhan/share/lib/io"
 	"github.com/shuLhan/share/lib/memfs"
 )
 
@@ -20,9 +19,10 @@ import (
 // automatically to HTML.
 //
 type watcher struct {
-	changes *clise.Clise
-	dw      *libio.DirWatcher
-	htmlg   *htmlGenerator
+	changes       *clise.Clise
+	watchDir      *memfs.DirWatcher
+	watchTemplate *memfs.Watcher
+	htmlg         *htmlGenerator
 
 	// fileMarkups contains all markup files found inside "dir".
 	// Its used to convert all markup files when the template file
@@ -41,21 +41,23 @@ type watcher struct {
 //
 //	watcher
 //	|
-//	+-- onChangeFileMarkup --> UPDATE --> htmlGenerator.convert()
+//	+-- watchFileMarkup --> UPDATE --> htmlGenerator.convert()
 //	|
-//	+-- onChangeHtmlTemplate +--> DELETE --> htmlGenerator.htmlTemplateUseInternal()
-//	                         |
-//	                         +--> UPDATE --> htmlGenerated.htmlTemplateReload()
+//	+-- watchHtmlTemplate +--> DELETE --> htmlGenerator.htmlTemplateUseInternal()
+//	                      |
+//	                      +--> UPDATE --> htmlGenerated.htmlTemplateReload()
 //
 func newWatcher(htmlg *htmlGenerator, convertOpts *ConvertOptions) (w *watcher, err error) {
-	logp := "newWatcher"
+	var (
+		logp = "newWatcher"
+	)
 
 	w = &watcher{
 		dir:     convertOpts.Root,
 		htmlg:   htmlg,
 		changes: clise.New(1),
 	}
-	w.dw = &libio.DirWatcher{
+	w.watchDir = &memfs.DirWatcher{
 		Options: memfs.Options{
 			Root: convertOpts.Root,
 			Includes: []string{
@@ -67,12 +69,11 @@ func newWatcher(htmlg *htmlGenerator, convertOpts *ConvertOptions) (w *watcher, 
 				`vendor/.*`,
 			},
 		},
-		Delay:    time.Second,
-		Callback: w.onChangeFileMarkup,
+		Delay: time.Second,
 	}
 
 	if len(convertOpts.Exclude) > 0 {
-		w.dw.Options.Excludes = append(w.dw.Options.Excludes, convertOpts.Exclude)
+		w.watchDir.Options.Excludes = append(w.watchDir.Options.Excludes, convertOpts.Exclude)
 	}
 
 	w.fileMarkups, err = listFileMarkups(convertOpts.Root, convertOpts.excRE)
@@ -84,108 +85,122 @@ func newWatcher(htmlg *htmlGenerator, convertOpts *ConvertOptions) (w *watcher, 
 }
 
 //
-// onChangeFileMarkup watch the markup files inside the "content" directory,
+// start watching for changes.
+//
+func (w *watcher) start() (err error) {
+	err = w.watchDir.Start()
+	if err != nil {
+		return fmt.Errorf("start: %w", err)
+	}
+
+	go w.watchFileMarkup()
+
+	if len(w.htmlg.htmlTemplate) > 0 {
+		w.watchTemplate, err = memfs.NewWatcher(w.htmlg.htmlTemplate, 0)
+		if err != nil {
+			return fmt.Errorf("start: %w", err)
+		}
+		go w.watchHtmlTemplate()
+	}
+	return nil
+}
+
+//
+// watchFileMarkup watch the markup files inside the "content" directory,
 // and re-generate them into HTML file when changed.
 //
-func (w *watcher) onChangeFileMarkup(ns *libio.NodeState) {
+func (w *watcher) watchFileMarkup() {
 	var (
-		logp    = "onChangeFileMarkup"
+		logp = "watchFileMarkup"
+
+		ns      memfs.NodeState
 		fmarkup *fileMarkup
 		err     error
 	)
 
-	ext := strings.ToLower(filepath.Ext(ns.Node.SysPath))
-	if !isExtensionMarkup(ext) {
-		return
-	}
-
-	switch ns.State {
-	case libio.FileStateDeleted:
-		fmt.Printf("%s: %q deleted\n", logp, ns.Node.SysPath)
-		fmarkup, ok := w.fileMarkups[ns.Node.SysPath]
-		if ok {
-			delete(w.fileMarkups, ns.Node.SysPath)
-			w.changes.Push(fmarkup)
-		}
-		return
-
-	case libio.FileStateCreated:
-		fmt.Printf("%s: %s created\n", logp, ns.Node.SysPath)
-		fmarkup, err = newFileMarkup(ns.Node.SysPath, nil)
-		if err != nil {
-			log.Printf("%s: %s\n", logp, err)
-			return
+	for ns = range w.watchDir.C {
+		ext := strings.ToLower(filepath.Ext(ns.Node.SysPath))
+		if !isExtensionMarkup(ext) {
+			continue
 		}
 
-		w.fileMarkups[ns.Node.SysPath] = fmarkup
+		switch ns.State {
+		case memfs.FileStateDeleted:
+			fmt.Printf("%s: %q deleted\n", logp, ns.Node.SysPath)
+			fmarkup, ok := w.fileMarkups[ns.Node.SysPath]
+			if ok {
+				delete(w.fileMarkups, ns.Node.SysPath)
+				w.changes.Push(fmarkup)
+			}
+			continue
 
-	case libio.FileStateUpdateMode:
-		fmt.Printf("%s: %s mode updated\n", logp, ns.Node.SysPath)
-		return
-
-	case libio.FileStateUpdateContent:
-		fmt.Printf("%s: %s content updated\n", logp, ns.Node.SysPath)
-		fmarkup = w.fileMarkups[ns.Node.SysPath]
-		if fmarkup == nil {
-			log.Printf("%s: %s not found\n", logp, ns.Node.SysPath)
-
+		case memfs.FileStateCreated:
+			fmt.Printf("%s: %s created\n", logp, ns.Node.SysPath)
 			fmarkup, err = newFileMarkup(ns.Node.SysPath, nil)
 			if err != nil {
 				log.Printf("%s: %s\n", logp, err)
-				return
+				continue
 			}
 
 			w.fileMarkups[ns.Node.SysPath] = fmarkup
+
+		case memfs.FileStateUpdateMode:
+			fmt.Printf("%s: %s mode updated\n", logp, ns.Node.SysPath)
+			continue
+
+		case memfs.FileStateUpdateContent:
+			fmt.Printf("%s: %s content updated\n", logp, ns.Node.SysPath)
+			fmarkup = w.fileMarkups[ns.Node.SysPath]
+			if fmarkup == nil {
+				log.Printf("%s: %s not found\n", logp, ns.Node.SysPath)
+
+				fmarkup, err = newFileMarkup(ns.Node.SysPath, nil)
+				if err != nil {
+					log.Printf("%s: %s\n", logp, err)
+					continue
+				}
+
+				w.fileMarkups[ns.Node.SysPath] = fmarkup
+			}
 		}
-	}
 
-	err = w.htmlg.convert(fmarkup)
-	if err != nil {
-		log.Printf("%s: %s\n", logp, err)
-	}
+		err = w.htmlg.convert(fmarkup)
+		if err != nil {
+			log.Printf("%s: %s\n", logp, err)
+		}
 
-	w.changes.Push(fmarkup)
+		w.changes.Push(fmarkup)
+	}
 }
 
 //
-// onChangeHtmlTemplate reload the HTML template and re-convert all markup
+// watchHtmlTemplate reload the HTML template and re-convert all markup
 // files.
 //
-func (w *watcher) onChangeHtmlTemplate(ns *libio.NodeState) {
-	var err error
-	logp := "onChangeHtmlTemplate"
+func (w *watcher) watchHtmlTemplate() {
+	var (
+		logp = "watchHtmlTemplate"
 
-	if ns.State == libio.FileStateDeleted {
-		log.Printf("%s: HTML template file %q has been deleted\n",
-			logp, ns.Node.SysPath)
-		err = w.htmlg.htmlTemplateUseInternal()
-	} else {
-		fmt.Printf("%s: recompiling HTML template %q ...\n", logp,
-			ns.Node.SysPath)
-		err = w.htmlg.htmlTemplateReload()
-	}
-	if err != nil {
-		log.Printf("%s: %s\n", logp, err)
-		return
-	}
+		ns  memfs.NodeState
+		err error
+	)
 
-	fmt.Printf("%s: regenerate all markup files ...\n", logp)
-	w.htmlg.convertFileMarkups(w.fileMarkups, true)
-}
-
-//
-// start watching for changes.
-//
-func (w *watcher) start() (err error) {
-	err = w.dw.Start()
-	if err != nil {
-		return fmt.Errorf("start: %w", err)
-	}
-	if len(w.htmlg.htmlTemplate) > 0 {
-		_, err = libio.NewWatcher(w.htmlg.htmlTemplate, 0, w.onChangeHtmlTemplate)
-		if err != nil {
-			return fmt.Errorf("start: %w", err)
+	for ns = range w.watchTemplate.C {
+		if ns.State == memfs.FileStateDeleted {
+			log.Printf("%s: HTML template file %q has been deleted\n",
+				logp, ns.Node.SysPath)
+			err = w.htmlg.htmlTemplateUseInternal()
+		} else {
+			fmt.Printf("%s: recompiling HTML template %q ...\n", logp,
+				ns.Node.SysPath)
+			err = w.htmlg.htmlTemplateReload()
 		}
+		if err != nil {
+			log.Printf("%s: %s", logp, err)
+			continue
+		}
+
+		fmt.Printf("%s: regenerate all markup files ...\n", logp)
+		w.htmlg.convertFileMarkups(w.fileMarkups, true)
 	}
-	return nil
 }

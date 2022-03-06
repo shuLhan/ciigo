@@ -12,4 +12,4 @@ require (
 
 //replace git.sr.ht/~shulhan/asciidoctor-go => ../asciidoctor-go
 
-//replace github.com/shuLhan/share => ../share
+replace github.com/shuLhan/share => ../share
