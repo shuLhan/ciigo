@@ -291,6 +291,10 @@ func listFileMarkups(dir string, excRE []*regexp.Regexp) (
 		name := fi.Name()
 		filePath := filepath.Join(dir, name)
 
+		if isExcluded(filePath, excRE) {
+			continue
+		}
+
 		if fi.IsDir() {
 			if name[0] == '.' {
 				// Skip any directory start with '.'.
@@ -311,9 +315,6 @@ func listFileMarkups(dir string, excRE []*regexp.Regexp) (
 			continue
 		}
 		if fi.Size() == 0 {
-			continue
-		}
-		if isExcluded(filePath, excRE) {
 			continue
 		}
 		fmarkup, err := newFileMarkup(filePath, fi)
