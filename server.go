@@ -42,6 +42,7 @@ func newServer(opts *ServeOptions) (srv *server, err error) {
 				Excludes: defExcludes,
 			},
 		}
+		opts.IsDevelopment = true
 	}
 
 	opts.Mfs.Opts.Development = opts.IsDevelopment
