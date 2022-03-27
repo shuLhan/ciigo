@@ -35,25 +35,25 @@ func newHTMLGenerator(mfs *memfs.MemFS, htmlTemplate string, devel bool) (
 	if len(htmlTemplate) == 0 {
 		htmlg.tmpl, err = htmlg.tmpl.Parse(templateIndexHTML)
 		if err != nil {
-			return nil, fmt.Errorf("%s: %w", logp, err)
+			return nil, fmt.Errorf("%s: %s: %w", logp, templateIndexHTML, err)
 		}
 	} else if mfs == nil || devel {
 		htmlg.htmlTemplate = filepath.Clean(htmlTemplate)
 
 		bhtml, err := ioutil.ReadFile(htmlg.htmlTemplate)
 		if err != nil {
-			return nil, fmt.Errorf("%s: %w", logp, err)
+			return nil, fmt.Errorf("%s: %s: %w", logp, htmlg.htmlTemplate, err)
 		}
 
 		htmlg.tmpl, err = htmlg.tmpl.Parse(string(bhtml))
 		if err != nil {
-			return nil, fmt.Errorf("%s: %s", logp, err)
+			return nil, fmt.Errorf("%s: Parse: %s", logp, err)
 		}
 	} else {
 		// Load HTML template from memory file system.
 		tmplNode, err := mfs.Get(internalTemplatePath)
 		if err != nil {
-			return nil, fmt.Errorf("%s: %w", logp, err)
+			return nil, fmt.Errorf("%s: %s: %w", logp, internalTemplatePath, err)
 		}
 
 		htmlg.tmpl, err = htmlg.tmpl.Parse(string(tmplNode.Content))
@@ -65,7 +65,7 @@ func newHTMLGenerator(mfs *memfs.MemFS, htmlTemplate string, devel bool) (
 	htmlg.tmplSearch = template.New("search")
 	htmlg.tmplSearch, err = htmlg.tmplSearch.Parse(templateSearch)
 	if err != nil {
-		return nil, fmt.Errorf("%s: %w", logp, err)
+		return nil, fmt.Errorf("%s: %s: %w", logp, templateSearch, err)
 	}
 
 	return htmlg, nil
