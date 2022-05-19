@@ -39,6 +39,15 @@ import (
 	"github.com/shuLhan/share/lib/memfs"
 )
 
+const (
+	cmdConvert = "convert"
+	cmdEmbed   = "embed"
+	cmdServe   = "serve"
+	cmdVersion = "version"
+
+	version = "0.8.1"
+)
+
 func main() {
 	flag.Usage = usage
 	isHelp := flag.Bool("help", false, "print help")
@@ -73,7 +82,7 @@ func main() {
 	command = strings.ToLower(command)
 
 	switch command {
-	case "convert":
+	case cmdConvert:
 		opts := ciigo.ConvertOptions{
 			Root:         dir,
 			HtmlTemplate: *htmlTemplate,
@@ -81,7 +90,7 @@ func main() {
 		}
 		err = ciigo.Convert(&opts)
 
-	case "embed":
+	case cmdEmbed:
 		genOpts := ciigo.EmbedOptions{
 			ConvertOptions: ciigo.ConvertOptions{
 				Root:         dir,
@@ -94,7 +103,7 @@ func main() {
 		}
 		err = ciigo.GoEmbed(&genOpts)
 
-	case "serve":
+	case cmdServe:
 		opts := ciigo.ServeOptions{
 			ConvertOptions: ciigo.ConvertOptions{
 				Root:         dir,
@@ -105,6 +114,9 @@ func main() {
 			IsDevelopment: true,
 		}
 		err = ciigo.Serve(&opts)
+
+	case cmdVersion:
+		fmt.Println(version)
 
 	default:
 		usage()
@@ -141,5 +153,9 @@ ciigo [-template <file>]  [-exclude <regex>] [-address <ip:port>] serve <dir>
 
 	Serve all files inside directory "dir" using HTTP server, watch
 	changes on markup files and convert them to HTML files automatically.
-	If the address is not set, its default to ":8080".`)
+	If the address is not set, its default to ":8080".
+
+ciigo version
+
+	Print the current ciigo version.`)
 }
