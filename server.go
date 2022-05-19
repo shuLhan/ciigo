@@ -13,9 +13,7 @@ import (
 	"github.com/shuLhan/share/lib/memfs"
 )
 
-//
 // server contains the HTTP server that serve the generated HTML files.
-//
 type server struct {
 	http    *libhttp.Server
 	htmlg   *htmlGenerator
@@ -23,13 +21,11 @@ type server struct {
 	opts    ServeOptions
 }
 
-//
 // newServer create an HTTP server to serve HTML files in directory "root".
 //
 // The address parameter is optional, if not set its default to ":8080".
 // The htmlTemplate parameter is optional, if not set its default to
 // embedded HTML template.
-//
 func newServer(opts *ServeOptions) (srv *server, err error) {
 	var (
 		logp = "newServer"
@@ -91,9 +87,7 @@ func newServer(opts *ServeOptions) (srv *server, err error) {
 	return srv, nil
 }
 
-//
 // start the web server.
-//
 func (srv *server) start() (err error) {
 	logp := "start"
 

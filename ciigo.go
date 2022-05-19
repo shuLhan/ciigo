@@ -1,13 +1,11 @@
 // SPDX-FileCopyrightText: 2019 M. Shulhan <ms@kilabit.info>
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-//
 // Package ciigo is a program to write static web server with embedded files
 // using the asciidoc markup languages.
 //
 // For more information see the README file at the page repository
 // https://sr.ht/~shulhan/ciigo.
-//
 package ciigo
 
 import (
@@ -31,7 +29,7 @@ const (
 	metadataStylesheet = "stylesheet"
 )
 
-//nolint: gochecknoglobals
+// nolint: gochecknoglobals
 var (
 	defExcludes = []string{
 		`.*\.adoc$`,
@@ -39,12 +37,10 @@ var (
 	}
 )
 
-//
 // Convert all markup files inside directory "dir" recursively into HTML
 // files using ConvertOptions HtmlTemplate file as base template.
 // If HtmlTemplate is empty it will default to use embedded HTML template.
 // See template_index_html.go for template format.
-//
 func Convert(opts *ConvertOptions) (err error) {
 	var (
 		logp = "Convert"
@@ -76,7 +72,6 @@ func Convert(opts *ConvertOptions) (err error) {
 	return nil
 }
 
-//
 // GoEmbed generate a static Go file that embed all files inside Root except
 // the one that being excluded explicitly by ConvertOptions Exclude.
 //
@@ -87,7 +82,6 @@ func Convert(opts *ConvertOptions) (err error) {
 // If HtmlTemplate option is empty it default to use embedded HTML
 // template.
 // See template_index_html.go for template format.
-//
 func GoEmbed(opts *EmbedOptions) (err error) {
 	var (
 		logp = "GoEmbed"
@@ -148,10 +142,8 @@ func GoEmbed(opts *EmbedOptions) (err error) {
 	return nil
 }
 
-//
 // Serve the content at directory "dir" using HTTP server at specific
 // "address".
-//
 func Serve(opts *ServeOptions) (err error) {
 	var (
 		logp = "Serve"
@@ -177,7 +169,6 @@ func Serve(opts *ServeOptions) (err error) {
 	return nil
 }
 
-//
 // Watch any changes on markup files on directory Root recursively and
 // changes on the HTML template file.
 // If there is new or modified markup files it will convert them into HTML
@@ -186,7 +177,6 @@ func Serve(opts *ServeOptions) (err error) {
 // If the HTML template file modified, it will re-convert all markup files.
 // If the HTML template file deleted, it will replace them with internal,
 // default HTML template.
-//
 func Watch(opts *ConvertOptions) (err error) {
 	var (
 		logp  = "Watch"
@@ -220,10 +210,8 @@ func Watch(opts *ConvertOptions) (err error) {
 	return nil
 }
 
-//
 // isHtmlTemplateNewer will return true if HtmlTemplate is not defined or
 // newer than embedded GoFileName.
-//
 func isHtmlTemplateNewer(opts *EmbedOptions) bool {
 	var (
 		logp = "isHtmlTemplateNewer"
@@ -262,10 +250,8 @@ func isExtensionMarkup(ext string) bool {
 	return ext == extAsciidoc
 }
 
-//
 // listFileMarkups find any markup files inside the content directory,
 // recursively.
-//
 func listFileMarkups(dir string, excRE []*regexp.Regexp) (
 	fileMarkups map[string]*fileMarkup, err error,
 ) {

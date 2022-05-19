@@ -1,10 +1,8 @@
 // SPDX-FileCopyrightText: 2019 Shulhan <ms@kilabit.info>
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-//
 // Program ciigo-example provide an example on how to build a binary that
 // include the static, generated .go file.
-//
 package main
 
 import (

@@ -12,9 +12,7 @@ import (
 	"git.sr.ht/~shulhan/asciidoctor-go"
 )
 
-//
 // fileHtml represent an HTML metadata for header and its body.
-//
 type fileHtml struct {
 	Title       string
 	EmbeddedCSS *template.CSS

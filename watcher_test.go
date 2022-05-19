@@ -140,10 +140,8 @@ func testDelete(t *testing.T) {
 	test.Assert(t, "adoc file deleted", false, gotIsExist)
 }
 
-//
 // removeFooter remove the footer from generated HTML. The footer is 4 lines
 // at the bottom.
-//
 func removeFooter(in string) string {
 	lines := strings.Split(in, "\n")
 	n := len(lines)

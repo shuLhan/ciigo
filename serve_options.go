@@ -9,9 +9,7 @@ const (
 	defAddress = ":8080"
 )
 
-//
 // ServeOptions contains the options to use on Serve function.
-//
 type ServeOptions struct {
 	// Mfs contains pointer to variable generated from Generate.
 	// This option is used to use embedded files for serving on HTTP.

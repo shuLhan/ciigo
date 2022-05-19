@@ -13,9 +13,7 @@ const (
 	DefaultRoot = "."
 )
 
-//
 // ConvertOptions define the options to use on Convert function.
-//
 type ConvertOptions struct {
 	// Root directory where its content will be embedded into Go source
 	// code.

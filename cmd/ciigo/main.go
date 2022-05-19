@@ -1,11 +1,10 @@
 // SPDX-FileCopyrightText: 2019 Shulhan <ms@kilabit.info>
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-//
 // ciigo is a CLI to convert, embed, and/or serve a directory that contains
 // markup files, as HTML files.
 //
-// Usage
+// # Usage
 //
 // The following section describe how to use ciigo CLI.
 //
@@ -27,7 +26,6 @@
 // Serve all files inside directory "dir" using HTTP server, watch changes on
 // markup files and convert them to HTML files.
 // If the address is not set, its default to ":8080".
-//
 package main
 
 import (

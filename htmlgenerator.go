@@ -6,7 +6,6 @@ package ciigo
 import (
 	"fmt"
 	"html/template"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 
@@ -14,9 +13,7 @@ import (
 	"github.com/shuLhan/share/lib/memfs"
 )
 
-//
 // htmlGenerator provide a template to write full HTML file.
-//
 type htmlGenerator struct {
 	tmpl         *template.Template
 	tmplSearch   *template.Template
@@ -40,7 +37,7 @@ func newHTMLGenerator(mfs *memfs.MemFS, htmlTemplate string, devel bool) (
 	} else if mfs == nil || devel {
 		htmlg.htmlTemplate = filepath.Clean(htmlTemplate)
 
-		bhtml, err := ioutil.ReadFile(htmlg.htmlTemplate)
+		bhtml, err := os.ReadFile(htmlg.htmlTemplate)
 		if err != nil {
 			return nil, fmt.Errorf("%s: %s: %w", logp, htmlg.htmlTemplate, err)
 		}
@@ -71,9 +68,7 @@ func newHTMLGenerator(mfs *memfs.MemFS, htmlTemplate string, devel bool) (
 	return htmlg, nil
 }
 
-//
 // convert the markup into HTML.
-//
 func (htmlg *htmlGenerator) convert(fmarkup *fileMarkup) (err error) {
 	doc, err := asciidoctor.Open(fmarkup.path)
 	if err != nil {
@@ -91,9 +86,7 @@ func (htmlg *htmlGenerator) convert(fmarkup *fileMarkup) (err error) {
 	return htmlg.write(fmarkup.fhtml)
 }
 
-//
 // convertFileMarkups convert markup files into HTML.
-//
 func (htmlg *htmlGenerator) convertFileMarkups(fileMarkups map[string]*fileMarkup, isForce bool) {
 	logp := "convertFileMarkups"
 	for _, fmarkup := range fileMarkups {
@@ -128,9 +121,7 @@ func (htmlg *htmlGenerator) htmlTemplateUseInternal() (err error) {
 	return nil
 }
 
-//
 // write the HTML file.
-//
 func (htmlg *htmlGenerator) write(fhtml *fileHtml) (err error) {
 	f, err := os.Create(fhtml.path)
 	if err != nil {

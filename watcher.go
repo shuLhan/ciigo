@@ -14,10 +14,8 @@ import (
 	"github.com/shuLhan/share/lib/memfs"
 )
 
-//
 // watcher watch for changes on all markup files and convert them
 // automatically to HTML.
-//
 type watcher struct {
 	changes       *clise.Clise
 	watchDir      *memfs.DirWatcher
@@ -32,7 +30,6 @@ type watcher struct {
 	dir string
 }
 
-//
 // newWatcher create a watcher that monitor every files changes in directory
 // "dir" for new, modified, and deleted markup files and HTML template file.
 //
@@ -46,7 +43,6 @@ type watcher struct {
 //	+-- watchHtmlTemplate +--> DELETE --> htmlGenerator.htmlTemplateUseInternal()
 //	                      |
 //	                      +--> UPDATE --> htmlGenerated.htmlTemplateReload()
-//
 func newWatcher(htmlg *htmlGenerator, convertOpts *ConvertOptions) (w *watcher, err error) {
 	var (
 		logp = "newWatcher"
@@ -84,9 +80,7 @@ func newWatcher(htmlg *htmlGenerator, convertOpts *ConvertOptions) (w *watcher, 
 	return w, nil
 }
 
-//
 // start watching for changes.
-//
 func (w *watcher) start() (err error) {
 	err = w.watchDir.Start()
 	if err != nil {
@@ -105,10 +99,8 @@ func (w *watcher) start() (err error) {
 	return nil
 }
 
-//
 // watchFileMarkup watch the markup files inside the "content" directory,
 // and re-generate them into HTML file when changed.
-//
 func (w *watcher) watchFileMarkup() {
 	var (
 		logp = "watchFileMarkup"
@@ -173,10 +165,8 @@ func (w *watcher) watchFileMarkup() {
 	}
 }
 
-//
 // watchHtmlTemplate reload the HTML template and re-convert all markup
 // files.
-//
 func (w *watcher) watchHtmlTemplate() {
 	var (
 		logp = "watchHtmlTemplate"
