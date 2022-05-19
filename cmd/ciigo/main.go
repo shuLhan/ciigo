@@ -42,6 +42,7 @@ import (
 const (
 	cmdConvert = "convert"
 	cmdEmbed   = "embed"
+	cmdHelp    = "help"
 	cmdServe   = "serve"
 	cmdVersion = "version"
 
@@ -49,69 +50,65 @@ const (
 )
 
 func main() {
-	flag.Usage = usage
-	isHelp := flag.Bool("help", false, "print help")
+	var (
+		htmlTemplate *string
+		outputFile   *string
+		address      *string
+		exclude      *string
+	)
 
-	htmlTemplate := flag.String("template", "", "path to HTML template")
-	outputFile := flag.String("out", "ciigo_static.go",
+	flag.Usage = usage
+
+	htmlTemplate = flag.String("template", "", "path to HTML template")
+	outputFile = flag.String("out", "ciigo_static.go",
 		"path to output of .go embed file")
-	address := flag.String("address", ":8080",
+	address = flag.String("address", ":8080",
 		"the binding address for HTTP server")
-	exclude := flag.String("exclude", "",
+	exclude = flag.String("exclude", "",
 		"a regex to exclude certain paths from being scanned during covert, embeded, watch, or serve")
 
 	flag.Parse()
 
-	if *isHelp {
-		usage()
-		os.Exit(0)
-	}
+	var (
+		command     = strings.ToLower(flag.Arg(0))
+		convertOpts = ciigo.ConvertOptions{
+			Root:         flag.Arg(1),
+			HtmlTemplate: *htmlTemplate,
+			Exclude:      *exclude,
+		}
 
-	command := flag.Arg(0)
+		err error
+	)
+
 	if len(command) == 0 {
 		usage()
 		os.Exit(1)
 	}
-
-	dir := flag.Arg(1)
-	if len(dir) == 0 {
-		dir = ciigo.DefaultRoot
+	if len(convertOpts.Root) == 0 {
+		convertOpts.Root = ciigo.DefaultRoot
 	}
-
-	var err error
-	command = strings.ToLower(command)
 
 	switch command {
 	case cmdConvert:
-		opts := ciigo.ConvertOptions{
-			Root:         dir,
-			HtmlTemplate: *htmlTemplate,
-			Exclude:      *exclude,
-		}
-		err = ciigo.Convert(&opts)
+		err = ciigo.Convert(&convertOpts)
 
 	case cmdEmbed:
 		genOpts := ciigo.EmbedOptions{
-			ConvertOptions: ciigo.ConvertOptions{
-				Root:         dir,
-				HtmlTemplate: *htmlTemplate,
-				Exclude:      *exclude,
-			},
+			ConvertOptions: convertOpts,
 			EmbedOptions: memfs.EmbedOptions{
 				GoFileName: *outputFile,
 			},
 		}
 		err = ciigo.GoEmbed(&genOpts)
 
+	case cmdHelp:
+		usage()
+
 	case cmdServe:
 		opts := ciigo.ServeOptions{
-			ConvertOptions: ciigo.ConvertOptions{
-				Root:         dir,
-				HtmlTemplate: *htmlTemplate,
-				Exclude:      *exclude,
-			},
-			Address:       *address,
-			IsDevelopment: true,
+			ConvertOptions: convertOpts,
+			Address:        *address,
+			IsDevelopment:  true,
 		}
 		err = ciigo.Serve(&opts)
 
@@ -141,6 +138,10 @@ ciigo [-template <file>] [-exclude <regex>] convert <dir>
 	Scan the "dir" recursively to find markup files.
 	and convert them into HTML files.
 	The template "file" is optional, default to embedded HTML template.
+
+ciigo help
+
+	Print the usage (this output).
 
 ciigo [-template <file>] [-exclude <regex>] [-out <file>] embed <dir>
 
