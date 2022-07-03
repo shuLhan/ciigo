@@ -110,12 +110,11 @@ h3 > span {
 dl {
 	margin: 1.25rem;
 }
+dt {
+	font-weight: bold
+}
 dd {
 	margin: 0 0 0 1.25rem;
-}
-dl,
-dd {
-	font-size: 0.875rem;
 }
 
 /**
