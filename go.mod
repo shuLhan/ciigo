@@ -7,7 +7,7 @@ go 1.16
 
 require (
 	git.sr.ht/~shulhan/asciidoctor-go v0.2.0
-	github.com/shuLhan/share v0.37.0
+	github.com/shuLhan/share v0.39.1-0.20220709072157-a39d5d2246f8
 )
 
 //replace git.sr.ht/~shulhan/asciidoctor-go => ../asciidoctor-go

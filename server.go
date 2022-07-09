@@ -41,7 +41,7 @@ func newServer(opts *ServeOptions) (srv *server, err error) {
 		opts.IsDevelopment = true
 	}
 
-	opts.Mfs.Opts.Development = opts.IsDevelopment
+	opts.Mfs.Opts.TryDirect = opts.IsDevelopment
 
 	srv = &server{
 		opts: *opts,
