@@ -46,7 +46,7 @@ const (
 	cmdServe   = "serve"
 	cmdVersion = "version"
 
-	version = "0.8.1"
+	version = "0.8.2"
 )
 
 func main() {

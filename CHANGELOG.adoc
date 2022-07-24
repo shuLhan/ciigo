@@ -6,6 +6,41 @@ Shulhan <ms@kilabit.info>
 :sectanchors:
 :sectlinks:
 
+
+[#v0_8_2]
+==  ciigo v0.8.2 (2022-07-24)
+
+The latest update on asciidoctor-go refactor the generated ref ID where
+ref ID is no longer prefixed with "\_" if start with ASCII letter.
+
+[#v0_8_2_ehancements]
+===  Enhancements
+
+all: generate HTML meta data and replace the top header title::
++
+--
+The following metadata are rendered based on the same asciidoc
+attributes: author, description, generator, and keywords.
+
+This changes also replace the topbar title with the document title,
+cleanup the HTML header syntax by replacing "/>" with ">", trim leading
+and trailing spaces on Body and embedded CSS.
+--
+
+all: add CSS for admonition block::
++
+--
+The style only applicable for non-icon admonition.
+--
+
+all: update CSS for description list::
++
+--
+Set the list title font weight to be bold and remove the font-size for
+list description to make the font-size consistent.
+--
+
+
 [#v0_8_1]
 ==  ciigo v0.8.1 (2022-05-19)
 
