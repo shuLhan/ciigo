@@ -121,6 +121,49 @@ dd {
  * Custom classes for pages
  */
 
+.admonitionblock > table {
+	border-collapse: separate;
+	border: 0;
+	background: none;
+	width: 100%;
+}
+.admonitionblock > table td.icon {
+	text-align: center;
+	width: 120px;
+}
+.admonitionblock > table td.icon img {
+	max-width: none;
+}
+.admonitionblock > table td.icon .title {
+	font-weight: bold;
+	font-family: "Open Sans","DejaVu Sans",sans-serif;
+	text-transform: uppercase;
+}
+.admonitionblock > table td.content {
+	padding-left: 1.125em;
+	padding-right: 1.25em;
+	border-left: 1px solid #dddddf;
+	word-wrap: anywhere;
+}
+.admonitionblock > table td.content>:last-child>:last-child {
+	margin-bottom: 0;
+}
+.admonitionblock.note td.icon {
+	background-color: whitesmoke;
+}
+.admonitionblock.tip td.icon {
+	background-color: azure;
+}
+.admonitionblock.important td.icon {
+	background-color: honeydew;
+}
+.admonitionblock.caution td.icon {
+	background-color: lavenderbush;
+}
+.admonitionblock.warning td.icon {
+	background-color: mistyrose;
+}
+
 .topbar {
 	background: #e0ebf5;
 	height: 4rem;
