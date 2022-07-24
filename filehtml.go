@@ -12,6 +12,10 @@ import (
 	"git.sr.ht/~shulhan/asciidoctor-go"
 )
 
+const (
+	metadataStylesheet = "stylesheet"
+)
+
 // fileHtml represent an HTML metadata for header and its body.
 type fileHtml struct {
 	Title       string
@@ -42,7 +46,11 @@ func (fhtml *fileHtml) unpackAdocMetadata(doc *asciidoctor.Document) {
 		switch k {
 		case metadataStylesheet:
 			fhtml.Styles = append(fhtml.Styles, v)
-		default:
+		case asciidoctor.MetaNameAuthorNames:
+			fhtml.Metadata[asciidoctor.MetaNameAuthor] = v
+		case asciidoctor.MetaNameDescription,
+			asciidoctor.MetaNameGenerator,
+			asciidoctor.MetaNameKeywords:
 			fhtml.Metadata[k] = v
 		}
 	}

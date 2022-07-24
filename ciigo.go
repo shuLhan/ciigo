@@ -25,10 +25,6 @@ const (
 	internalTemplatePath = "_internal/.template"
 )
 
-const (
-	metadataStylesheet = "stylesheet"
-)
-
 // nolint: gochecknoglobals
 var (
 	defExcludes = []string{

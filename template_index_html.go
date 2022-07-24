@@ -6,25 +6,25 @@ package ciigo
 const templateIndexHTML = `<!DOCTYPE html>
 <html>
 	<head>
-		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<meta name="theme-color" content="#375EAB" />
-
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="theme-color" content="#375EAB">
+		{{range $k, $v := .Metadata -}}
+		<meta name="{{$k}}" content="{{$v}}">
+		{{end -}}
 		<title>{{.Title}}</title>
-
 		<style>
-		{{.EmbeddedCSS}}
+		{{- .EmbeddedCSS -}}
 		</style>
-
 		{{- range .Styles}}
-		<link rel="stylesheet" href="{{.}}" />
+		<link rel="stylesheet" href="{{.}}">
 		{{- end}}
 	</head>
 	<body>
 		<div class="topbar">
 			<div class="container">
 				<div class="top-heading">
-					<a href="/">ciigo</a>
+					<a href="/">{{.Title}}</a>
 				</div>
 				<div class="menu">
 					<form class="item" action="/_internal/search">
@@ -36,11 +36,9 @@ const templateIndexHTML = `<!DOCTYPE html>
 
 		<div class="page">
 			<div class="container">
-				{{.Body}}
+				{{- .Body -}}
 			</div>
-			<!-- .container -->
 		</div>
-		<!-- .page -->
 
 		<div class="footer">
 			Powered by <a
