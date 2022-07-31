@@ -11,16 +11,20 @@ import (
 )
 
 type fileMarkup struct {
-	fhtml *fileHtml   // The HTML output of this markup.
-	info  os.FileInfo // info contains FileInfo of markup file.
+	info os.FileInfo // info contains FileInfo of markup file.
 
 	basePath string // basePath contains full path to file without markup extension.
 	path     string // path contains full path to markup file.
-
+	pathHtml string // path to HTML file.
 }
 
 func newFileMarkup(filePath string, fi os.FileInfo) (fmarkup *fileMarkup, err error) {
-	logp := "newFileMarkup"
+	var (
+		logp = "newFileMarkup"
+
+		ext string
+	)
+
 	if len(filePath) == 0 {
 		return nil, fmt.Errorf("%s: empty path", logp)
 	}
@@ -31,7 +35,7 @@ func newFileMarkup(filePath string, fi os.FileInfo) (fmarkup *fileMarkup, err er
 		}
 	}
 
-	ext := strings.ToLower(filepath.Ext(filePath))
+	ext = strings.ToLower(filepath.Ext(filePath))
 
 	fmarkup = &fileMarkup{
 		path:     filePath,
@@ -39,15 +43,19 @@ func newFileMarkup(filePath string, fi os.FileInfo) (fmarkup *fileMarkup, err er
 		basePath: strings.TrimSuffix(filePath, ext),
 	}
 
-	fmarkup.fhtml = newFileHtml(fmarkup.basePath + ".html")
+	fmarkup.pathHtml = fmarkup.basePath + ".html"
 
 	return fmarkup, nil
 }
 
 // isNewerThanHtml return true if the markup file is newer than HTML file.
 func (fm *fileMarkup) isNewerThanHtml() bool {
-	if fm.fhtml.finfo == nil {
+	var (
+		fi os.FileInfo
+	)
+	fi, _ = os.Stat(fm.pathHtml)
+	if fi == nil {
 		return true
 	}
-	return fm.info.ModTime().After(fm.fhtml.finfo.ModTime())
+	return fm.info.ModTime().After(fi.ModTime())
 }

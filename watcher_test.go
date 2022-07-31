@@ -4,9 +4,9 @@
 package ciigo
 
 import (
+	"bytes"
 	"os"
 	"path/filepath"
-	"strings"
 	"testing"
 	"time"
 
@@ -71,7 +71,8 @@ func TestWatcher(t *testing.T) {
 
 func testCreate(t *testing.T) {
 	var (
-		err error
+		err     error
+		gotBody []byte
 	)
 
 	testFileAdoc = filepath.Join(testWatcher.dir, "index.adoc")
@@ -84,7 +85,10 @@ func testCreate(t *testing.T) {
 
 	test.Assert(t, "New adoc file created", testFileAdoc, got.path)
 
-	expBody := `
+	expBody := `<!DOCTYPE>
+<html>
+<head><title></title></head>
+<body>
 <div id="header">
 <div class="details">
 </div>
@@ -95,12 +99,23 @@ func testCreate(t *testing.T) {
 </div>
 </div>
 </div>`
-	gotBody := removeFooter(string(got.fhtml.Body))
-	test.Assert(t, "HTML body", expBody, gotBody)
+
+	gotBody, err = os.ReadFile(got.pathHtml)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	gotBody = removeFooter(gotBody)
+	test.Assert(t, "HTML body", expBody, string(gotBody))
 }
 
 func testUpdate(t *testing.T) {
-	_, err := testAdocFile.WriteString("= Hello")
+	var (
+		err     error
+		gotBody []byte
+	)
+
+	_, err = testAdocFile.WriteString("= Hello")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -112,7 +127,10 @@ func testUpdate(t *testing.T) {
 	got := waitChanges()
 	test.Assert(t, "adoc file updated", testFileAdoc, got.path)
 
-	expBody := `
+	expBody := `<!DOCTYPE>
+<html>
+<head><title>Hello</title></head>
+<body>
 <div id="header">
 <h1>Hello</h1>
 <div class="details">
@@ -124,8 +142,15 @@ func testUpdate(t *testing.T) {
 </div>
 </div>
 </div>`
-	gotBody := removeFooter(string(got.fhtml.Body))
-	test.Assert(t, "HTML body", expBody, gotBody)
+
+	gotBody, err = os.ReadFile(got.pathHtml)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	gotBody = removeFooter(gotBody)
+
+	test.Assert(t, "HTML body", expBody, string(gotBody))
 }
 
 func testDelete(t *testing.T) {
@@ -146,15 +171,18 @@ func testDelete(t *testing.T) {
 	test.Assert(t, "adoc file deleted", false, gotIsExist)
 }
 
-// removeFooter remove the footer from generated HTML. The footer is 4 lines
-// at the bottom.
-func removeFooter(in string) string {
-	lines := strings.Split(in, "\n")
-	n := len(lines)
-	if n > 5 {
-		lines = lines[:n-5]
+// removeFooter remove the footer from generated HTML since its contains date
+// and time that changes during test.
+func removeFooter(in []byte) (out []byte) {
+	var (
+		lines = bytes.Split(in, []byte("\n"))
+		n     = len(lines)
+	)
+	if n > 7 {
+		lines = lines[:n-7]
 	}
-	return strings.Join(lines, "\n")
+	out = bytes.Join(lines, []byte("\n"))
+	return out
 }
 
 func waitChanges() (fmarkup *fileMarkup) {

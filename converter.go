@@ -6,6 +6,7 @@ package ciigo
 import (
 	"fmt"
 	"html/template"
+	"log"
 	"os"
 	"path/filepath"
 
@@ -60,37 +61,25 @@ func NewConverter(htmlTemplate string) (converter *Converter, err error) {
 	return converter, nil
 }
 
-// convert the markup into HTML.
-func (converter *Converter) convert(fmarkup *fileMarkup) (err error) {
-	doc, err := asciidoctor.Open(fmarkup.path)
-	if err != nil {
-		return err
-	}
-
-	fmarkup.fhtml.rawBody.Reset()
-	err = doc.ToHTMLBody(&fmarkup.fhtml.rawBody)
-	if err != nil {
-		return err
-	}
-
-	fmarkup.fhtml.unpackAdocMetadata(doc)
-
-	return converter.write(fmarkup.fhtml)
-}
-
 // convertFileMarkups convert markup files into HTML.
 func (converter *Converter) convertFileMarkups(fileMarkups map[string]*fileMarkup, isForce bool) {
-	logp := "convertFileMarkups"
-	for _, fmarkup := range fileMarkups {
+	var (
+		logp = "convertFileMarkups"
+
+		fmarkup *fileMarkup
+		err     error
+	)
+
+	for _, fmarkup = range fileMarkups {
 		if !fmarkup.isNewerThanHtml() {
 			if !isForce {
 				continue
 			}
 		}
 
-		err := converter.convert(fmarkup)
+		err = converter.ToHtmlFile(fmarkup.path, fmarkup.pathHtml)
 		if err != nil {
-			fmt.Printf("%s: %s\n", logp, err)
+			log.Printf("%s: %s", logp, err)
 		} else {
 			fmt.Printf("%s: converting %s\n", logp, fmarkup.path)
 		}
@@ -113,21 +102,45 @@ func (converter *Converter) htmlTemplateUseInternal() (err error) {
 	return nil
 }
 
-// write the HTML file.
-func (converter *Converter) write(fhtml *fileHtml) (err error) {
-	f, err := os.Create(fhtml.path)
+// ToHtmlFile convert the AsciiDoc file to HTML.
+func (converter *Converter) ToHtmlFile(pathAdoc, pathHtml string) (err error) {
+	var (
+		logp  = "ToHtmlFile"
+		fhtml = newFileHtml()
+
+		htmlBody string
+		doc      *asciidoctor.Document
+		f        *os.File
+	)
+
+	doc, err = asciidoctor.Open(pathAdoc)
 	if err != nil {
-		return err
+		return fmt.Errorf("%s: %w", logp, err)
+	}
+
+	err = doc.ToHTMLBody(&fhtml.rawBody)
+	if err != nil {
+		return fmt.Errorf("%s: %w", logp, err)
+	}
+
+	fhtml.unpackAdocMetadata(doc)
+
+	htmlBody = fhtml.rawBody.String()
+	fhtml.Body = template.HTML(htmlBody)
+
+	f, err = os.Create(pathHtml)
+	if err != nil {
+		return fmt.Errorf("%s: %w", logp, err)
 	}
 
 	err = converter.tmpl.Execute(f, fhtml)
 	if err != nil {
-		return err
+		return fmt.Errorf("%s: %w", logp, err)
 	}
 
 	err = f.Close()
 	if err != nil {
-		return err
+		return fmt.Errorf("%s: %w", logp, err)
 	}
 
 	return nil

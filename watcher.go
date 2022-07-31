@@ -38,7 +38,7 @@ type watcher struct {
 //
 //	watcher
 //	|
-//	+-- watchFileMarkup --> UPDATE --> Converter.convert()
+//	+-- watchFileMarkup --> UPDATE --> Converter.ToHtmlFile()
 //	|
 //	+-- watchHtmlTemplate +--> DELETE --> Converter.htmlTemplateUseInternal()
 //	                      |
@@ -156,9 +156,9 @@ func (w *watcher) watchFileMarkup() {
 			}
 		}
 
-		err = w.converter.convert(fmarkup)
+		err = w.converter.ToHtmlFile(fmarkup.path, fmarkup.pathHtml)
 		if err != nil {
-			log.Printf("%s: %s\n", logp, err)
+			log.Printf("%s: %s", logp, err)
 		}
 
 		w.changes.Push(fmarkup)

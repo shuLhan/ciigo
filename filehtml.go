@@ -5,8 +5,6 @@ package ciigo
 
 import (
 	"html/template"
-	"io/fs"
-	"os"
 	"strings"
 
 	"git.sr.ht/~shulhan/asciidoctor-go"
@@ -24,25 +22,26 @@ type fileHtml struct {
 	Body        template.HTML
 	Metadata    map[string]string
 
-	path    string
-	finfo   fs.FileInfo
 	rawBody strings.Builder
 }
 
-func newFileHtml(path string) (fhtml *fileHtml) {
+func newFileHtml() (fhtml *fileHtml) {
 	fhtml = &fileHtml{
-		path: path,
+		Metadata: map[string]string{},
 	}
-	fhtml.finfo, _ = os.Stat(path)
 	return fhtml
 }
 
 func (fhtml *fileHtml) unpackAdocMetadata(doc *asciidoctor.Document) {
+	var (
+		k string
+		v string
+	)
+
 	fhtml.Title = doc.Title.String()
 	fhtml.Styles = fhtml.Styles[:0]
-	fhtml.Metadata = make(map[string]string, len(doc.Attributes))
 
-	for k, v := range doc.Attributes {
+	for k, v = range doc.Attributes {
 		switch k {
 		case metadataStylesheet:
 			fhtml.Styles = append(fhtml.Styles, v)
@@ -58,6 +57,4 @@ func (fhtml *fileHtml) unpackAdocMetadata(doc *asciidoctor.Document) {
 	if len(fhtml.Styles) == 0 {
 		fhtml.EmbeddedCSS = embeddedCSS()
 	}
-
-	fhtml.Body = template.HTML(fhtml.rawBody.String())
 }
