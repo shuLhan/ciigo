@@ -20,9 +20,17 @@ var (
 )
 
 func TestWatcher(t *testing.T) {
-	testDir := "testdata/watcher"
+	var (
+		testDir     = "testdata/watcher"
+		convertOpts = ConvertOptions{
+			Root: testDir,
+		}
 
-	err := os.RemoveAll(testDir)
+		converter *Converter
+		err       error
+	)
+
+	err = os.RemoveAll(testDir)
 	if err != nil {
 		t.Logf(err.Error())
 	}
@@ -36,20 +44,17 @@ func TestWatcher(t *testing.T) {
 		os.RemoveAll(testDir)
 	})
 
-	htmlg, err := newHTMLGenerator(nil, "testdata/html.tmpl", true)
+	converter, err = NewConverter("testdata/html.tmpl")
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	convertOpts := ConvertOptions{
-		Root: testDir,
-	}
 	err = convertOpts.init()
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	testWatcher, err = newWatcher(htmlg, &convertOpts)
+	testWatcher, err = newWatcher(converter, &convertOpts)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -68,6 +73,7 @@ func testCreate(t *testing.T) {
 	var (
 		err error
 	)
+
 	testFileAdoc = filepath.Join(testWatcher.dir, "index.adoc")
 	testAdocFile, err = os.Create(testFileAdoc)
 	if err != nil {

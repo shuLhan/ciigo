@@ -41,7 +41,7 @@ func Convert(opts *ConvertOptions) (err error) {
 	var (
 		logp = "Convert"
 
-		htmlg       *htmlGenerator
+		converter   *Converter
 		fileMarkups map[string]*fileMarkup
 	)
 
@@ -53,7 +53,7 @@ func Convert(opts *ConvertOptions) (err error) {
 		return fmt.Errorf("%s: %w", logp, err)
 	}
 
-	htmlg, err = newHTMLGenerator(nil, opts.HtmlTemplate, true)
+	converter, err = NewConverter(opts.HtmlTemplate)
 	if err != nil {
 		return fmt.Errorf("%s: %w", logp, err)
 	}
@@ -63,7 +63,7 @@ func Convert(opts *ConvertOptions) (err error) {
 		return fmt.Errorf("%s: %w", logp, err)
 	}
 
-	htmlg.convertFileMarkups(fileMarkups, false)
+	converter.convertFileMarkups(fileMarkups, false)
 
 	return nil
 }
@@ -82,7 +82,7 @@ func GoEmbed(opts *EmbedOptions) (err error) {
 	var (
 		logp = "GoEmbed"
 
-		htmlg        *htmlGenerator
+		converter    *Converter
 		fileMarkups  map[string]*fileMarkup
 		mfs          *memfs.MemFS
 		convertForce bool
@@ -96,7 +96,7 @@ func GoEmbed(opts *EmbedOptions) (err error) {
 		return fmt.Errorf("%s: %w", logp, err)
 	}
 
-	htmlg, err = newHTMLGenerator(nil, opts.HtmlTemplate, true)
+	converter, err = NewConverter(opts.HtmlTemplate)
 	if err != nil {
 		return fmt.Errorf("%s: %w", logp, err)
 	}
@@ -110,7 +110,7 @@ func GoEmbed(opts *EmbedOptions) (err error) {
 		convertForce = true
 	}
 
-	htmlg.convertFileMarkups(fileMarkups, convertForce)
+	converter.convertFileMarkups(fileMarkups, convertForce)
 
 	memfsOpts := &memfs.Options{
 		Root:     opts.Root,
@@ -175,9 +175,10 @@ func Serve(opts *ServeOptions) (err error) {
 // default HTML template.
 func Watch(opts *ConvertOptions) (err error) {
 	var (
-		logp  = "Watch"
-		htmlg *htmlGenerator
-		w     *watcher
+		logp = "Watch"
+
+		converter *Converter
+		w         *watcher
 	)
 
 	if opts == nil {
@@ -188,12 +189,12 @@ func Watch(opts *ConvertOptions) (err error) {
 		return fmt.Errorf("%s: %w", logp, err)
 	}
 
-	htmlg, err = newHTMLGenerator(nil, opts.HtmlTemplate, true)
+	converter, err = NewConverter(opts.HtmlTemplate)
 	if err != nil {
 		return fmt.Errorf("%s: %w", logp, err)
 	}
 
-	w, err = newWatcher(htmlg, opts)
+	w, err = newWatcher(converter, opts)
 	if err != nil {
 		return fmt.Errorf("%s: %w", logp, err)
 	}

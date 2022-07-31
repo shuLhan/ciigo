@@ -15,10 +15,10 @@ import (
 
 // server contains the HTTP server that serve the generated HTML files.
 type server struct {
-	http    *libhttp.Server
-	htmlg   *htmlGenerator
-	watcher *watcher
-	opts    ServeOptions
+	http      *libhttp.Server
+	converter *Converter
+	watcher   *watcher
+	opts      ServeOptions
 }
 
 // newServer create an HTTP server to serve HTML files in directory "root".
@@ -29,6 +29,8 @@ type server struct {
 func newServer(opts *ServeOptions) (srv *server, err error) {
 	var (
 		logp = "newServer"
+
+		tmplNode *memfs.Node
 	)
 
 	if opts.Mfs == nil {
@@ -70,18 +72,27 @@ func newServer(opts *ServeOptions) (srv *server, err error) {
 		return nil, fmt.Errorf("%s: %w", logp, err)
 	}
 
-	srv.htmlg, err = newHTMLGenerator(opts.Mfs, opts.HtmlTemplate, opts.IsDevelopment)
+	srv.converter, err = NewConverter(opts.HtmlTemplate)
 	if err != nil {
 		return nil, fmt.Errorf("%s: %w", logp, err)
 	}
 
+	// Optionally, load HTML template from memory file system.
+	tmplNode, _ = opts.Mfs.Get(internalTemplatePath)
+	if tmplNode != nil {
+		srv.converter.tmpl, err = srv.converter.tmpl.Parse(string(tmplNode.Content))
+		if err != nil {
+			return nil, fmt.Errorf("%s: %s", logp, err)
+		}
+	}
+
 	if opts.IsDevelopment {
-		srv.watcher, err = newWatcher(srv.htmlg, &opts.ConvertOptions)
+		srv.watcher, err = newWatcher(srv.converter, &opts.ConvertOptions)
 		if err != nil {
 			return nil, fmt.Errorf("%s: %w", logp, err)
 		}
 
-		srv.htmlg.convertFileMarkups(srv.watcher.fileMarkups, false)
+		srv.converter.convertFileMarkups(srv.watcher.fileMarkups, false)
 	}
 
 	return srv, nil
@@ -116,7 +127,7 @@ func (srv *server) onSearch(epr *libhttp.EndpointRequest) (resBody []byte, err e
 	q := epr.HttpRequest.Form.Get("q")
 	results := srv.http.Options.Memfs.Search(strings.Fields(q), 0)
 
-	err = srv.htmlg.tmplSearch.Execute(&bufSearch, results)
+	err = srv.converter.tmplSearch.Execute(&bufSearch, results)
 	if err != nil {
 		return nil, fmt.Errorf("%s: %w", logp, err)
 	}
@@ -125,7 +136,7 @@ func (srv *server) onSearch(epr *libhttp.EndpointRequest) (resBody []byte, err e
 		Body: template.HTML(bufSearch.String()), //nolint: gosec
 	}
 
-	err = srv.htmlg.tmpl.Execute(&buf, fhtml)
+	err = srv.converter.tmpl.Execute(&buf, fhtml)
 	if err != nil {
 		return nil, fmt.Errorf("%s: %w", logp, err)
 	}

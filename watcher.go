@@ -20,7 +20,7 @@ type watcher struct {
 	changes       *clise.Clise
 	watchDir      *memfs.DirWatcher
 	watchTemplate *memfs.Watcher
-	htmlg         *htmlGenerator
+	converter     *Converter
 
 	// fileMarkups contains all markup files found inside "dir".
 	// Its used to convert all markup files when the template file
@@ -33,25 +33,25 @@ type watcher struct {
 // newWatcher create a watcher that monitor every files changes in directory
 // "dir" for new, modified, and deleted markup files and HTML template file.
 //
-// The watcher depends on htmlGenerator to convert the markup to HTML using
-// the HTML template in htmlGenerator.
+// The watcher depends on Converter to convert the markup to HTML using
+// the HTML template in Converter.
 //
 //	watcher
 //	|
-//	+-- watchFileMarkup --> UPDATE --> htmlGenerator.convert()
+//	+-- watchFileMarkup --> UPDATE --> Converter.convert()
 //	|
-//	+-- watchHtmlTemplate +--> DELETE --> htmlGenerator.htmlTemplateUseInternal()
+//	+-- watchHtmlTemplate +--> DELETE --> Converter.htmlTemplateUseInternal()
 //	                      |
-//	                      +--> UPDATE --> htmlGenerated.htmlTemplateReload()
-func newWatcher(htmlg *htmlGenerator, convertOpts *ConvertOptions) (w *watcher, err error) {
+//	                      +--> UPDATE --> Converter.htmlTemplateReload()
+func newWatcher(converter *Converter, convertOpts *ConvertOptions) (w *watcher, err error) {
 	var (
 		logp = "newWatcher"
 	)
 
 	w = &watcher{
-		dir:     convertOpts.Root,
-		htmlg:   htmlg,
-		changes: clise.New(1),
+		dir:       convertOpts.Root,
+		converter: converter,
+		changes:   clise.New(1),
 	}
 	w.watchDir = &memfs.DirWatcher{
 		Options: memfs.Options{
@@ -89,8 +89,8 @@ func (w *watcher) start() (err error) {
 
 	go w.watchFileMarkup()
 
-	if len(w.htmlg.htmlTemplate) > 0 {
-		w.watchTemplate, err = memfs.NewWatcher(w.htmlg.htmlTemplate, 0)
+	if len(w.converter.htmlTemplate) > 0 {
+		w.watchTemplate, err = memfs.NewWatcher(w.converter.htmlTemplate, 0)
 		if err != nil {
 			return fmt.Errorf("start: %w", err)
 		}
@@ -156,7 +156,7 @@ func (w *watcher) watchFileMarkup() {
 			}
 		}
 
-		err = w.htmlg.convert(fmarkup)
+		err = w.converter.convert(fmarkup)
 		if err != nil {
 			log.Printf("%s: %s\n", logp, err)
 		}
@@ -179,11 +179,11 @@ func (w *watcher) watchHtmlTemplate() {
 		if ns.State == memfs.FileStateDeleted {
 			log.Printf("%s: HTML template file %q has been deleted\n",
 				logp, ns.Node.SysPath)
-			err = w.htmlg.htmlTemplateUseInternal()
+			err = w.converter.htmlTemplateUseInternal()
 		} else {
 			fmt.Printf("%s: recompiling HTML template %q ...\n", logp,
 				ns.Node.SysPath)
-			err = w.htmlg.htmlTemplateReload()
+			err = w.converter.htmlTemplateReload()
 		}
 		if err != nil {
 			log.Printf("%s: %s", logp, err)
@@ -191,6 +191,6 @@ func (w *watcher) watchHtmlTemplate() {
 		}
 
 		fmt.Printf("%s: regenerate all markup files ...\n", logp)
-		w.htmlg.convertFileMarkups(w.fileMarkups, true)
+		w.converter.convertFileMarkups(w.fileMarkups, true)
 	}
 }
