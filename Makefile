@@ -1,14 +1,12 @@
 ## SPDX-FileCopyrightText: 2019 Shulhan <ms@kilabit.info>
 ## SPDX-License-Identifier: GPL-3.0-or-later
 
-RELEASES:= \
-	_bin/ciigo-linux-amd64 \
-	_bin/ciigo-darwin-amd64
-
-.PHONY: all lint test install serve build build-release
+.PHONY: all lint test install build
 .FORCE:
 
-all: test lint
+DIR_BUILD=_bin
+
+all: test lint build
 
 lint:
 	golangci-lint run ./...
@@ -23,14 +21,6 @@ install:
 run-example:
 	DEBUG=1 go run ./cmd/ciigo-example
 
-build-release: $(RELEASES)
-
-_bin/ciigo-linux-amd64: .FORCE
-_bin/ciigo-linux-amd64:
-	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 \
-		go build -o $@ ./cmd/ciigo
-
-_bin/ciigo-darwin-amd64: .FORCE
-_bin/ciigo-darwin-amd64:
-	CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 \
-		go build -o $@ ./cmd/ciigo
+build:
+	mkdir -p $(DIR_BUILD)
+	CGO_ENABLED=0 go build -o $(DIR_BUILD) ./cmd/...

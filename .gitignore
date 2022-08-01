@@ -2,6 +2,5 @@
 ## SPDX-License-Identifier: GPL-3.0-or-later
 /ciigo
 /ciigo-example
-/_bin/ciigo-darwin-amd64
-/_bin/ciigo-linux-amd64
+/_bin
 *.html
