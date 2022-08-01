@@ -14,7 +14,7 @@ lint:
 	golangci-lint run ./...
 
 test:
-	go run ./internal/cmd/goembed
+	go run ./cmd/ciigo-example embed
 	CGO_ENABLED=1 go test -v -race ./...
 
 install:
