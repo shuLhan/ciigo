@@ -12,14 +12,12 @@ import (
 )
 
 func TestListFileMarkups(t *testing.T) {
-	var (
-		dir = "testdata"
-	)
-
-	cases := []struct {
+	type testCase struct {
 		excRegex string
 		exp      []string
-	}{{
+	}
+
+	var cases = []testCase{{
 		excRegex: `(ex)/.*`,
 		exp: []string{
 			"testdata/in/clu/de/file.adoc",
@@ -36,16 +34,27 @@ func TestListFileMarkups(t *testing.T) {
 		},
 	}}
 
-	for _, c := range cases {
-		excre := regexp.MustCompile(c.excRegex)
+	var (
+		dir = "testdata"
 
-		list, err := listFileMarkups(dir, []*regexp.Regexp{excre})
+		c     testCase
+		excre *regexp.Regexp
+		list  map[string]*fileMarkup
+		got   []string
+		k     string
+		err   error
+	)
+
+	for _, c = range cases {
+		excre = regexp.MustCompile(c.excRegex)
+
+		list, err = listFileMarkups(dir, []*regexp.Regexp{excre})
 		if err != nil {
 			t.Fatal(err)
 		}
 
-		got := make([]string, 0, len(list))
-		for k := range list {
+		got = make([]string, 0, len(list))
+		for k = range list {
 			got = append(got, k)
 		}
 

@@ -85,6 +85,7 @@ func GoEmbed(opts *EmbedOptions) (err error) {
 		converter    *Converter
 		fileMarkups  map[string]*fileMarkup
 		mfs          *memfs.MemFS
+		mfsOpts      *memfs.Options
 		convertForce bool
 	)
 
@@ -112,13 +113,13 @@ func GoEmbed(opts *EmbedOptions) (err error) {
 
 	converter.convertFileMarkups(fileMarkups, convertForce)
 
-	memfsOpts := &memfs.Options{
+	mfsOpts = &memfs.Options{
 		Root:     opts.Root,
 		Excludes: defExcludes,
 		Embed:    opts.EmbedOptions,
 	}
 
-	mfs, err = memfs.New(memfsOpts)
+	mfs, err = memfs.New(mfsOpts)
 	if err != nil {
 		return fmt.Errorf("%s: %w", logp, err)
 	}
@@ -254,8 +255,16 @@ func listFileMarkups(dir string, excRE []*regexp.Regexp) (
 ) {
 	var (
 		logp = "listFileMarkups"
-		d    *os.File
-		fis  []os.FileInfo
+
+		d        *os.File
+		fi       os.FileInfo
+		fmarkup  *fileMarkup
+		name     string
+		filePath string
+		k        string
+		ext      string
+		fis      []os.FileInfo
+		fmarkups map[string]*fileMarkup
 	)
 
 	d, err = os.Open(dir)
@@ -270,9 +279,9 @@ func listFileMarkups(dir string, excRE []*regexp.Regexp) (
 
 	fileMarkups = make(map[string]*fileMarkup)
 
-	for _, fi := range fis {
-		name := fi.Name()
-		filePath := filepath.Join(dir, name)
+	for _, fi = range fis {
+		name = fi.Name()
+		filePath = filepath.Join(dir, name)
 
 		if isExcluded(filePath, excRE) {
 			continue
@@ -283,24 +292,24 @@ func listFileMarkups(dir string, excRE []*regexp.Regexp) (
 				// Skip any directory start with '.'.
 				continue
 			}
-			fmarkups, err := listFileMarkups(filePath, excRE)
+			fmarkups, err = listFileMarkups(filePath, excRE)
 			if err != nil {
 				return nil, fmt.Errorf("%s: %s: %w", logp, filePath, err)
 			}
-			for k, v := range fmarkups {
-				fileMarkups[k] = v
+			for k, fmarkup = range fmarkups {
+				fileMarkups[k] = fmarkup
 			}
 			continue
 		}
 
-		ext := strings.ToLower(filepath.Ext(name))
+		ext = strings.ToLower(filepath.Ext(name))
 		if !isExtensionMarkup(ext) {
 			continue
 		}
 		if fi.Size() == 0 {
 			continue
 		}
-		fmarkup, err := newFileMarkup(filePath, fi)
+		fmarkup, err = newFileMarkup(filePath, fi)
 		if err != nil {
 			return nil, fmt.Errorf("%s: %s: %w", logp, filePath, err)
 		}
@@ -314,7 +323,9 @@ func isExcluded(path string, excs []*regexp.Regexp) bool {
 	if len(excs) == 0 {
 		return false
 	}
-	for _, re := range excs {
+
+	var re *regexp.Regexp
+	for _, re = range excs {
 		if re.MatchString(path) {
 			return true
 		}

@@ -36,7 +36,6 @@ import (
 	"strings"
 
 	"git.sr.ht/~shulhan/ciigo"
-	"github.com/shuLhan/share/lib/memfs"
 )
 
 const (
@@ -77,7 +76,9 @@ func main() {
 			Exclude:      *exclude,
 		}
 
-		err error
+		embedOpts ciigo.EmbedOptions
+		serveOpts ciigo.ServeOptions
+		err       error
 	)
 
 	if len(command) == 0 {
@@ -93,24 +94,19 @@ func main() {
 		err = ciigo.Convert(&convertOpts)
 
 	case cmdEmbed:
-		genOpts := ciigo.EmbedOptions{
-			ConvertOptions: convertOpts,
-			EmbedOptions: memfs.EmbedOptions{
-				GoFileName: *outputFile,
-			},
-		}
-		err = ciigo.GoEmbed(&genOpts)
+		embedOpts.ConvertOptions = convertOpts
+		embedOpts.EmbedOptions.GoFileName = *outputFile
+
+		err = ciigo.GoEmbed(&embedOpts)
 
 	case cmdHelp:
 		usage()
 
 	case cmdServe:
-		opts := ciigo.ServeOptions{
-			ConvertOptions: convertOpts,
-			Address:        *address,
-			IsDevelopment:  true,
-		}
-		err = ciigo.Serve(&opts)
+		serveOpts.ConvertOptions = convertOpts
+		serveOpts.Address = *address
+		serveOpts.IsDevelopment = true
+		err = ciigo.Serve(&serveOpts)
 
 	case cmdVersion:
 		fmt.Println(version)

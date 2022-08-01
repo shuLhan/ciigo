@@ -71,7 +71,9 @@ func TestWatcher(t *testing.T) {
 
 func testCreate(t *testing.T) {
 	var (
+		got     *fileMarkup
 		err     error
+		expBody string
 		gotBody []byte
 	)
 
@@ -81,11 +83,11 @@ func testCreate(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	got := waitChanges()
+	got = waitChanges()
 
 	test.Assert(t, "New adoc file created", testFileAdoc, got.path)
 
-	expBody := `<!DOCTYPE>
+	expBody = `<!DOCTYPE>
 <html>
 <head><title></title></head>
 <body>
@@ -112,7 +114,9 @@ func testCreate(t *testing.T) {
 func testUpdate(t *testing.T) {
 	var (
 		err     error
+		expBody string
 		gotBody []byte
+		got     *fileMarkup
 	)
 
 	_, err = testAdocFile.WriteString("= Hello")
@@ -124,10 +128,10 @@ func testUpdate(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	got := waitChanges()
+	got = waitChanges()
 	test.Assert(t, "adoc file updated", testFileAdoc, got.path)
 
-	expBody := `<!DOCTYPE>
+	expBody = `<!DOCTYPE>
 <html>
 <head><title>Hello</title></head>
 <body>
@@ -154,7 +158,13 @@ func testUpdate(t *testing.T) {
 }
 
 func testDelete(t *testing.T) {
-	err := testAdocFile.Close()
+	var (
+		err        error
+		got        *fileMarkup
+		gotIsExist bool
+	)
+
+	err = testAdocFile.Close()
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -164,10 +174,10 @@ func testDelete(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	got := waitChanges()
+	got = waitChanges()
 	test.Assert(t, "adoc file updated", testFileAdoc, got.path)
 
-	_, gotIsExist := testWatcher.fileMarkups[testFileAdoc]
+	_, gotIsExist = testWatcher.fileMarkups[testFileAdoc]
 	test.Assert(t, "adoc file deleted", false, gotIsExist)
 }
 

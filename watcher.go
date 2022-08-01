@@ -107,11 +107,13 @@ func (w *watcher) watchFileMarkup() {
 
 		ns      memfs.NodeState
 		fmarkup *fileMarkup
+		ext     string
 		err     error
+		ok      bool
 	)
 
 	for ns = range w.watchDir.C {
-		ext := strings.ToLower(filepath.Ext(ns.Node.SysPath))
+		ext = strings.ToLower(filepath.Ext(ns.Node.SysPath))
 		if !isExtensionMarkup(ext) {
 			continue
 		}
@@ -119,7 +121,7 @@ func (w *watcher) watchFileMarkup() {
 		switch ns.State {
 		case memfs.FileStateDeleted:
 			fmt.Printf("%s: %q deleted\n", logp, ns.Node.SysPath)
-			fmarkup, ok := w.fileMarkups[ns.Node.SysPath]
+			fmarkup, ok = w.fileMarkups[ns.Node.SysPath]
 			if ok {
 				delete(w.fileMarkups, ns.Node.SysPath)
 				w.changes.Push(fmarkup)

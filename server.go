@@ -30,7 +30,9 @@ func newServer(opts *ServeOptions) (srv *server, err error) {
 	var (
 		logp = "newServer"
 
-		tmplNode *memfs.Node
+		tmplNode   *memfs.Node
+		httpdOpts  *libhttp.ServerOptions
+		epInSearch *libhttp.Endpoint
 	)
 
 	if opts.Mfs == nil {
@@ -49,7 +51,7 @@ func newServer(opts *ServeOptions) (srv *server, err error) {
 		opts: *opts,
 	}
 
-	httpdOpts := &libhttp.ServerOptions{
+	httpdOpts = &libhttp.ServerOptions{
 		Memfs:   opts.Mfs,
 		Address: opts.Address,
 	}
@@ -59,7 +61,7 @@ func newServer(opts *ServeOptions) (srv *server, err error) {
 		return nil, fmt.Errorf("%s: %w", logp, err)
 	}
 
-	epInSearch := &libhttp.Endpoint{
+	epInSearch = &libhttp.Endpoint{
 		Method:       libhttp.RequestMethodGet,
 		Path:         "/_internal/search",
 		RequestType:  libhttp.RequestTypeQuery,
@@ -100,10 +102,12 @@ func newServer(opts *ServeOptions) (srv *server, err error) {
 
 // start the web server.
 func (srv *server) start() (err error) {
-	logp := "start"
+	var (
+		logp = "start"
+	)
 
 	if srv.opts.IsDevelopment {
-		err := srv.watcher.start()
+		err = srv.watcher.start()
 		if err != nil {
 			return fmt.Errorf("%s: %w", logp, err)
 		}
@@ -121,20 +125,28 @@ func (srv *server) start() (err error) {
 }
 
 func (srv *server) onSearch(epr *libhttp.EndpointRequest) (resBody []byte, err error) {
-	var bufSearch, buf bytes.Buffer
-	logp := "onSearch"
+	var (
+		logp = "onSearch"
 
-	q := epr.HttpRequest.Form.Get("q")
-	results := srv.http.Options.Memfs.Search(strings.Fields(q), 0)
+		fhtml   *fileHtml
+		buf     bytes.Buffer
+		q       string
+		results []memfs.SearchResult
+	)
 
-	err = srv.converter.tmplSearch.Execute(&bufSearch, results)
+	q = epr.HttpRequest.Form.Get("q")
+	results = srv.http.Options.Memfs.Search(strings.Fields(q), 0)
+
+	err = srv.converter.tmplSearch.Execute(&buf, results)
 	if err != nil {
 		return nil, fmt.Errorf("%s: %w", logp, err)
 	}
 
-	fhtml := &fileHtml{
-		Body: template.HTML(bufSearch.String()), //nolint: gosec
+	fhtml = &fileHtml{
+		Body: template.HTML(buf.String()),
 	}
+
+	buf.Reset()
 
 	err = srv.converter.tmpl.Execute(&buf, fhtml)
 	if err != nil {

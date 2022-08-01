@@ -9,26 +9,32 @@ package main
 import (
 	"log"
 
-	"git.sr.ht/~shulhan/ciigo"
 	"github.com/shuLhan/share/lib/memfs"
+
+	"git.sr.ht/~shulhan/ciigo"
 )
 
 func main() {
-	opts := ciigo.EmbedOptions{
-		ConvertOptions: ciigo.ConvertOptions{
-			Root:         "_example",
-			HtmlTemplate: "_example/html.tmpl",
-		},
-		EmbedOptions: memfs.EmbedOptions{
-			CommentHeader: `// SPDX-FileCopyrightText: 2019 Shulhan <ms@kilabit.info>
+	var (
+		opts = ciigo.EmbedOptions{
+			ConvertOptions: ciigo.ConvertOptions{
+				Root:         "_example",
+				HtmlTemplate: "_example/html.tmpl",
+			},
+			EmbedOptions: memfs.EmbedOptions{
+				CommentHeader: `// SPDX-FileCopyrightText: 2019 Shulhan <ms@kilabit.info>
 // SPDX-License-Identifier: GPL-3.0-or-later
 `,
-			PackageName: "main",
-			VarName:     "ciigoFS",
-			GoFileName:  "cmd/ciigo-example/static.go",
-		},
-	}
-	err := ciigo.GoEmbed(&opts)
+				PackageName: "main",
+				VarName:     "ciigoFS",
+				GoFileName:  "cmd/ciigo-example/static.go",
+			},
+		}
+
+		err error
+	)
+
+	err = ciigo.GoEmbed(&opts)
 	if err != nil {
 		log.Fatal(err)
 	}
