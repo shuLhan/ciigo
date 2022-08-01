@@ -17,7 +17,7 @@ import (
 type Converter struct {
 	tmpl         *template.Template
 	tmplSearch   *template.Template
-	htmlTemplate string
+	htmlTemplate string // Path to HTML template in storage.
 }
 
 // NewConverter create and initialize Converter with HTML template.
@@ -86,19 +86,21 @@ func (converter *Converter) convertFileMarkups(fileMarkups map[string]*fileMarku
 	}
 }
 
-func (converter *Converter) htmlTemplateReload() (err error) {
-	converter.tmpl, err = template.ParseFiles(converter.htmlTemplate)
+func (converter *Converter) htmlTemplateUseInternal() (err error) {
+	converter.tmpl, err = converter.tmpl.Parse(templateIndexHTML)
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func (converter *Converter) htmlTemplateUseInternal() (err error) {
-	converter.tmpl, err = converter.tmpl.Parse(templateIndexHTML)
+// SetHtmlTemplateFile set the HTML template from file.
+func (converter *Converter) SetHtmlTemplateFile(pathHtmlTemplate string) (err error) {
+	converter.tmpl, err = template.ParseFiles(pathHtmlTemplate)
 	if err != nil {
 		return err
 	}
+	converter.htmlTemplate = pathHtmlTemplate
 	return nil
 }
 

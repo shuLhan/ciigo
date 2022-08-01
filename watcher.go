@@ -183,7 +183,7 @@ func (w *watcher) watchHtmlTemplate() {
 		} else {
 			fmt.Printf("%s: recompiling HTML template %q ...\n", logp,
 				ns.Node.SysPath)
-			err = w.converter.htmlTemplateReload()
+			err = w.converter.SetHtmlTemplateFile(w.converter.htmlTemplate)
 		}
 		if err != nil {
 			log.Printf("%s: %s", logp, err)
