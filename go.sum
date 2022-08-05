@@ -1,7 +1,7 @@
-git.sr.ht/~shulhan/asciidoctor-go v0.3.0 h1:nUhMYSDXcyZ1GoHYVJlD8K+PgONkDgQJFpjPsJi9kJg=
-git.sr.ht/~shulhan/asciidoctor-go v0.3.0/go.mod h1:Olg6GxxnMj0Yj2PbcZujNFIdmN2GDYm+ewe92De3Tyc=
-github.com/shuLhan/share v0.39.1-0.20220723102219-eb932c941bd3 h1:QZ7p0n/NEcvtiwBeI2mWnVrwO9Hwxp2W0+sUs7dBORU=
-github.com/shuLhan/share v0.39.1-0.20220723102219-eb932c941bd3/go.mod h1:hb3Kis5s4jPume4YD15JELE67naFybtuALshhh9TlOg=
+git.sr.ht/~shulhan/asciidoctor-go v0.3.1 h1:rW0t8YOVPTFa7SKCl65MCrvsbk5OjOQ1t9NUtG6AdwI=
+git.sr.ht/~shulhan/asciidoctor-go v0.3.1/go.mod h1:Omr72ZgsT8jIDtC7Vofz8D9F3zR47oNja2ObAx67fBo=
+github.com/shuLhan/share v0.40.0 h1:C0c1lfKLzogUStIiYJecoTTP9TrEDMz64la1Y1l8Wl0=
+github.com/shuLhan/share v0.40.0/go.mod h1:hb3Kis5s4jPume4YD15JELE67naFybtuALshhh9TlOg=
 golang.org/x/net v0.0.0-20220708220712-1185a9018129 h1:vucSRfWwTsoXro7P+3Cjlr6flUMtzCwzlvkxEQtHHB0=
 golang.org/x/net v0.0.0-20220708220712-1185a9018129/go.mod h1:XRhObCWvk6IyKnWLug+ECip1KBveYUHfp+8e9klMJ9c=
 golang.org/x/sys v0.0.0-20220715151400-c0bba94af5f8 h1:0A+M6Uqn+Eje4kHMK80dtF3JCXC4ykBgQG4Fe06QRhQ=
