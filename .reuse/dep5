@@ -11,7 +11,7 @@ Files: go.sum
 Copyright: 2022 Shulhan <ms@kilabit.info>
 License: GPL-3.0-or-later
 
-Files: README.md
+Files: README README.adoc
 Copyright: 2022 Shulhan <ms@kilabit.info>
 License: GPL-3.0-or-later
 
