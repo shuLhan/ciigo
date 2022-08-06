@@ -7,6 +7,45 @@ Shulhan <ms@kilabit.info>
 :sectlinks:
 
 
+[#v0_9_0]
+==  ciigo v0.9.0 (2022-08-06)
+
+[#v0_9_0_new_features]
+===  New features
+
+all: export internal htmlGenerator as Converter::
++
+--
+The purpose of Converter is to provide a single, reusable converter
+for AsciiDoc file or content.
+--
+
+[#v0_9_0_chores]
+===  Chores
+
+all: add package build for Arch Linux::
+
+
+all: set the Version automatically set during build::
++
+--
+This require that the command build or install using "make build/install".
+--
+
+all: convert the README using AsciiDoc::
++
+--
+While at it, create symlink README so the git.sr.ht site can display it.
+--
+
+all: merge internal/cmd/goembed to cmd/ciigo-example::
++
+--
+The internal/cmd/goembed is replaced as command "embed" of
+cmd/ciigo-example.
+--
+
+
 [#v0_8_2]
 ==  ciigo v0.8.2 (2022-07-24)
 
