@@ -44,8 +44,6 @@ const (
 	cmdHelp    = "help"
 	cmdServe   = "serve"
 	cmdVersion = "version"
-
-	version = "0.8.2"
 )
 
 func main() {
@@ -109,7 +107,7 @@ func main() {
 		err = ciigo.Serve(&serveOpts)
 
 	case cmdVersion:
-		fmt.Println(version)
+		fmt.Println(ciigo.Version)
 
 	default:
 		usage()

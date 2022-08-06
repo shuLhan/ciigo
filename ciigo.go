@@ -25,8 +25,9 @@ const (
 	internalTemplatePath = `_internal/.template`
 )
 
-// nolint: gochecknoglobals
 var (
+	Version = `0.8.2`
+
 	defExcludes = []string{
 		`.*\.adoc$`,
 		`^\..*`,

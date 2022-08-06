@@ -2,25 +2,26 @@
 ## SPDX-License-Identifier: GPL-3.0-or-later
 
 .PHONY: all lint test install build
-.FORCE:
 
-DIR_BUILD=_bin
+VERSION:=$(shell git describe --tags)
+LDFLAGS:=-ldflags "-s -w -X 'git.sr.ht/~shulhan/ciigo.Version=$(VERSION)'"
+DIR_BUILD:=_bin
 
 all: test lint build
 
 lint:
-	golangci-lint run ./...
+	-golangci-lint run ./...
 
 test:
 	go run ./cmd/ciigo-example embed
 	CGO_ENABLED=1 go test -v -race ./...
 
-install:
-	go install ./cmd/ciigo
+install: build
+	mv _bin/ciigo $(GOBIN)
 
 run-example:
 	DEBUG=1 go run ./cmd/ciigo-example
 
 build:
 	mkdir -p $(DIR_BUILD)
-	CGO_ENABLED=0 go build -o $(DIR_BUILD) ./cmd/...
+	CGO_ENABLED=0 go build $(LDFLAGS) -o $(DIR_BUILD) ./cmd/...
