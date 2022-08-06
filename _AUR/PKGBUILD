@@ -1,0 +1,41 @@
+# Maintainer: shulhan <ms@kilabit.info>
+
+pkgname=ciigo-git
+pkgver=0.8.2.r8.g4624f71
+pkgrel=1
+
+pkgdesc="CLI to convert, generate, and/or serve AsciiDoc markup files as HTML files."
+arch=(x86_64)
+url='https://git.sr.ht/~shulhan/ciigo'
+license=('GPL3')
+
+makedepends=(
+	'go'
+	'git'
+)
+
+provides=('ciigo')
+
+source=(
+	"$pkgname::git+https://git.sr.ht/~shulhan/ciigo"
+	#"$pkgname::git+file:///home/ms/go/src/git.sr.ht/~shulhan/ciigo"
+)
+md5sums=(
+	'SKIP'
+)
+
+pkgver() {
+	cd "$pkgname"
+	git describe --long --tags | sed 's/^v//;s/\([^-]*-g\)/r\1/;s/-/./g'
+}
+
+build() {
+	cd "$pkgname"
+	make
+}
+
+package() {
+	cd "$pkgname"
+	install -Dm755 _bin/ciigo $pkgdir/usr/bin/ciigo
+	install -Dm755 COPYING $pkgdir/usr/share/licenses/ciigo/COPYING
+}
