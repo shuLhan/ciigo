@@ -45,7 +45,7 @@ type watcher struct {
 //	                      +--> UPDATE --> Converter.htmlTemplateReload()
 func newWatcher(converter *Converter, convertOpts *ConvertOptions) (w *watcher, err error) {
 	var (
-		logp = "newWatcher"
+		logp = `newWatcher`
 	)
 
 	w = &watcher{
@@ -74,7 +74,7 @@ func newWatcher(converter *Converter, convertOpts *ConvertOptions) (w *watcher, 
 
 	w.fileMarkups, err = listFileMarkups(convertOpts.Root, convertOpts.excRE)
 	if err != nil {
-		return nil, fmt.Errorf("%s: %w", logp, err)
+		return nil, fmt.Errorf(`%s: %w`, logp, err)
 	}
 
 	return w, nil
@@ -84,7 +84,7 @@ func newWatcher(converter *Converter, convertOpts *ConvertOptions) (w *watcher, 
 func (w *watcher) start() (err error) {
 	err = w.watchDir.Start()
 	if err != nil {
-		return fmt.Errorf("start: %w", err)
+		return fmt.Errorf(`start: %w`, err)
 	}
 
 	go w.watchFileMarkup()
@@ -92,7 +92,7 @@ func (w *watcher) start() (err error) {
 	if len(w.converter.htmlTemplate) > 0 {
 		w.watchTemplate, err = memfs.NewWatcher(w.converter.htmlTemplate, 0)
 		if err != nil {
-			return fmt.Errorf("start: %w", err)
+			return fmt.Errorf(`start: %w`, err)
 		}
 		go w.watchHtmlTemplate()
 	}
@@ -103,7 +103,7 @@ func (w *watcher) start() (err error) {
 // and re-generate them into HTML file when changed.
 func (w *watcher) watchFileMarkup() {
 	var (
-		logp = "watchFileMarkup"
+		logp = `watchFileMarkup`
 
 		ns      memfs.NodeState
 		fmarkup *fileMarkup
@@ -160,7 +160,7 @@ func (w *watcher) watchFileMarkup() {
 
 		err = w.converter.ToHtmlFile(fmarkup.path, fmarkup.pathHtml)
 		if err != nil {
-			log.Printf("%s: %s", logp, err)
+			log.Printf(`%s: %s`, logp, err)
 		}
 
 		w.changes.Push(fmarkup)
@@ -171,7 +171,7 @@ func (w *watcher) watchFileMarkup() {
 // files.
 func (w *watcher) watchHtmlTemplate() {
 	var (
-		logp = "watchHtmlTemplate"
+		logp = `watchHtmlTemplate`
 
 		ns  memfs.NodeState
 		err error
@@ -188,7 +188,7 @@ func (w *watcher) watchHtmlTemplate() {
 			err = w.converter.SetHtmlTemplateFile(w.converter.htmlTemplate)
 		}
 		if err != nil {
-			log.Printf("%s: %s", logp, err)
+			log.Printf(`%s: %s`, logp, err)
 			continue
 		}
 

@@ -11,7 +11,7 @@ import (
 )
 
 const (
-	metadataStylesheet = "stylesheet"
+	metadataStylesheet = `stylesheet`
 )
 
 // fileHtml represent an HTML metadata for header and its body.

@@ -10,7 +10,7 @@ import (
 
 const (
 	// DefaultRoot define default Root value for GenerateOptions.
-	DefaultRoot = "."
+	DefaultRoot = `.`
 )
 
 // ConvertOptions define the options to use on Convert function.
@@ -35,7 +35,7 @@ type ConvertOptions struct {
 
 func (opts *ConvertOptions) init() (err error) {
 	var (
-		logp = "ConvertOptions.init"
+		logp = `ConvertOptions.init`
 	)
 
 	if len(opts.Root) == 0 {
@@ -46,7 +46,7 @@ func (opts *ConvertOptions) init() (err error) {
 
 		re, err = regexp.Compile(opts.Exclude)
 		if err != nil {
-			return fmt.Errorf("%s: %w", logp, err)
+			return fmt.Errorf(`%s: %w`, logp, err)
 		}
 
 		opts.excRE = append(opts.excRE, re)

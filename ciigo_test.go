@@ -20,7 +20,7 @@ func TestListFileMarkups(t *testing.T) {
 	var cases = []testCase{{
 		excRegex: `(ex)/.*`,
 		exp: []string{
-			"testdata/in/clu/de/file.adoc",
+			`testdata/in/clu/de/file.adoc`,
 		},
 	}, {
 		excRegex: `(in|ex)/.*`,
@@ -29,13 +29,13 @@ func TestListFileMarkups(t *testing.T) {
 	}, {
 		excRegex: `file$`,
 		exp: []string{
-			"testdata/ex/clu/de/file.adoc",
-			"testdata/in/clu/de/file.adoc",
+			`testdata/ex/clu/de/file.adoc`,
+			`testdata/in/clu/de/file.adoc`,
 		},
 	}}
 
 	var (
-		dir = "testdata"
+		dir = `testdata`
 
 		c     testCase
 		excre *regexp.Regexp
@@ -60,6 +60,6 @@ func TestListFileMarkups(t *testing.T) {
 
 		sort.Strings(got)
 
-		test.Assert(t, "list", c.exp, got)
+		test.Assert(t, `list`, c.exp, got)
 	}
 }

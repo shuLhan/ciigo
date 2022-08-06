@@ -21,8 +21,8 @@ import (
 )
 
 const (
-	extAsciidoc          = ".adoc"
-	internalTemplatePath = "_internal/.template"
+	extAsciidoc          = `.adoc`
+	internalTemplatePath = `_internal/.template`
 )
 
 // nolint: gochecknoglobals
@@ -39,7 +39,7 @@ var (
 // See template_index_html.go for template format.
 func Convert(opts *ConvertOptions) (err error) {
 	var (
-		logp = "Convert"
+		logp = `Convert`
 
 		converter   *Converter
 		fileMarkups map[string]*fileMarkup
@@ -50,17 +50,17 @@ func Convert(opts *ConvertOptions) (err error) {
 	}
 	err = opts.init()
 	if err != nil {
-		return fmt.Errorf("%s: %w", logp, err)
+		return fmt.Errorf(`%s: %w`, logp, err)
 	}
 
 	converter, err = NewConverter(opts.HtmlTemplate)
 	if err != nil {
-		return fmt.Errorf("%s: %w", logp, err)
+		return fmt.Errorf(`%s: %w`, logp, err)
 	}
 
 	fileMarkups, err = listFileMarkups(opts.Root, opts.excRE)
 	if err != nil {
-		return fmt.Errorf("%s: %w", logp, err)
+		return fmt.Errorf(`%s: %w`, logp, err)
 	}
 
 	converter.convertFileMarkups(fileMarkups, false)
@@ -80,7 +80,7 @@ func Convert(opts *ConvertOptions) (err error) {
 // See template_index_html.go for template format.
 func GoEmbed(opts *EmbedOptions) (err error) {
 	var (
-		logp = "GoEmbed"
+		logp = `GoEmbed`
 
 		converter    *Converter
 		fileMarkups  map[string]*fileMarkup
@@ -94,17 +94,17 @@ func GoEmbed(opts *EmbedOptions) (err error) {
 	}
 	err = opts.init()
 	if err != nil {
-		return fmt.Errorf("%s: %w", logp, err)
+		return fmt.Errorf(`%s: %w`, logp, err)
 	}
 
 	converter, err = NewConverter(opts.HtmlTemplate)
 	if err != nil {
-		return fmt.Errorf("%s: %w", logp, err)
+		return fmt.Errorf(`%s: %w`, logp, err)
 	}
 
 	fileMarkups, err = listFileMarkups(opts.Root, opts.excRE)
 	if err != nil {
-		return fmt.Errorf("%s: %w", logp, err)
+		return fmt.Errorf(`%s: %w`, logp, err)
 	}
 
 	if isHtmlTemplateNewer(opts) {
@@ -121,19 +121,19 @@ func GoEmbed(opts *EmbedOptions) (err error) {
 
 	mfs, err = memfs.New(mfsOpts)
 	if err != nil {
-		return fmt.Errorf("%s: %w", logp, err)
+		return fmt.Errorf(`%s: %w`, logp, err)
 	}
 
 	if len(opts.HtmlTemplate) > 0 {
 		_, err = mfs.AddFile(internalTemplatePath, opts.HtmlTemplate)
 		if err != nil {
-			return fmt.Errorf("%s: %w", logp, err)
+			return fmt.Errorf(`%s: %w`, logp, err)
 		}
 	}
 
 	err = mfs.GoEmbed()
 	if err != nil {
-		return fmt.Errorf("%s: %w", logp, err)
+		return fmt.Errorf(`%s: %w`, logp, err)
 	}
 
 	return nil
@@ -143,7 +143,7 @@ func GoEmbed(opts *EmbedOptions) (err error) {
 // "address".
 func Serve(opts *ServeOptions) (err error) {
 	var (
-		logp = "Serve"
+		logp = `Serve`
 		srv  *server
 	)
 
@@ -152,16 +152,16 @@ func Serve(opts *ServeOptions) (err error) {
 	}
 	err = opts.init()
 	if err != nil {
-		return fmt.Errorf("%s: %w", logp, err)
+		return fmt.Errorf(`%s: %w`, logp, err)
 	}
 
 	srv, err = newServer(opts)
 	if err != nil {
-		return fmt.Errorf("%s: %w", logp, err)
+		return fmt.Errorf(`%s: %w`, logp, err)
 	}
 	err = srv.start()
 	if err != nil {
-		return fmt.Errorf("%s: %w", logp, err)
+		return fmt.Errorf(`%s: %w`, logp, err)
 	}
 	return nil
 }
@@ -176,7 +176,7 @@ func Serve(opts *ServeOptions) (err error) {
 // default HTML template.
 func Watch(opts *ConvertOptions) (err error) {
 	var (
-		logp = "Watch"
+		logp = `Watch`
 
 		converter *Converter
 		w         *watcher
@@ -187,22 +187,22 @@ func Watch(opts *ConvertOptions) (err error) {
 	}
 	err = opts.init()
 	if err != nil {
-		return fmt.Errorf("%s: %w", logp, err)
+		return fmt.Errorf(`%s: %w`, logp, err)
 	}
 
 	converter, err = NewConverter(opts.HtmlTemplate)
 	if err != nil {
-		return fmt.Errorf("%s: %w", logp, err)
+		return fmt.Errorf(`%s: %w`, logp, err)
 	}
 
 	w, err = newWatcher(converter, opts)
 	if err != nil {
-		return fmt.Errorf("%s: %w", logp, err)
+		return fmt.Errorf(`%s: %w`, logp, err)
 	}
 
 	err = w.start()
 	if err != nil {
-		return fmt.Errorf("%s: %w", logp, err)
+		return fmt.Errorf(`%s: %w`, logp, err)
 	}
 
 	return nil
@@ -212,7 +212,7 @@ func Watch(opts *ConvertOptions) (err error) {
 // newer than embedded GoFileName.
 func isHtmlTemplateNewer(opts *EmbedOptions) bool {
 	var (
-		logp = "isHtmlTemplateNewer"
+		logp = `isHtmlTemplateNewer`
 
 		fiHtmlTmpl fs.FileInfo
 		fiGoEmbed  fs.FileInfo
@@ -225,7 +225,7 @@ func isHtmlTemplateNewer(opts *EmbedOptions) bool {
 
 	fiHtmlTmpl, err = os.Stat(opts.HtmlTemplate)
 	if err != nil {
-		log.Fatalf("%s: %s", logp, err)
+		log.Fatalf(`%s: %s`, logp, err)
 	}
 
 	if len(opts.EmbedOptions.GoFileName) == 0 {
@@ -238,7 +238,7 @@ func isHtmlTemplateNewer(opts *EmbedOptions) bool {
 		if os.IsNotExist(err) {
 			return false
 		}
-		log.Fatalf("%s: %s", logp, err)
+		log.Fatalf(`%s: %s`, logp, err)
 	}
 
 	return fiHtmlTmpl.ModTime().After(fiGoEmbed.ModTime())
@@ -254,7 +254,7 @@ func listFileMarkups(dir string, excRE []*regexp.Regexp) (
 	fileMarkups map[string]*fileMarkup, err error,
 ) {
 	var (
-		logp = "listFileMarkups"
+		logp = `listFileMarkups`
 
 		d        *os.File
 		fi       os.FileInfo
@@ -269,12 +269,12 @@ func listFileMarkups(dir string, excRE []*regexp.Regexp) (
 
 	d, err = os.Open(dir)
 	if err != nil {
-		return nil, fmt.Errorf("%s: %w", logp, err)
+		return nil, fmt.Errorf(`%s: %w`, logp, err)
 	}
 
 	fis, err = d.Readdir(0)
 	if err != nil {
-		return nil, fmt.Errorf("%s: %w", logp, err)
+		return nil, fmt.Errorf(`%s: %w`, logp, err)
 	}
 
 	fileMarkups = make(map[string]*fileMarkup)
@@ -294,7 +294,7 @@ func listFileMarkups(dir string, excRE []*regexp.Regexp) (
 			}
 			fmarkups, err = listFileMarkups(filePath, excRE)
 			if err != nil {
-				return nil, fmt.Errorf("%s: %s: %w", logp, filePath, err)
+				return nil, fmt.Errorf(`%s: %s: %w`, logp, filePath, err)
 			}
 			for k, fmarkup = range fmarkups {
 				fileMarkups[k] = fmarkup
@@ -311,7 +311,7 @@ func listFileMarkups(dir string, excRE []*regexp.Regexp) (
 		}
 		fmarkup, err = newFileMarkup(filePath, fi)
 		if err != nil {
-			return nil, fmt.Errorf("%s: %s: %w", logp, filePath, err)
+			return nil, fmt.Errorf(`%s: %s: %w`, logp, filePath, err)
 		}
 		fileMarkups[filePath] = fmarkup
 	}

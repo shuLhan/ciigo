@@ -24,7 +24,7 @@ type Converter struct {
 // If htmlTemplate is empty, it will use the internal, predefined template.
 func NewConverter(htmlTemplate string) (converter *Converter, err error) {
 	var (
-		logp = "NewConverter"
+		logp = `NewConverter`
 
 		tmplContent string
 		bhtml       []byte
@@ -32,7 +32,7 @@ func NewConverter(htmlTemplate string) (converter *Converter, err error) {
 
 	converter = &Converter{}
 
-	converter.tmpl = template.New("")
+	converter.tmpl = template.New(``)
 
 	if len(htmlTemplate) == 0 {
 		tmplContent = templateIndexHTML
@@ -41,7 +41,7 @@ func NewConverter(htmlTemplate string) (converter *Converter, err error) {
 
 		bhtml, err = os.ReadFile(converter.htmlTemplate)
 		if err != nil {
-			return nil, fmt.Errorf("%s: %s: %w", logp, converter.htmlTemplate, err)
+			return nil, fmt.Errorf(`%s: %s: %w`, logp, converter.htmlTemplate, err)
 		}
 
 		tmplContent = string(bhtml)
@@ -49,13 +49,13 @@ func NewConverter(htmlTemplate string) (converter *Converter, err error) {
 
 	converter.tmpl, err = converter.tmpl.Parse(tmplContent)
 	if err != nil {
-		return nil, fmt.Errorf("%s: %w", logp, err)
+		return nil, fmt.Errorf(`%s: %w`, logp, err)
 	}
 
-	converter.tmplSearch = template.New("search")
+	converter.tmplSearch = template.New(`search`)
 	converter.tmplSearch, err = converter.tmplSearch.Parse(templateSearch)
 	if err != nil {
-		return nil, fmt.Errorf("%s: %s: %w", logp, templateSearch, err)
+		return nil, fmt.Errorf(`%s: %s: %w`, logp, templateSearch, err)
 	}
 
 	return converter, nil
@@ -64,7 +64,7 @@ func NewConverter(htmlTemplate string) (converter *Converter, err error) {
 // convertFileMarkups convert markup files into HTML.
 func (converter *Converter) convertFileMarkups(fileMarkups map[string]*fileMarkup, isForce bool) {
 	var (
-		logp = "convertFileMarkups"
+		logp = `convertFileMarkups`
 
 		fmarkup *fileMarkup
 		err     error
@@ -79,7 +79,7 @@ func (converter *Converter) convertFileMarkups(fileMarkups map[string]*fileMarku
 
 		err = converter.ToHtmlFile(fmarkup.path, fmarkup.pathHtml)
 		if err != nil {
-			log.Printf("%s: %s", logp, err)
+			log.Printf(`%s: %s`, logp, err)
 		} else {
 			fmt.Printf("%s: converting %s\n", logp, fmarkup.path)
 		}
@@ -107,7 +107,7 @@ func (converter *Converter) SetHtmlTemplateFile(pathHtmlTemplate string) (err er
 // ToHtmlFile convert the AsciiDoc file to HTML.
 func (converter *Converter) ToHtmlFile(pathAdoc, pathHtml string) (err error) {
 	var (
-		logp  = "ToHtmlFile"
+		logp  = `ToHtmlFile`
 		fhtml = newFileHtml()
 
 		htmlBody string
@@ -117,12 +117,12 @@ func (converter *Converter) ToHtmlFile(pathAdoc, pathHtml string) (err error) {
 
 	doc, err = asciidoctor.Open(pathAdoc)
 	if err != nil {
-		return fmt.Errorf("%s: %w", logp, err)
+		return fmt.Errorf(`%s: %w`, logp, err)
 	}
 
 	err = doc.ToHTMLBody(&fhtml.rawBody)
 	if err != nil {
-		return fmt.Errorf("%s: %w", logp, err)
+		return fmt.Errorf(`%s: %w`, logp, err)
 	}
 
 	fhtml.unpackAdocMetadata(doc)
@@ -132,17 +132,17 @@ func (converter *Converter) ToHtmlFile(pathAdoc, pathHtml string) (err error) {
 
 	f, err = os.Create(pathHtml)
 	if err != nil {
-		return fmt.Errorf("%s: %w", logp, err)
+		return fmt.Errorf(`%s: %w`, logp, err)
 	}
 
 	err = converter.tmpl.Execute(f, fhtml)
 	if err != nil {
-		return fmt.Errorf("%s: %w", logp, err)
+		return fmt.Errorf(`%s: %w`, logp, err)
 	}
 
 	err = f.Close()
 	if err != nil {
-		return fmt.Errorf("%s: %w", logp, err)
+		return fmt.Errorf(`%s: %w`, logp, err)
 	}
 
 	return nil

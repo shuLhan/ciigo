@@ -21,7 +21,7 @@ var (
 
 func TestWatcher(t *testing.T) {
 	var (
-		testDir     = "testdata/watcher"
+		testDir     = `testdata/watcher`
 		convertOpts = ConvertOptions{
 			Root: testDir,
 		}
@@ -44,7 +44,7 @@ func TestWatcher(t *testing.T) {
 		os.RemoveAll(testDir)
 	})
 
-	converter, err = NewConverter("testdata/html.tmpl")
+	converter, err = NewConverter(`testdata/html.tmpl`)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -64,9 +64,9 @@ func TestWatcher(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	t.Run("createAdocFile", testCreate)
-	t.Run("updateAdocFile", testUpdate)
-	t.Run("deleteAdocFile", testDelete)
+	t.Run(`createAdocFile`, testCreate)
+	t.Run(`updateAdocFile`, testUpdate)
+	t.Run(`deleteAdocFile`, testDelete)
 }
 
 func testCreate(t *testing.T) {
@@ -77,7 +77,7 @@ func testCreate(t *testing.T) {
 		gotBody []byte
 	)
 
-	testFileAdoc = filepath.Join(testWatcher.dir, "index.adoc")
+	testFileAdoc = filepath.Join(testWatcher.dir, `index.adoc`)
 	testAdocFile, err = os.Create(testFileAdoc)
 	if err != nil {
 		t.Fatal(err)
@@ -85,7 +85,7 @@ func testCreate(t *testing.T) {
 
 	got = waitChanges()
 
-	test.Assert(t, "New adoc file created", testFileAdoc, got.path)
+	test.Assert(t, `New adoc file created`, testFileAdoc, got.path)
 
 	expBody = `<!DOCTYPE>
 <html>
@@ -108,7 +108,7 @@ func testCreate(t *testing.T) {
 	}
 
 	gotBody = removeFooter(gotBody)
-	test.Assert(t, "HTML body", expBody, string(gotBody))
+	test.Assert(t, `HTML body`, expBody, string(gotBody))
 }
 
 func testUpdate(t *testing.T) {
@@ -119,7 +119,7 @@ func testUpdate(t *testing.T) {
 		got     *fileMarkup
 	)
 
-	_, err = testAdocFile.WriteString("= Hello")
+	_, err = testAdocFile.WriteString(`= Hello`)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -129,7 +129,7 @@ func testUpdate(t *testing.T) {
 	}
 
 	got = waitChanges()
-	test.Assert(t, "adoc file updated", testFileAdoc, got.path)
+	test.Assert(t, `adoc file updated`, testFileAdoc, got.path)
 
 	expBody = `<!DOCTYPE>
 <html>
@@ -154,7 +154,7 @@ func testUpdate(t *testing.T) {
 
 	gotBody = removeFooter(gotBody)
 
-	test.Assert(t, "HTML body", expBody, string(gotBody))
+	test.Assert(t, `HTML body`, expBody, string(gotBody))
 }
 
 func testDelete(t *testing.T) {
@@ -175,10 +175,10 @@ func testDelete(t *testing.T) {
 	}
 
 	got = waitChanges()
-	test.Assert(t, "adoc file updated", testFileAdoc, got.path)
+	test.Assert(t, `adoc file updated`, testFileAdoc, got.path)
 
 	_, gotIsExist = testWatcher.fileMarkups[testFileAdoc]
-	test.Assert(t, "adoc file deleted", false, gotIsExist)
+	test.Assert(t, `adoc file deleted`, false, gotIsExist)
 }
 
 // removeFooter remove the footer from generated HTML since its contains date

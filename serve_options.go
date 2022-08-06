@@ -6,7 +6,7 @@ package ciigo
 import "github.com/shuLhan/share/lib/memfs"
 
 const (
-	defAddress = ":8080"
+	defAddress = `:8080`
 )
 
 // ServeOptions contains the options to use on Serve function.

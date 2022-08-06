@@ -28,7 +28,7 @@ type server struct {
 // embedded HTML template.
 func newServer(opts *ServeOptions) (srv *server, err error) {
 	var (
-		logp = "newServer"
+		logp = `newServer`
 
 		tmplNode   *memfs.Node
 		httpdOpts  *libhttp.ServerOptions
@@ -58,12 +58,12 @@ func newServer(opts *ServeOptions) (srv *server, err error) {
 
 	srv.http, err = libhttp.NewServer(httpdOpts)
 	if err != nil {
-		return nil, fmt.Errorf("%s: %w", logp, err)
+		return nil, fmt.Errorf(`%s: %w`, logp, err)
 	}
 
 	epInSearch = &libhttp.Endpoint{
 		Method:       libhttp.RequestMethodGet,
-		Path:         "/_internal/search",
+		Path:         `/_internal/search`,
 		RequestType:  libhttp.RequestTypeQuery,
 		ResponseType: libhttp.ResponseTypeHTML,
 		Call:         srv.onSearch,
@@ -71,12 +71,12 @@ func newServer(opts *ServeOptions) (srv *server, err error) {
 
 	err = srv.http.RegisterEndpoint(epInSearch)
 	if err != nil {
-		return nil, fmt.Errorf("%s: %w", logp, err)
+		return nil, fmt.Errorf(`%s: %w`, logp, err)
 	}
 
 	srv.converter, err = NewConverter(opts.HtmlTemplate)
 	if err != nil {
-		return nil, fmt.Errorf("%s: %w", logp, err)
+		return nil, fmt.Errorf(`%s: %w`, logp, err)
 	}
 
 	// Optionally, load HTML template from memory file system.
@@ -84,14 +84,14 @@ func newServer(opts *ServeOptions) (srv *server, err error) {
 	if tmplNode != nil {
 		srv.converter.tmpl, err = srv.converter.tmpl.Parse(string(tmplNode.Content))
 		if err != nil {
-			return nil, fmt.Errorf("%s: %s", logp, err)
+			return nil, fmt.Errorf(`%s: %s`, logp, err)
 		}
 	}
 
 	if opts.IsDevelopment {
 		srv.watcher, err = newWatcher(srv.converter, &opts.ConvertOptions)
 		if err != nil {
-			return nil, fmt.Errorf("%s: %w", logp, err)
+			return nil, fmt.Errorf(`%s: %w`, logp, err)
 		}
 
 		srv.converter.convertFileMarkups(srv.watcher.fileMarkups, false)
@@ -103,13 +103,13 @@ func newServer(opts *ServeOptions) (srv *server, err error) {
 // start the web server.
 func (srv *server) start() (err error) {
 	var (
-		logp = "start"
+		logp = `start`
 	)
 
 	if srv.opts.IsDevelopment {
 		err = srv.watcher.start()
 		if err != nil {
-			return fmt.Errorf("%s: %w", logp, err)
+			return fmt.Errorf(`%s: %w`, logp, err)
 		}
 	}
 
@@ -118,7 +118,7 @@ func (srv *server) start() (err error) {
 
 	err = srv.http.Start()
 	if err != nil {
-		return fmt.Errorf("%s: %w", logp, err)
+		return fmt.Errorf(`%s: %w`, logp, err)
 	}
 
 	return nil
@@ -126,7 +126,7 @@ func (srv *server) start() (err error) {
 
 func (srv *server) onSearch(epr *libhttp.EndpointRequest) (resBody []byte, err error) {
 	var (
-		logp = "onSearch"
+		logp = `onSearch`
 
 		fhtml   *fileHtml
 		buf     bytes.Buffer
@@ -134,12 +134,12 @@ func (srv *server) onSearch(epr *libhttp.EndpointRequest) (resBody []byte, err e
 		results []memfs.SearchResult
 	)
 
-	q = epr.HttpRequest.Form.Get("q")
+	q = epr.HttpRequest.Form.Get(`q`)
 	results = srv.http.Options.Memfs.Search(strings.Fields(q), 0)
 
 	err = srv.converter.tmplSearch.Execute(&buf, results)
 	if err != nil {
-		return nil, fmt.Errorf("%s: %w", logp, err)
+		return nil, fmt.Errorf(`%s: %w`, logp, err)
 	}
 
 	fhtml = &fileHtml{
@@ -150,7 +150,7 @@ func (srv *server) onSearch(epr *libhttp.EndpointRequest) (resBody []byte, err e
 
 	err = srv.converter.tmpl.Execute(&buf, fhtml)
 	if err != nil {
-		return nil, fmt.Errorf("%s: %w", logp, err)
+		return nil, fmt.Errorf(`%s: %w`, logp, err)
 	}
 
 	resBody = buf.Bytes()

@@ -20,18 +20,18 @@ type fileMarkup struct {
 
 func newFileMarkup(filePath string, fi os.FileInfo) (fmarkup *fileMarkup, err error) {
 	var (
-		logp = "newFileMarkup"
+		logp = `newFileMarkup`
 
 		ext string
 	)
 
 	if len(filePath) == 0 {
-		return nil, fmt.Errorf("%s: empty path", logp)
+		return nil, fmt.Errorf(`%s: empty path`, logp)
 	}
 	if fi == nil {
 		fi, err = os.Stat(filePath)
 		if err != nil {
-			return nil, fmt.Errorf("%s: %w", logp, err)
+			return nil, fmt.Errorf(`%s: %w`, logp, err)
 		}
 	}
 
@@ -43,7 +43,7 @@ func newFileMarkup(filePath string, fi os.FileInfo) (fmarkup *fileMarkup, err er
 		basePath: strings.TrimSuffix(filePath, ext),
 	}
 
-	fmarkup.pathHtml = fmarkup.basePath + ".html"
+	fmarkup.pathHtml = fmarkup.basePath + `.html`
 
 	return fmarkup, nil
 }
