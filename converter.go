@@ -41,10 +41,10 @@ func NewConverter(htmlTemplate string) (converter *Converter, err error) {
 
 		bhtml, err = os.ReadFile(converter.htmlTemplate)
 		if err != nil {
-			return nil, fmt.Errorf(`%s: %s: %w`, logp, converter.htmlTemplate, err)
+			tmplContent = templateIndexHTML
+		} else {
+			tmplContent = string(bhtml)
 		}
-
-		tmplContent = string(bhtml)
 	}
 
 	converter.tmpl, err = converter.tmpl.Parse(tmplContent)

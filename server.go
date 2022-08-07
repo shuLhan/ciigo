@@ -33,6 +33,8 @@ func newServer(opts *ServeOptions) (srv *server, err error) {
 		tmplNode   *memfs.Node
 		httpdOpts  *libhttp.ServerOptions
 		epInSearch *libhttp.Endpoint
+
+		pathHtmlTemplate string
 	)
 
 	if opts.Mfs == nil {
@@ -74,17 +76,22 @@ func newServer(opts *ServeOptions) (srv *server, err error) {
 		return nil, fmt.Errorf(`%s: %w`, logp, err)
 	}
 
-	srv.converter, err = NewConverter(opts.HtmlTemplate)
+	if opts.IsDevelopment {
+		pathHtmlTemplate = opts.HtmlTemplate
+	}
+
+	srv.converter, err = NewConverter(pathHtmlTemplate)
 	if err != nil {
 		return nil, fmt.Errorf(`%s: %w`, logp, err)
 	}
 
-	// Optionally, load HTML template from memory file system.
-	tmplNode, _ = opts.Mfs.Get(internalTemplatePath)
-	if tmplNode != nil {
-		srv.converter.tmpl, err = srv.converter.tmpl.Parse(string(tmplNode.Content))
-		if err != nil {
-			return nil, fmt.Errorf(`%s: %s`, logp, err)
+	if !opts.IsDevelopment {
+		tmplNode, _ = opts.Mfs.Get(internalTemplatePath)
+		if tmplNode != nil {
+			srv.converter.tmpl, err = srv.converter.tmpl.Parse(string(tmplNode.Content))
+			if err != nil {
+				return nil, fmt.Errorf(`%s: %s`, logp, err)
+			}
 		}
 	}
 
