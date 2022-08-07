@@ -8,7 +8,6 @@ import (
 	"os"
 	"path/filepath"
 	"testing"
-	"time"
 
 	"github.com/shuLhan/share/lib/test"
 )
@@ -201,7 +200,6 @@ func waitChanges() (fmarkup *fileMarkup) {
 	)
 
 	for {
-		time.Sleep(5000)
 		fmarkup, ok = testWatcher.changes.Pop().(*fileMarkup)
 		if ok {
 			break
