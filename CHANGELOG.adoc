@@ -7,6 +7,23 @@ Shulhan <ms@kilabit.info>
 :sectlinks:
 
 
+[#v0_9_1]
+==  ciigo v0.9.1 (2022-08-07)
+
+[#v0_9_1_bug_fixes]
+===  Bug fixes
+
+all: remove delay for testing Watch::
+The delay sometimes cause the test locked and hung.
+
+all: fix HTML template loaded during Serve on non-development::
++
+--
+The HTML template in the ServeOptions should not read when ciigo.Serve
+running on non-development environment.
+--
+
+
 [#v0_9_0]
 ==  ciigo v0.9.0 (2022-08-06)
 
