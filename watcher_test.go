@@ -8,6 +8,7 @@ import (
 	"os"
 	"path/filepath"
 	"testing"
+	"time"
 
 	"github.com/shuLhan/share/lib/test"
 )
@@ -77,6 +78,11 @@ func testCreate(t *testing.T) {
 	)
 
 	testFileAdoc = filepath.Join(testWatcher.dir, `index.adoc`)
+
+	// Let the OS sync the file system before we create new file,
+	// otherwise the modtime for fs.Root does not changes.
+	time.Sleep(1 * time.Second)
+
 	testAdocFile, err = os.Create(testFileAdoc)
 	if err != nil {
 		t.Fatal(err)
