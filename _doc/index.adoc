@@ -1,0 +1,25 @@
+= ciigo
+:toc:
+:sectanchors:
+:sectlinks:
+
+Welcome to ciigo.
+
+ciigo is a library and a program to write static web server with embedded
+files using AsciiDoc markup format.
+
+==  Documentation
+
+link:CHANGELOG.html[CHANGELOG^]:: History of each release.
+
+link:README.html[README^]:: User manual page for ciigo.
+
+==  Development
+
+https://git.sr.ht/~shulhan/ciigo[Repository^]:: Link to the source code.
+
+https://lists.sr.ht/~shulhan/ciigo[Mailing list^]:: Link to development and
+discussion.
+
+https://todo.sr.ht/~shulhan/ciigo[Issues^]:: Link to submit an issue,
+feedback, or request for new feature.
