@@ -288,6 +288,13 @@ func listFileMarkups(dir string, excRE []*regexp.Regexp) (
 			continue
 		}
 
+		if fi.Mode()&os.ModeSymlink == os.ModeSymlink {
+			fi, err = os.Stat(filePath)
+			if err != nil {
+				return nil, fmt.Errorf(`%s: %w`, logp, err)
+			}
+		}
+
 		if fi.IsDir() {
 			if name[0] == '.' {
 				// Skip any directory start with '.'.
