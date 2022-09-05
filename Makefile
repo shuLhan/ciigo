@@ -1,7 +1,7 @@
 ## SPDX-FileCopyrightText: 2019 Shulhan <ms@kilabit.info>
 ## SPDX-License-Identifier: GPL-3.0-or-later
 
-.PHONY: all lint test install build
+.PHONY: all lint test install build serve-doc
 
 VERSION:=$(shell git describe --tags)
 LDFLAGS:=-ldflags "-s -w -X 'git.sr.ht/~shulhan/ciigo.Version=$(VERSION)'"
@@ -25,6 +25,9 @@ run-example:
 build:
 	mkdir -p $(DIR_BUILD)
 	CGO_ENABLED=0 go build $(LDFLAGS) -o $(DIR_BUILD) ./cmd/...
+
+serve-doc:
+	go run ./cmd/ciigo serve _doc
 
 .PHONY: chroot-setup chroot-test
 
