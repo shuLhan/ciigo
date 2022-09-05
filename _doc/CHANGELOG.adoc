@@ -7,6 +7,50 @@ Shulhan <ms@kilabit.info>
 :sectlinks:
 
 
+[#v0_9_2]
+==  ciigo v0.9.2 (2022-09-06)
+
+[#v0_9_2_bug_fix]
+===  Bug fix
+
+all: check for symlink and re-fetch file info using os.Stat::
++
+Since Readdir return list of FileInfo using Lstat, any node that is
+symlink may return false file size and mod time.
+
+[#v0_9_2_chores]
+===  Chores
+
+all: update all dependencies::
++
+The latest asciidoctor-go module fix parsing list description inside
+include directive.
+
+all: group all documents under directory _doc::
+
+all: try to fix test that sometimes fail inside container::
++
+--
+When the test running we create directory testdata/watcher, create
+a new file testdata/watcher/index.adoc and expect that the modify time
+for testdata/watcher is changes.
+
+Except that sometimes it is not. The modification time of directory
+watcher before and after the file created most of times equal and this
+cause the test wait indifinitely and fail.
+
+This changes add 1 second delay before creating file inside directory
+to make sure that the modification time changes.
+--
+
+all: add tasks to setup test inside systemd container::
++
+When running test inside container, sometimes its success, most of the
+time its fail.
+In order to replicate it we need to setup the same container environment
+and inspect it.
+
+
 [#v0_9_1]
 ==  ciigo v0.9.1 (2022-08-07)
 
