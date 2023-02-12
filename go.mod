@@ -7,12 +7,12 @@ go 1.18
 
 require (
 	git.sr.ht/~shulhan/asciidoctor-go v0.3.2
-	github.com/shuLhan/share v0.41.0
+	github.com/shuLhan/share v0.43.0
 )
 
 require (
-	golang.org/x/net v0.0.0-20220826154423-83b083e8dc8b // indirect
-	golang.org/x/sys v0.0.0-20220829200755-d48e67d00261 // indirect
+	golang.org/x/net v0.0.0-20220907135653-1e95f45603a7 // indirect
+	golang.org/x/sys v0.0.0-20220908164124-27713097b956 // indirect
 )
 
 //replace git.sr.ht/~shulhan/asciidoctor-go => ../asciidoctor-go
