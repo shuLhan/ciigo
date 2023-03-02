@@ -95,16 +95,9 @@ func testCreate(t *testing.T) {
 	expBody = `<!DOCTYPE>
 <html>
 <head><title></title></head>
-<body>
-<div id="header">
-<div class="details">
-</div>
+<body><div id="header">
 </div>
 <div id="content">
-<div id="preamble">
-<div class="sectionbody">
-</div>
-</div>
 </div>`
 
 	gotBody, err = os.ReadFile(got.pathHtml)
@@ -139,17 +132,10 @@ func testUpdate(t *testing.T) {
 	expBody = `<!DOCTYPE>
 <html>
 <head><title>Hello</title></head>
-<body>
-<div id="header">
+<body><div id="header">
 <h1>Hello</h1>
-<div class="details">
-</div>
 </div>
 <div id="content">
-<div id="preamble">
-<div class="sectionbody">
-</div>
-</div>
 </div>`
 
 	gotBody, err = os.ReadFile(got.pathHtml)
