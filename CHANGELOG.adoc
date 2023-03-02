@@ -7,6 +7,25 @@ Shulhan <ms@kilabit.info>
 :sectlinks:
 
 
+[#v0_9_3]
+==  ciigo v0.9.3 (2022-03-03)
+
+all: update asciidoctor-go and share module to latest version::
++
+--
+Changes on the asciidoctor-go v0.4.1,
+
+=== Bug fixes
+
+* all: fix empty line printed on ToHTMLBody or ToHTMLEmbedded
+* all: ignore parsing block image in paragraph
+
+=== Enhancements
+
+* all: handle empty preamble
+--
+
+
 [#v0_9_2]
 ==  ciigo v0.9.2 (2022-09-06)
 
