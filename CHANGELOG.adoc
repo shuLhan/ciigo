@@ -7,6 +7,25 @@ Shulhan <ms@kilabit.info>
 :sectlinks:
 
 
+[#v0_10_0]
+==  ciigo v0.10.0 (2023-05-14)
+
+all: bring back support for Markdown::
++
+--
+I use two remote repositories: GitHub and SourceHut.
+GitHub support rendering README using asciidoc while SourceHut not.
+This cause the repository that use README.adoc rendered as text in
+SourceHut which make the repository page less readable.
+
+Also, the pkg.go.dev now render README but only support Markdown.
+
+Since we cannot control the SourceHut and go.dev, the only option is
+to support converting Markdown in ciigo so I can write README using
+Markdown and the rest of documentation using Asciidoc.
+--
+
+
 [#v0_9_3]
 ==  ciigo v0.9.3 (2022-03-03)
 

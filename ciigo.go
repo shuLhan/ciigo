@@ -27,7 +27,7 @@ const (
 )
 
 var (
-	Version = `0.9.3`
+	Version = `0.10.0`
 
 	defExcludes = []string{
 		`.*\.adoc$`,
