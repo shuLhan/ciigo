@@ -7,7 +7,7 @@ go 1.18
 
 require (
 	git.sr.ht/~shulhan/asciidoctor-go v0.4.1
-	github.com/shuLhan/share v0.44.0
+	github.com/shuLhan/share v0.46.0
 	github.com/yuin/goldmark v1.5.4
 	github.com/yuin/goldmark-meta v1.1.0
 )
