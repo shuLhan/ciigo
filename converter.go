@@ -6,11 +6,15 @@ package ciigo
 import (
 	"fmt"
 	"html/template"
+	"io/ioutil"
 	"log"
 	"os"
 	"path/filepath"
 
 	"git.sr.ht/~shulhan/asciidoctor-go"
+	"github.com/yuin/goldmark"
+	meta "github.com/yuin/goldmark-meta"
+	"github.com/yuin/goldmark/parser"
 )
 
 // Converter a single, reusable AsciiDoc converter.
@@ -62,11 +66,11 @@ func NewConverter(htmlTemplate string) (converter *Converter, err error) {
 }
 
 // convertFileMarkups convert markup files into HTML.
-func (converter *Converter) convertFileMarkups(fileMarkups map[string]*fileMarkup, isForce bool) {
+func (converter *Converter) convertFileMarkups(fileMarkups map[string]*FileMarkup, isForce bool) {
 	var (
 		logp = `convertFileMarkups`
 
-		fmarkup *fileMarkup
+		fmarkup *FileMarkup
 		err     error
 	)
 
@@ -77,7 +81,7 @@ func (converter *Converter) convertFileMarkups(fileMarkups map[string]*fileMarku
 			}
 		}
 
-		err = converter.ToHtmlFile(fmarkup.path, fmarkup.pathHtml)
+		err = converter.ToHtmlFile(fmarkup)
 		if err != nil {
 			log.Printf(`%s: %s`, logp, err)
 		} else {
@@ -105,32 +109,27 @@ func (converter *Converter) SetHtmlTemplateFile(pathHtmlTemplate string) (err er
 }
 
 // ToHtmlFile convert the AsciiDoc file to HTML.
-func (converter *Converter) ToHtmlFile(pathAdoc, pathHtml string) (err error) {
+func (converter *Converter) ToHtmlFile(fmarkup *FileMarkup) (err error) {
 	var (
-		logp  = `ToHtmlFile`
-		fhtml = newFileHtml()
+		logp = `ToHtmlFile`
 
-		htmlBody string
-		doc      *asciidoctor.Document
-		f        *os.File
+		fhtml *fileHtml
+		f     *os.File
 	)
 
-	doc, err = asciidoctor.Open(pathAdoc)
+	switch fmarkup.kind {
+	case markupKindAdoc:
+		fhtml, err = converter.adocToHtml(fmarkup)
+	case markupKindMarkdown:
+		fhtml, err = converter.markdownToHtml(fmarkup)
+	}
 	if err != nil {
 		return fmt.Errorf(`%s: %w`, logp, err)
 	}
 
-	err = doc.ToHTMLBody(&fhtml.rawBody)
-	if err != nil {
-		return fmt.Errorf(`%s: %w`, logp, err)
-	}
+	fhtml.Body = template.HTML(fhtml.rawBody.String())
 
-	fhtml.unpackAdocMetadata(doc)
-
-	htmlBody = fhtml.rawBody.String()
-	fhtml.Body = template.HTML(htmlBody)
-
-	f, err = os.Create(pathHtml)
+	f, err = os.Create(fmarkup.pathHtml)
 	if err != nil {
 		return fmt.Errorf(`%s: %w`, logp, err)
 	}
@@ -146,4 +145,58 @@ func (converter *Converter) ToHtmlFile(pathAdoc, pathHtml string) (err error) {
 	}
 
 	return nil
+}
+
+func (converter *Converter) adocToHtml(fmarkup *FileMarkup) (fhtml *fileHtml, err error) {
+	var (
+		logp = `adocToHtml`
+		doc  *asciidoctor.Document
+	)
+
+	doc, err = asciidoctor.Open(fmarkup.path)
+	if err != nil {
+		return nil, fmt.Errorf(`%s: %w`, logp, err)
+	}
+
+	fhtml = newFileHtml()
+
+	err = doc.ToHTMLBody(&fhtml.rawBody)
+	if err != nil {
+		return nil, fmt.Errorf(`%s: %w`, logp, err)
+	}
+
+	fhtml.unpackAdocMetadata(doc)
+
+	return fhtml, nil
+}
+
+func (converter *Converter) markdownToHtml(fmarkup *FileMarkup) (fhtml *fileHtml, err error) {
+	var (
+		logp = `markdownToHtml`
+		mdg  = goldmark.New(
+			goldmark.WithExtensions(
+				meta.Meta,
+			),
+		)
+
+		in        []byte
+		parserCtx parser.Context
+	)
+
+	in, err = ioutil.ReadFile(fmarkup.path)
+	if err != nil {
+		return nil, fmt.Errorf(`%s: %w`, logp, err)
+	}
+
+	fhtml = newFileHtml()
+	parserCtx = parser.NewContext()
+
+	err = mdg.Convert(in, &fhtml.rawBody, parser.WithContext(parserCtx))
+	if err != nil {
+		return nil, fmt.Errorf(`%s: %w`, logp, err)
+	}
+
+	fhtml.unpackMarkdownMetadata(meta.Get(parserCtx))
+
+	return fhtml, nil
 }

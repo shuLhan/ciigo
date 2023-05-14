@@ -22,6 +22,7 @@ import (
 
 const (
 	extAsciidoc          = `.adoc`
+	extMarkdown          = `.md`
 	internalTemplatePath = `_internal/.template`
 )
 
@@ -30,6 +31,7 @@ var (
 
 	defExcludes = []string{
 		`.*\.adoc$`,
+		`.*\.md$`,
 		`^\..*`,
 	}
 )
@@ -43,7 +45,7 @@ func Convert(opts *ConvertOptions) (err error) {
 		logp = `Convert`
 
 		converter   *Converter
-		fileMarkups map[string]*fileMarkup
+		fileMarkups map[string]*FileMarkup
 	)
 
 	if opts == nil {
@@ -84,7 +86,7 @@ func GoEmbed(opts *EmbedOptions) (err error) {
 		logp = `GoEmbed`
 
 		converter    *Converter
-		fileMarkups  map[string]*fileMarkup
+		fileMarkups  map[string]*FileMarkup
 		mfs          *memfs.MemFS
 		mfsOpts      *memfs.Options
 		convertForce bool
@@ -245,27 +247,32 @@ func isHtmlTemplateNewer(opts *EmbedOptions) bool {
 	return fiHtmlTmpl.ModTime().After(fiGoEmbed.ModTime())
 }
 
+// isExtensionMarkup return true if the file extension ext match with one of
+// supported markup format.
 func isExtensionMarkup(ext string) bool {
-	return ext == extAsciidoc
+	if ext == extAsciidoc {
+		return true
+	}
+	return ext == extMarkdown
 }
 
 // listFileMarkups find any markup files inside the content directory,
 // recursively.
 func listFileMarkups(dir string, excRE []*regexp.Regexp) (
-	fileMarkups map[string]*fileMarkup, err error,
+	fileMarkups map[string]*FileMarkup, err error,
 ) {
 	var (
 		logp = `listFileMarkups`
 
 		d        *os.File
 		fi       os.FileInfo
-		fmarkup  *fileMarkup
+		fmarkup  *FileMarkup
 		name     string
 		filePath string
 		k        string
 		ext      string
 		fis      []os.FileInfo
-		fmarkups map[string]*fileMarkup
+		fmarkups map[string]*FileMarkup
 	)
 
 	d, err = os.Open(dir)
@@ -278,7 +285,7 @@ func listFileMarkups(dir string, excRE []*regexp.Regexp) (
 		return nil, fmt.Errorf(`%s: %w`, logp, err)
 	}
 
-	fileMarkups = make(map[string]*fileMarkup)
+	fileMarkups = make(map[string]*FileMarkup)
 
 	for _, fi = range fis {
 		name = fi.Name()
@@ -317,7 +324,7 @@ func listFileMarkups(dir string, excRE []*regexp.Regexp) (
 		if fi.Size() == 0 {
 			continue
 		}
-		fmarkup, err = newFileMarkup(filePath, fi)
+		fmarkup, err = NewFileMarkup(filePath, fi)
 		if err != nil {
 			return nil, fmt.Errorf(`%s: %s: %w`, logp, filePath, err)
 		}

@@ -8,6 +8,7 @@
 `ciigo` is a library and a program to write static web server with embedded
 files using
 https://asciidoctor.org/docs/what-is-asciidoc/[AsciiDoc^]
+https://www.markdownguide.org/[Markdown^]
 markup format.
 
 

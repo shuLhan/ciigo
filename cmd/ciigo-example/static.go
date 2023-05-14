@@ -200,6 +200,7 @@ func init() {
 			},
 			Excludes: []string{
 				`.*\.adoc$`,
+				`.*\.md$`,
 				`^\..*`,
 			},
 			Embed: memfs.EmbedOptions{

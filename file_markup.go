@@ -10,17 +10,28 @@ import (
 	"strings"
 )
 
-type fileMarkup struct {
+// List of markup kind.
+const (
+	markupKindAdoc     = 1
+	markupKindMarkdown = 2
+)
+
+// FileMarkup contains the markup path and its kind.
+type FileMarkup struct {
 	info os.FileInfo // info contains FileInfo of markup file.
 
-	basePath string // basePath contains full path to file without markup extension.
-	path     string // path contains full path to markup file.
+	basePath string // Full path to file without markup extension.
+	path     string // Full path to markup file.
 	pathHtml string // path to HTML file.
+
+	kind int
 }
 
-func newFileMarkup(filePath string, fi os.FileInfo) (fmarkup *fileMarkup, err error) {
+// NewFileMarkup create new FileMarkup instance form file in "filePath".
+// The "fi" option is optional, if its nil it will Stat-ed manually.
+func NewFileMarkup(filePath string, fi os.FileInfo) (fmarkup *FileMarkup, err error) {
 	var (
-		logp = `newFileMarkup`
+		logp = `NewFileMarkup`
 
 		ext string
 	)
@@ -37,10 +48,11 @@ func newFileMarkup(filePath string, fi os.FileInfo) (fmarkup *fileMarkup, err er
 
 	ext = strings.ToLower(filepath.Ext(filePath))
 
-	fmarkup = &fileMarkup{
+	fmarkup = &FileMarkup{
 		path:     filePath,
 		info:     fi,
 		basePath: strings.TrimSuffix(filePath, ext),
+		kind:     markupKind(ext),
 	}
 
 	fmarkup.pathHtml = fmarkup.basePath + `.html`
@@ -49,7 +61,7 @@ func newFileMarkup(filePath string, fi os.FileInfo) (fmarkup *fileMarkup, err er
 }
 
 // isNewerThanHtml return true if the markup file is newer than HTML file.
-func (fm *fileMarkup) isNewerThanHtml() bool {
+func (fm *FileMarkup) isNewerThanHtml() bool {
 	var (
 		fi os.FileInfo
 	)
@@ -58,4 +70,14 @@ func (fm *fileMarkup) isNewerThanHtml() bool {
 		return true
 	}
 	return fm.info.ModTime().After(fi.ModTime())
+}
+
+func markupKind(ext string) int {
+	switch ext {
+	case extAsciidoc:
+		return markupKindAdoc
+	case extMarkdown:
+		return markupKindMarkdown
+	}
+	return 0
 }

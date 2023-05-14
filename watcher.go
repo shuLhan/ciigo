@@ -25,7 +25,7 @@ type watcher struct {
 	// fileMarkups contains all markup files found inside "dir".
 	// Its used to convert all markup files when the template file
 	// changes.
-	fileMarkups map[string]*fileMarkup
+	fileMarkups map[string]*FileMarkup
 
 	dir string
 }
@@ -58,6 +58,7 @@ func newWatcher(converter *Converter, convertOpts *ConvertOptions) (w *watcher, 
 			Root: convertOpts.Root,
 			Includes: []string{
 				`.*\.adoc$`,
+				`.*\.md$`,
 			},
 			Excludes: []string{
 				`^\..*`,
@@ -106,7 +107,7 @@ func (w *watcher) watchFileMarkup() {
 		logp = `watchFileMarkup`
 
 		ns      memfs.NodeState
-		fmarkup *fileMarkup
+		fmarkup *FileMarkup
 		ext     string
 		err     error
 		ok      bool
@@ -130,7 +131,7 @@ func (w *watcher) watchFileMarkup() {
 
 		case memfs.FileStateCreated:
 			fmt.Printf("%s: %s created\n", logp, ns.Node.SysPath)
-			fmarkup, err = newFileMarkup(ns.Node.SysPath, nil)
+			fmarkup, err = NewFileMarkup(ns.Node.SysPath, nil)
 			if err != nil {
 				log.Printf("%s: %s\n", logp, err)
 				continue
@@ -148,7 +149,7 @@ func (w *watcher) watchFileMarkup() {
 			if fmarkup == nil {
 				log.Printf("%s: %s not found\n", logp, ns.Node.SysPath)
 
-				fmarkup, err = newFileMarkup(ns.Node.SysPath, nil)
+				fmarkup, err = NewFileMarkup(ns.Node.SysPath, nil)
 				if err != nil {
 					log.Printf("%s: %s\n", logp, err)
 					continue
@@ -158,7 +159,7 @@ func (w *watcher) watchFileMarkup() {
 			}
 		}
 
-		err = w.converter.ToHtmlFile(fmarkup.path, fmarkup.pathHtml)
+		err = w.converter.ToHtmlFile(fmarkup)
 		if err != nil {
 			log.Printf(`%s: %s`, logp, err)
 		}

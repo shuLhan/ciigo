@@ -64,14 +64,33 @@ func TestWatcher(t *testing.T) {
 		t.Fatal(err)
 	}
 
+	var tdata *test.Data
+
+	tdata, err = test.LoadData(`testdata/watcher_test.txt`)
+	if err != nil {
+		t.Fatal(err)
+	}
+
 	t.Run(`createAdocFile`, testCreate)
 	t.Run(`updateAdocFile`, testUpdate)
 	t.Run(`deleteAdocFile`, testDelete)
+
+	var pathFileMarkdown = filepath.Join(testWatcher.dir, `test.md`)
+
+	t.Run(`testMarkdownCreate`, func(tt *testing.T) {
+		testMarkdownCreate(tt, tdata, pathFileMarkdown)
+	})
+	t.Run(`testMarkdownUpdate`, func(tt *testing.T) {
+		testMarkdownUpdate(tt, tdata, pathFileMarkdown)
+	})
+	t.Run(`testMarkdownDelete`, func(tt *testing.T) {
+		testMarkdownDelete(tt, pathFileMarkdown)
+	})
 }
 
 func testCreate(t *testing.T) {
 	var (
-		got     *fileMarkup
+		got     *FileMarkup
 		err     error
 		expBody string
 		gotBody []byte
@@ -114,7 +133,7 @@ func testUpdate(t *testing.T) {
 		err     error
 		expBody string
 		gotBody []byte
-		got     *fileMarkup
+		got     *FileMarkup
 	)
 
 	_, err = testAdocFile.WriteString(`= Hello`)
@@ -151,7 +170,7 @@ func testUpdate(t *testing.T) {
 func testDelete(t *testing.T) {
 	var (
 		err        error
-		got        *fileMarkup
+		got        *FileMarkup
 		gotIsExist bool
 	)
 
@@ -172,6 +191,91 @@ func testDelete(t *testing.T) {
 	test.Assert(t, `adoc file deleted`, false, gotIsExist)
 }
 
+func testMarkdownCreate(t *testing.T, tdata *test.Data, pathFileMarkdown string) {
+	var (
+		body = tdata.Input[`create.md`]
+
+		got     *FileMarkup
+		err     error
+		expBody string
+		gotBody []byte
+	)
+
+	// Let the OS sync the file system before we create new file,
+	// otherwise the modtime for fs.Root does not changes.
+	time.Sleep(1 * time.Second)
+
+	err = os.WriteFile(pathFileMarkdown, body, 0600)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	got = waitChanges()
+
+	test.Assert(t, `New md file created`, pathFileMarkdown, got.path)
+
+	gotBody, err = os.ReadFile(got.pathHtml)
+	if err != nil {
+		t.Fatal(err)
+	}
+	gotBody = removeFooter(gotBody)
+
+	expBody = string(tdata.Output[`create.md.html`])
+	test.Assert(t, `HTML body`, expBody, string(gotBody))
+}
+
+func testMarkdownUpdate(t *testing.T, tdata *test.Data, pathFileMarkdown string) {
+	var (
+		body = tdata.Input[`update.md`]
+
+		got     *FileMarkup
+		err     error
+		expBody string
+		gotBody []byte
+	)
+
+	// Let the OS sync the file system before we create new file,
+	// otherwise the modtime for fs.Root does not changes.
+	time.Sleep(1 * time.Second)
+
+	err = os.WriteFile(pathFileMarkdown, body, 0600)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	got = waitChanges()
+
+	test.Assert(t, `changes path`, pathFileMarkdown, got.path)
+
+	gotBody, err = os.ReadFile(got.pathHtml)
+	if err != nil {
+		t.Fatal(err)
+	}
+	gotBody = removeFooter(gotBody)
+
+	expBody = string(tdata.Output[`update.md.html`])
+	test.Assert(t, `HTML body`, expBody, string(gotBody))
+}
+
+func testMarkdownDelete(t *testing.T, pathFileMarkdown string) {
+	var (
+		err        error
+		got        *FileMarkup
+		gotIsExist bool
+	)
+
+	err = os.Remove(pathFileMarkdown)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	got = waitChanges()
+	test.Assert(t, `md file updated`, pathFileMarkdown, got.path)
+
+	_, gotIsExist = testWatcher.fileMarkups[pathFileMarkdown]
+	test.Assert(t, `md file deleted`, false, gotIsExist)
+}
+
 // removeFooter remove the footer from generated HTML since its contains date
 // and time that changes during test.
 func removeFooter(in []byte) (out []byte) {
@@ -186,13 +290,13 @@ func removeFooter(in []byte) (out []byte) {
 	return out
 }
 
-func waitChanges() (fmarkup *fileMarkup) {
+func waitChanges() (fmarkup *FileMarkup) {
 	var (
 		ok bool
 	)
 
 	for {
-		fmarkup, ok = testWatcher.changes.Pop().(*fileMarkup)
+		fmarkup, ok = testWatcher.changes.Pop().(*FileMarkup)
 		if ok {
 			break
 		}

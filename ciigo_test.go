@@ -21,6 +21,7 @@ func TestListFileMarkups(t *testing.T) {
 		excRegex: `(ex)/.*`,
 		exp: []string{
 			`testdata/in/clu/de/file.adoc`,
+			`testdata/in/clu/de/markdown.md`,
 		},
 	}, {
 		excRegex: `(in|ex)/.*`,
@@ -30,7 +31,9 @@ func TestListFileMarkups(t *testing.T) {
 		excRegex: `file$`,
 		exp: []string{
 			`testdata/ex/clu/de/file.adoc`,
+			`testdata/ex/clu/de/markdown.md`,
 			`testdata/in/clu/de/file.adoc`,
+			`testdata/in/clu/de/markdown.md`,
 		},
 	}}
 
@@ -39,7 +42,7 @@ func TestListFileMarkups(t *testing.T) {
 
 		c     testCase
 		excre *regexp.Regexp
-		list  map[string]*fileMarkup
+		list  map[string]*FileMarkup
 		got   []string
 		k     string
 		err   error

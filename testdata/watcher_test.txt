@@ -1,0 +1,29 @@
+>>> create.md
+---
+Title: a title
+---
+# watch create
+
+<<< create.md.html
+<!DOCTYPE>
+<html>
+<head><title>a title</title></head>
+<body><h1>watch create</h1>
+</body>
+</html>
+
+>>> update.md
+---
+Title: A new title
+stylesheet: /path/to/style.css
+keywords: ciigo,markdown
+---
+# watch updated
+
+<<< update.md.html
+<!DOCTYPE>
+<html>
+<head><title>A new title</title></head>
+<body><h1>watch updated</h1>
+</body>
+</html>
