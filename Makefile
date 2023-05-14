@@ -14,7 +14,8 @@ lint:
 
 test:
 	go run ./cmd/ciigo-example embed
-	CGO_ENABLED=1 go test -failfast -v -race -p=1 ./...
+	CGO_ENABLED=1 go test -failfast -v -race -p=1 -coverprofile=cover.out ./...
+	go tool cover -html=cover.out -o cover.html
 
 install: build
 	mv _bin/ciigo $(GOBIN)
