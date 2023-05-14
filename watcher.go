@@ -197,3 +197,16 @@ func (w *watcher) watchHtmlTemplate() {
 		w.converter.convertFileMarkups(w.fileMarkups, true)
 	}
 }
+
+// waitChanges wait for changes on file markup and return it.
+func (w *watcher) waitChanges() (fmarkup *FileMarkup) {
+	var ok bool
+
+	for {
+		fmarkup, ok = w.changes.Pop().(*FileMarkup)
+		if ok {
+			break
+		}
+	}
+	return fmarkup
+}

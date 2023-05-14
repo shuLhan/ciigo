@@ -4,12 +4,22 @@
 package ciigo
 
 import (
+	"html/template"
+	"os"
 	"regexp"
 	"sort"
 	"testing"
 
 	"github.com/shuLhan/share/lib/test"
 )
+
+func TestMain(m *testing.M) {
+	var templateCss = template.CSS(`body{}`)
+
+	_embeddedCSS = &templateCss
+
+	os.Exit(m.Run())
+}
 
 func TestListFileMarkups(t *testing.T) {
 	type testCase struct {

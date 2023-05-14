@@ -1,3 +1,85 @@
+>>> create.adoc
+# watch create
+
+<<< create.adoc.html
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="theme-color" content="#375EAB">
+		<meta name="generator" content="asciidoctor-go 0.4.1">
+		<title>watch create</title>
+		<style>
+		body{}
+		</style>
+	</head>
+	<body>
+		<div class="topbar">
+			<div class="container">
+				<div class="top-heading">
+					<a href="/">watch create</a>
+				</div>
+				<div class="menu">
+					<form class="item" action="/_internal/search">
+						<input type="text" name="q" placeholder="Search" />
+					</form>
+				</div>
+			</div>
+		</div>
+		<div class="page">
+			<div class="container">
+<div id="header">
+<h1>watch create</h1>
+</div>
+<div id="content">
+</div>
+<div id="footer">
+
+>>> update.adoc
+# watch updated
+:stylesheet: /path/to/style.css
+:keywords: ciigo,asciidoc
+
+Hello, body.
+
+<<< update.adoc.html
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="theme-color" content="#375EAB">
+		<meta name="generator" content="asciidoctor-go 0.4.1">
+		<meta name="keywords" content="ciigo,asciidoc">
+		<title>watch updated</title>
+		<link rel="stylesheet" href="/path/to/style.css">
+	</head>
+	<body>
+		<div class="topbar">
+			<div class="container">
+				<div class="top-heading">
+					<a href="/">watch updated</a>
+				</div>
+				<div class="menu">
+					<form class="item" action="/_internal/search">
+						<input type="text" name="q" placeholder="Search" />
+					</form>
+				</div>
+			</div>
+		</div>
+		<div class="page">
+			<div class="container">
+<div id="header">
+<h1>watch updated</h1>
+</div>
+<div id="content">
+<div class="paragraph">
+<p>Hello, body.</p>
+</div>
+</div>
+<div id="footer">
+
 >>> create.md
 ---
 Title: a title
@@ -5,12 +87,37 @@ Title: a title
 # watch create
 
 <<< create.md.html
-<!DOCTYPE>
+<!DOCTYPE html>
 <html>
-<head><title>a title</title></head>
-<body><h1>watch create</h1>
-</body>
-</html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="theme-color" content="#375EAB">
+		<title>a title</title>
+		<style>
+		body{}
+		</style>
+	</head>
+	<body>
+		<div class="topbar">
+			<div class="container">
+				<div class="top-heading">
+					<a href="/">a title</a>
+				</div>
+				<div class="menu">
+					<form class="item" action="/_internal/search">
+						<input type="text" name="q" placeholder="Search" />
+					</form>
+				</div>
+			</div>
+		</div>
+		<div class="page">
+			<div class="container">
+<h1>watch create</h1>
+
+			</div>
+		</div>
+		<div class="footer">
 
 >>> update.md
 ---
@@ -21,9 +128,33 @@ keywords: ciigo,markdown
 # watch updated
 
 <<< update.md.html
-<!DOCTYPE>
+<!DOCTYPE html>
 <html>
-<head><title>A new title</title></head>
-<body><h1>watch updated</h1>
-</body>
-</html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="theme-color" content="#375EAB">
+		<meta name="keywords" content="ciigo,markdown">
+		<title>A new title</title>
+		<link rel="stylesheet" href="/path/to/style.css">
+	</head>
+	<body>
+		<div class="topbar">
+			<div class="container">
+				<div class="top-heading">
+					<a href="/">A new title</a>
+				</div>
+				<div class="menu">
+					<form class="item" action="/_internal/search">
+						<input type="text" name="q" placeholder="Search" />
+					</form>
+				</div>
+			</div>
+		</div>
+		<div class="page">
+			<div class="container">
+<h1>watch updated</h1>
+
+			</div>
+		</div>
+		<div class="footer">

@@ -1,8 +1,10 @@
 ## SPDX-FileCopyrightText: 2019 Shulhan <ms@kilabit.info>
 ## SPDX-License-Identifier: GPL-3.0-or-later
+*.html
+/_bin
 /ciigo
 /ciigo-example
-/_bin
-*.html
-cover.out
+/testdata/watcher/test.adoc
+/testdata/watcher/test.md
 cover.html
+cover.out

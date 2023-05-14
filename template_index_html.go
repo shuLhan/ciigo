@@ -9,16 +9,18 @@ const templateIndexHTML = `<!DOCTYPE html>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<meta name="theme-color" content="#375EAB">
-		{{range $k, $v := .Metadata -}}
+{{- range $k, $v := .Metadata}}
 		<meta name="{{$k}}" content="{{$v}}">
-		{{end -}}
+{{- end}}
 		<title>{{.Title}}</title>
+{{- if .EmbeddedCSS}}
 		<style>
-		{{- .EmbeddedCSS -}}
+		{{.EmbeddedCSS}}
 		</style>
-		{{- range .Styles}}
+{{- end}}
+{{- range .Styles}}
 		<link rel="stylesheet" href="{{.}}">
-		{{- end}}
+{{- end}}
 	</head>
 	<body>
 		<div class="topbar">
@@ -33,13 +35,11 @@ const templateIndexHTML = `<!DOCTYPE html>
 				</div>
 			</div>
 		</div>
-
 		<div class="page">
 			<div class="container">
-				{{- .Body -}}
+{{.Body}}
 			</div>
 		</div>
-
 		<div class="footer">
 			Powered by <a
 				href="https://git.sr.ht/~shulhan/ciigo"
