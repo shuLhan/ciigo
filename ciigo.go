@@ -277,6 +277,9 @@ func listFileMarkups(dir string, excRE []*regexp.Regexp) (
 
 	d, err = os.Open(dir)
 	if err != nil {
+		if os.IsPermission(err) {
+			return nil, nil
+		}
 		return nil, fmt.Errorf(`%s: %w`, logp, err)
 	}
 
