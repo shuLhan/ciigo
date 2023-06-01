@@ -120,7 +120,7 @@ func (srv *server) start() (err error) {
 		}
 	}
 
-	fmt.Printf("ciigo: starting HTTP server at %q for %q\n",
+	fmt.Printf("ciigo: starting HTTP server at http://%s for %q\n",
 		srv.http.Options.Address, srv.http.Options.Memfs.Opts.Root)
 
 	err = srv.http.Start()
