@@ -15,7 +15,7 @@ func embeddedCSS() *template.CSS {
 	var css template.CSS = template.CSS(`
 body {
 	margin: 0;
-	font-family: Arial, sans-serif;
+	font-family: 'Go', Arial, sans-serif;
 	background-color: #fff;
 	line-height: 1.3;
 	text-align: center;
@@ -23,7 +23,7 @@ body {
 }
 pre,
 code {
-	font-family: Menlo, monospace;
+	font-family: 'Go Mono', Menlo, monospace;
 	font-size: 0.875rem;
 }
 pre {
@@ -136,7 +136,7 @@ dd {
 }
 .admonitionblock > table td.icon .title {
 	font-weight: bold;
-	font-family: "Open Sans","DejaVu Sans",sans-serif;
+	font-family: "Go","Open Sans","DejaVu Sans",sans-serif;
 	text-transform: uppercase;
 }
 .admonitionblock > table td.content {
