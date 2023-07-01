@@ -6,7 +6,6 @@ package ciigo
 import (
 	"fmt"
 	"html/template"
-	"io/ioutil"
 	"log"
 	"os"
 	"path/filepath"
@@ -183,7 +182,7 @@ func (converter *Converter) markdownToHtml(fmarkup *FileMarkup) (fhtml *fileHtml
 		parserCtx parser.Context
 	)
 
-	in, err = ioutil.ReadFile(fmarkup.path)
+	in, err = os.ReadFile(fmarkup.path)
 	if err != nil {
 		return nil, fmt.Errorf(`%s: %w`, logp, err)
 	}
