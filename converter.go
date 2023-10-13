@@ -84,7 +84,7 @@ func (converter *Converter) convertFileMarkups(fileMarkups map[string]*FileMarku
 		if err != nil {
 			log.Printf(`%s: %s`, logp, err)
 		} else {
-			fmt.Printf("%s: converting %s\n", logp, fmarkup.path)
+			log.Printf(`%s: converting %s`, logp, fmarkup.path)
 		}
 	}
 }

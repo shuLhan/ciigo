@@ -121,7 +121,7 @@ func (w *watcher) watchFileMarkup() {
 
 		switch ns.State {
 		case memfs.FileStateDeleted:
-			fmt.Printf("%s: %q deleted\n", logp, ns.Node.SysPath)
+			log.Printf(`%s: %q deleted`, logp, ns.Node.SysPath)
 			fmarkup, ok = w.fileMarkups[ns.Node.SysPath]
 			if ok {
 				delete(w.fileMarkups, ns.Node.SysPath)
@@ -130,7 +130,7 @@ func (w *watcher) watchFileMarkup() {
 			continue
 
 		case memfs.FileStateCreated:
-			fmt.Printf("%s: %s created\n", logp, ns.Node.SysPath)
+			log.Printf(`%s: %s created`, logp, ns.Node.SysPath)
 			fmarkup, err = NewFileMarkup(ns.Node.SysPath, nil)
 			if err != nil {
 				log.Printf("%s: %s\n", logp, err)
@@ -140,11 +140,11 @@ func (w *watcher) watchFileMarkup() {
 			w.fileMarkups[ns.Node.SysPath] = fmarkup
 
 		case memfs.FileStateUpdateMode:
-			fmt.Printf("%s: %s mode updated\n", logp, ns.Node.SysPath)
+			log.Printf(`%s: %s mode updated`, logp, ns.Node.SysPath)
 			continue
 
 		case memfs.FileStateUpdateContent:
-			fmt.Printf("%s: %s content updated\n", logp, ns.Node.SysPath)
+			log.Printf(`%s: %s content updated`, logp, ns.Node.SysPath)
 			fmarkup = w.fileMarkups[ns.Node.SysPath]
 			if fmarkup == nil {
 				log.Printf("%s: %s not found\n", logp, ns.Node.SysPath)
@@ -184,8 +184,7 @@ func (w *watcher) watchHtmlTemplate() {
 				logp, ns.Node.SysPath)
 			err = w.converter.htmlTemplateUseInternal()
 		} else {
-			fmt.Printf("%s: recompiling HTML template %q ...\n", logp,
-				ns.Node.SysPath)
+			log.Printf(`%s: recompiling HTML template %q ...`, logp, ns.Node.SysPath)
 			err = w.converter.SetHtmlTemplateFile(w.converter.htmlTemplate)
 		}
 		if err != nil {
@@ -193,7 +192,7 @@ func (w *watcher) watchHtmlTemplate() {
 			continue
 		}
 
-		fmt.Printf("%s: regenerate all markup files ...\n", logp)
+		log.Printf(`%s: regenerate all markup files ...`, logp)
 		w.converter.convertFileMarkups(w.fileMarkups, true)
 	}
 }
