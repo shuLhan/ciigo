@@ -66,7 +66,7 @@ func Convert(opts *ConvertOptions) (err error) {
 		return fmt.Errorf(`%s: %w`, logp, err)
 	}
 
-	converter.convertFileMarkups(fileMarkups, false)
+	converter.convertFileMarkups(fileMarkups, true)
 
 	return nil
 }
