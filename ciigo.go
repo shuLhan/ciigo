@@ -26,15 +26,15 @@ const (
 	internalTemplatePath = `_internal/.template`
 )
 
-var (
-	Version = `0.10.0`
+// Version define the latest tagged release of this module.
+var Version = `0.10.0`
 
-	defExcludes = []string{
-		`.*\.adoc$`,
-		`.*\.md$`,
-		`^\..*`,
-	}
-)
+// defExcludes define default files to be excludes on GoEmbed.
+var defExcludes = []string{
+	`.*\.adoc$`,
+	`.*\.md$`,
+	`^\..*`,
+}
 
 // Convert all markup files inside directory "dir" recursively into HTML
 // files using ConvertOptions HtmlTemplate file as base template.
