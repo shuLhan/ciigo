@@ -9,6 +9,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"time"
 
 	"git.sr.ht/~shulhan/asciidoctor-go"
 	"github.com/yuin/goldmark"
@@ -18,8 +19,12 @@ import (
 
 // Converter a single, reusable AsciiDoc converter.
 type Converter struct {
-	tmpl         *template.Template
-	tmplSearch   *template.Template
+	tmpl       *template.Template
+	tmplSearch *template.Template
+
+	// htmlTemplateModtime modification time for HtmlTemplate.
+	htmlTemplateModtime time.Time
+
 	htmlTemplate string // Path to HTML template in storage.
 }
 
@@ -30,7 +35,6 @@ func NewConverter(htmlTemplate string) (converter *Converter, err error) {
 		logp = `NewConverter`
 
 		tmplContent string
-		bhtml       []byte
 	)
 
 	converter = &Converter{}
@@ -42,12 +46,23 @@ func NewConverter(htmlTemplate string) (converter *Converter, err error) {
 	} else {
 		converter.htmlTemplate = filepath.Clean(htmlTemplate)
 
+		var fi os.FileInfo
+
+		fi, err = os.Stat(converter.htmlTemplate)
+		if err != nil {
+			return nil, fmt.Errorf(`%s: %w`, logp, err)
+		}
+
+		converter.htmlTemplateModtime = fi.ModTime()
+
+		var bhtml []byte
+
 		bhtml, err = os.ReadFile(converter.htmlTemplate)
 		if err != nil {
-			tmplContent = templateIndexHTML
-		} else {
-			tmplContent = string(bhtml)
+			return nil, fmt.Errorf(`%s: %w`, logp, err)
 		}
+
+		tmplContent = string(bhtml)
 	}
 
 	converter.tmpl, err = converter.tmpl.Parse(tmplContent)
@@ -69,13 +84,29 @@ func (converter *Converter) convertFileMarkups(fileMarkups map[string]*FileMarku
 	var (
 		logp = `convertFileMarkups`
 
-		fmarkup *FileMarkup
-		err     error
+		fmarkup     *FileMarkup
+		htmlInfo    os.FileInfo
+		htmlModtime time.Time
+		err         error
+		skip        bool
 	)
 
 	for _, fmarkup = range fileMarkups {
-		if !fmarkup.isNewerThanHtml() {
-			if !isForce {
+		skip = true
+		if !isForce {
+			htmlInfo, _ = os.Stat(fmarkup.pathHtml)
+			if htmlInfo == nil {
+				// HTML file may not exist.
+				skip = false
+			} else {
+				htmlModtime = htmlInfo.ModTime()
+				if converter.htmlTemplateModtime.After(htmlModtime) {
+					skip = false
+				} else if fmarkup.info.ModTime().After(htmlModtime) {
+					skip = false
+				}
+			}
+			if skip {
 				continue
 			}
 		}

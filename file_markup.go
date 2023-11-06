@@ -60,18 +60,6 @@ func NewFileMarkup(filePath string, fi os.FileInfo) (fmarkup *FileMarkup, err er
 	return fmarkup, nil
 }
 
-// isNewerThanHtml return true if the markup file is newer than HTML file.
-func (fm *FileMarkup) isNewerThanHtml() bool {
-	var (
-		fi os.FileInfo
-	)
-	fi, _ = os.Stat(fm.pathHtml)
-	if fi == nil {
-		return true
-	}
-	return fm.info.ModTime().After(fi.ModTime())
-}
-
 func markupKind(ext string) int {
 	switch ext {
 	case extAsciidoc:
