@@ -194,7 +194,7 @@ func init() {
 	ciigoFS = &memfs.MemFS{
 		PathNodes: memfs.NewPathNode(),
 		Opts: &memfs.Options{
-			Root: "_example",
+			Root:        "_example",
 			MaxFileSize: 5242880,
 			Includes: []string{
 			},
@@ -204,7 +204,7 @@ func init() {
 				`^\..*`,
 			},
 			Embed: memfs.EmbedOptions{
-				CommentHeader:  `// SPDX-FileCopyrightText: 2019 Shulhan <ms@kilabit.info>
+				CommentHeader: `// SPDX-FileCopyrightText: 2019 Shulhan <ms@kilabit.info>
 // SPDX-License-Identifier: GPL-3.0-or-later
 `,
 				PackageName:    "main",
@@ -238,4 +238,9 @@ func init() {
 		_ciigoFS_getNode(ciigoFS, "_internal/.template", generate__internal__template))
 
 	ciigoFS.Root = ciigoFS.PathNodes.Get("/")
+
+	var err = ciigoFS.Init()
+	if err != nil {
+		panic("ciigoFS: " + err.Error())
+	}
 }
