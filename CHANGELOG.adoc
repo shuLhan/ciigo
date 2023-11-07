@@ -1,10 +1,52 @@
-// SPDX-FileCopyrightText: 2020 Shulhan <ms@kilabit.info>
-// SPDX-License-Identifier: GPL-3.0-or-later
 =  Changelog for ciigo
 Shulhan <ms@kilabit.info>
 :toc:
 :sectanchors:
 :sectlinks:
+
+
+[#v0_10_1]
+==  ciigo v0.10.1 (2023-11-06)
+
+In this release, update on asciidoctor-go add new features to parse
+unordered list with '-' and some bug fixes related to rendering list.
+
+The update on share module fix for permission error when scanning using
+memfs and HTTP redirect for request to directory that does not end with
+slash.
+
+[#v0_10_1__bug_fixes]
+=== Bug fixes
+
+all: ignore error permission when listing file markups::
++
+Instead of returning the error, ignore it and continue processing other
+files in the list.
+
+[#v0_10_1__enhancements]
+=== Enhancements
+
+all: print log message with log package::
++
+This is to provide the timestamp to each log output.
+
+cmd/ciigo: set default IP address to loopback on serve command::
++
+Previously, the default IP address is 0.0.0.0 which listen on all
+network interfaces.
+Listening to all network interface should be explicit by user.
+
+all: use modification time to force HTML conversion::
++
+--
+Previously, in changes 46bd8b68dc8c we set the Convert to always force
+the HTML conversion.
+
+In this changes, we derive the decision based on modification time
+of HTML template and markup file.
+If the HTML template or markup file is newer that HTML file then the
+new HTML file will be generated.
+--
 
 
 [#v0_10_0]
@@ -518,3 +560,6 @@ The first release support asciidoc and markdown markup language.
 
 The v0.1.0 release has been deleted because it contains error in the
 dependencies and the Go module cache make it even harder to invalidate it.
+
+// SPDX-FileCopyrightText: 2020 Shulhan <ms@kilabit.info>
+// SPDX-License-Identifier: GPL-3.0-or-later
