@@ -1,7 +1,7 @@
 git.sr.ht/~shulhan/asciidoctor-go v0.5.1-0.20231105052733-3d54e38bac45 h1:FGltprabRao/KSTbvM3OTbC6e0oXI/EJ8O60QAqrEu4=
 git.sr.ht/~shulhan/asciidoctor-go v0.5.1-0.20231105052733-3d54e38bac45/go.mod h1:q3YhUBXTOpM9HDfaTop6MVx2dc0p9idWJAfdpjbWJp4=
-github.com/shuLhan/share v0.50.1 h1:R4yDLdITKttJJhWJDeYvW1fA6FIEr2IMqvEn395JiaM=
-github.com/shuLhan/share v0.50.1/go.mod h1:dUE7xqEzT8HZRy8vvfFzrFJ+6a6chXwaPmC4hYB68QU=
+github.com/shuLhan/share v0.50.2-0.20231107202614-fdb1c05d62a2 h1:zqrtgvlwf/GvRiF2G/VdCekJLQRtbpOJ2AAwDA4661I=
+github.com/shuLhan/share v0.50.2-0.20231107202614-fdb1c05d62a2/go.mod h1:dUE7xqEzT8HZRy8vvfFzrFJ+6a6chXwaPmC4hYB68QU=
 github.com/yuin/goldmark v1.6.0 h1:boZcn2GTjpsynOsC0iJHnBWa4Bi0qzfJjthwauItG68=
 github.com/yuin/goldmark v1.6.0/go.mod h1:6yULJ656Px+3vBD8DxQVa3kxgyrAnzto9xy5taEt/CY=
 github.com/yuin/goldmark-meta v1.1.0 h1:pWw+JLHGZe8Rk0EGsMVssiNb/AaPMHfSRszZeUeiOUc=
