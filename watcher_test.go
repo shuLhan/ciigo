@@ -90,6 +90,8 @@ func TestWatcher(t *testing.T) {
 	t.Run(`testMarkdownDelete`, func(tt *testing.T) {
 		testMarkdownDelete(tt, testWatcher, pathFileMarkup)
 	})
+
+	testWatcher.stop()
 }
 
 func testAdocCreate(t *testing.T, testWatcher *watcher, tdata *test.Data, pathFile string) {

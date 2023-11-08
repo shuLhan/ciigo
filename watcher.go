@@ -100,6 +100,13 @@ func (w *watcher) start() (err error) {
 	return nil
 }
 
+func (w *watcher) stop() {
+	w.watchDir.Stop()
+	if w.watchTemplate != nil {
+		w.watchTemplate.Stop()
+	}
+}
+
 // watchFileMarkup watch the markup files inside the "content" directory,
 // and re-generate them into HTML file when changed.
 func (w *watcher) watchFileMarkup() {

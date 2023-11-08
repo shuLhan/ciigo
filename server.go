@@ -129,6 +129,10 @@ func (srv *server) start() (err error) {
 		return fmt.Errorf(`%s: %w`, logp, err)
 	}
 
+	if srv.opts.IsDevelopment {
+		srv.watcher.stop()
+	}
+
 	return nil
 }
 
