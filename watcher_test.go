@@ -15,7 +15,7 @@ import (
 
 func TestWatcher(t *testing.T) {
 	var (
-		testDir     = `testdata/watcher`
+		testDir     = t.TempDir()
 		convertOpts = ConvertOptions{
 			Root: testDir,
 		}
@@ -23,20 +23,6 @@ func TestWatcher(t *testing.T) {
 		converter *Converter
 		err       error
 	)
-
-	err = os.RemoveAll(testDir)
-	if err != nil {
-		t.Logf(err.Error())
-	}
-
-	err = os.MkdirAll(testDir, 0700)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	t.Cleanup(func() {
-		os.RemoveAll(testDir)
-	})
 
 	converter, err = NewConverter(``)
 	if err != nil {
@@ -54,6 +40,8 @@ func TestWatcher(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+
+	testWatcher.watchDir.Delay = 100 * time.Millisecond
 
 	err = testWatcher.start()
 	if err != nil {
@@ -105,7 +93,7 @@ func testAdocCreate(t *testing.T, testWatcher *watcher, tdata *test.Data, pathFi
 
 	// Let the OS sync the file system before we create new file,
 	// otherwise the modtime for fs.Root does not changes.
-	time.Sleep(1 * time.Second)
+	time.Sleep(100 * time.Millisecond)
 
 	err = os.WriteFile(pathFile, expBody, 0600)
 	if err != nil {
@@ -138,7 +126,7 @@ func testAdocUpdate(t *testing.T, testWatcher *watcher, tdata *test.Data, pathFi
 
 	// Let the OS sync the file system before we create new file,
 	// otherwise the modtime for fs.Root does not changes.
-	time.Sleep(1 * time.Second)
+	time.Sleep(100 * time.Millisecond)
 
 	err = os.WriteFile(pathFile, expBody, 0600)
 	if err != nil {
@@ -192,7 +180,7 @@ func testMarkdownCreate(t *testing.T, testWatcher *watcher, tdata *test.Data, pa
 
 	// Let the OS sync the file system before we create new file,
 	// otherwise the modtime for fs.Root does not changes.
-	time.Sleep(1 * time.Second)
+	time.Sleep(100 * time.Millisecond)
 
 	err = os.WriteFile(pathFileMarkdown, body, 0600)
 	if err != nil {
@@ -225,7 +213,7 @@ func testMarkdownUpdate(t *testing.T, testWatcher *watcher, tdata *test.Data, pa
 
 	// Let the OS sync the file system before we create new file,
 	// otherwise the modtime for fs.Root does not changes.
-	time.Sleep(1 * time.Second)
+	time.Sleep(100 * time.Millisecond)
 
 	err = os.WriteFile(pathFileMarkdown, body, 0600)
 	if err != nil {
@@ -252,6 +240,8 @@ func testMarkdownDelete(t *testing.T, testWatcher *watcher, pathFileMarkdown str
 		got        *FileMarkup
 		gotIsExist bool
 	)
+
+	time.Sleep(100 * time.Millisecond)
 
 	err = os.Remove(pathFileMarkdown)
 	if err != nil {
