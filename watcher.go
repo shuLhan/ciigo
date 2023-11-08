@@ -38,11 +38,11 @@ type watcher struct {
 //
 //	watcher
 //	|
-//	+-- watchFileMarkup --> UPDATE --> Converter.ToHtmlFile()
+//	+-- watchFileMarkup --> UPDATE --> Converter.convertFileMarkups()
 //	|
 //	+-- watchHtmlTemplate +--> DELETE --> Converter.htmlTemplateUseInternal()
 //	                      |
-//	                      +--> UPDATE --> Converter.htmlTemplateReload()
+//	                      +--> UPDATE --> Converter.convertFileMarkups()
 func newWatcher(converter *Converter, convertOpts *ConvertOptions) (w *watcher, err error) {
 	var (
 		logp = `newWatcher`
