@@ -37,8 +37,8 @@ var defExcludes = []string{
 }
 
 // Convert all markup files inside directory "dir" recursively into HTML
-// files using ConvertOptions HtmlTemplate file as base template.
-// If HtmlTemplate is empty it will default to use embedded HTML template.
+// files using ConvertOptions HTMLTemplate file as base template.
+// If HTMLTemplate is empty it will default to use embedded HTML template.
 // See template_index_html.go for template format.
 func Convert(opts *ConvertOptions) (err error) {
 	var (
@@ -56,7 +56,7 @@ func Convert(opts *ConvertOptions) (err error) {
 		return fmt.Errorf(`%s: %w`, logp, err)
 	}
 
-	converter, err = NewConverter(opts.HtmlTemplate)
+	converter, err = NewConverter(opts.HTMLTemplate)
 	if err != nil {
 		return fmt.Errorf(`%s: %w`, logp, err)
 	}
@@ -78,7 +78,7 @@ func Convert(opts *ConvertOptions) (err error) {
 // recursively, and then embed them into Go file defined by
 // EmbedOptions.GoFileName.
 //
-// If HtmlTemplate option is empty it default to use embedded HTML
+// If HTMLTemplate option is empty it default to use embedded HTML
 // template.
 // See template_index_html.go for template format.
 func GoEmbed(opts *EmbedOptions) (err error) {
@@ -100,7 +100,7 @@ func GoEmbed(opts *EmbedOptions) (err error) {
 		return fmt.Errorf(`%s: %w`, logp, err)
 	}
 
-	converter, err = NewConverter(opts.HtmlTemplate)
+	converter, err = NewConverter(opts.HTMLTemplate)
 	if err != nil {
 		return fmt.Errorf(`%s: %w`, logp, err)
 	}
@@ -110,7 +110,7 @@ func GoEmbed(opts *EmbedOptions) (err error) {
 		return fmt.Errorf(`%s: %w`, logp, err)
 	}
 
-	if isHtmlTemplateNewer(opts) {
+	if isHTMLTemplateNewer(opts) {
 		convertForce = true
 	}
 
@@ -127,8 +127,8 @@ func GoEmbed(opts *EmbedOptions) (err error) {
 		return fmt.Errorf(`%s: %w`, logp, err)
 	}
 
-	if len(opts.HtmlTemplate) > 0 {
-		_, err = mfs.AddFile(internalTemplatePath, opts.HtmlTemplate)
+	if len(opts.HTMLTemplate) > 0 {
+		_, err = mfs.AddFile(internalTemplatePath, opts.HTMLTemplate)
 		if err != nil {
 			return fmt.Errorf(`%s: %w`, logp, err)
 		}
@@ -193,7 +193,7 @@ func Watch(opts *ConvertOptions) (err error) {
 		return fmt.Errorf(`%s: %w`, logp, err)
 	}
 
-	converter, err = NewConverter(opts.HtmlTemplate)
+	converter, err = NewConverter(opts.HTMLTemplate)
 	if err != nil {
 		return fmt.Errorf(`%s: %w`, logp, err)
 	}
@@ -211,22 +211,22 @@ func Watch(opts *ConvertOptions) (err error) {
 	return nil
 }
 
-// isHtmlTemplateNewer will return true if HtmlTemplate is not defined or
+// isHTMLTemplateNewer will return true if HTMLTemplate is not defined or
 // newer than embedded GoFileName.
-func isHtmlTemplateNewer(opts *EmbedOptions) bool {
+func isHTMLTemplateNewer(opts *EmbedOptions) bool {
 	var (
-		logp = `isHtmlTemplateNewer`
+		logp = `isHTMLTemplateNewer`
 
-		fiHtmlTmpl fs.FileInfo
+		fiHTMLTmpl fs.FileInfo
 		fiGoEmbed  fs.FileInfo
 		err        error
 	)
 
-	if len(opts.HtmlTemplate) == 0 {
+	if len(opts.HTMLTemplate) == 0 {
 		return true
 	}
 
-	fiHtmlTmpl, err = os.Stat(opts.HtmlTemplate)
+	fiHTMLTmpl, err = os.Stat(opts.HTMLTemplate)
 	if err != nil {
 		log.Fatalf(`%s: %s`, logp, err)
 	}
@@ -244,7 +244,7 @@ func isHtmlTemplateNewer(opts *EmbedOptions) bool {
 		log.Fatalf(`%s: %s`, logp, err)
 	}
 
-	return fiHtmlTmpl.ModTime().After(fiGoEmbed.ModTime())
+	return fiHTMLTmpl.ModTime().After(fiGoEmbed.ModTime())
 }
 
 // isExtensionMarkup return true if the file extension ext match with one of

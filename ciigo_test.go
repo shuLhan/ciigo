@@ -14,9 +14,9 @@ import (
 )
 
 func TestMain(m *testing.M) {
-	var templateCss = template.CSS(`body{}`)
+	var templateCSS = template.CSS(`body{}`)
 
-	_embeddedCSS = &templateCss
+	_embeddedCSS = &templateCSS
 
 	os.Exit(m.Run())
 }

@@ -84,7 +84,7 @@ func TestWatcher(t *testing.T) {
 
 func testAdocCreate(t *testing.T, testWatcher *watcher, tdata *test.Data, pathFile string) {
 	var (
-		expBody []byte = tdata.Input[`create.adoc`]
+		expBody = tdata.Input[`create.adoc`]
 
 		got     *FileMarkup
 		err     error
@@ -104,7 +104,7 @@ func testAdocCreate(t *testing.T, testWatcher *watcher, tdata *test.Data, pathFi
 
 	test.Assert(t, `New adoc file created`, pathFile, got.path)
 
-	gotBody, err = os.ReadFile(got.pathHtml)
+	gotBody, err = os.ReadFile(got.pathHTML)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -137,7 +137,7 @@ func testAdocUpdate(t *testing.T, testWatcher *watcher, tdata *test.Data, pathFi
 
 	test.Assert(t, `adoc file updated`, pathFile, got.path)
 
-	gotBody, err = os.ReadFile(got.pathHtml)
+	gotBody, err = os.ReadFile(got.pathHTML)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -191,7 +191,7 @@ func testMarkdownCreate(t *testing.T, testWatcher *watcher, tdata *test.Data, pa
 
 	test.Assert(t, `New md file created`, pathFileMarkdown, got.path)
 
-	gotBody, err = os.ReadFile(got.pathHtml)
+	gotBody, err = os.ReadFile(got.pathHTML)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -224,7 +224,7 @@ func testMarkdownUpdate(t *testing.T, testWatcher *watcher, tdata *test.Data, pa
 
 	test.Assert(t, `changes path`, pathFileMarkdown, got.path)
 
-	gotBody, err = os.ReadFile(got.pathHtml)
+	gotBody, err = os.ReadFile(got.pathHTML)
 	if err != nil {
 		t.Fatal(err)
 	}

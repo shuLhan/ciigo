@@ -26,7 +26,7 @@ func main() {
 		opts = &ciigo.ServeOptions{
 			ConvertOptions: ciigo.ConvertOptions{
 				Root:         "_example",
-				HtmlTemplate: "_example/html.tmpl",
+				HTMLTemplate: "_example/html.tmpl",
 			},
 			Mfs:     ciigoFS,
 			Address: ":8080",
@@ -55,7 +55,7 @@ func doEmbed() {
 		opts = ciigo.EmbedOptions{
 			ConvertOptions: ciigo.ConvertOptions{
 				Root:         "_example",
-				HtmlTemplate: "_example/html.tmpl",
+				HTMLTemplate: "_example/html.tmpl",
 			},
 			EmbedOptions: memfs.EmbedOptions{
 				CommentHeader: `// SPDX-FileCopyrightText: 2019 Shulhan <ms@kilabit.info>

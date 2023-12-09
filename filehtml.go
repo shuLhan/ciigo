@@ -16,8 +16,8 @@ const (
 	metadataTitle      = `title`
 )
 
-// fileHtml represent an HTML metadata for header and its body.
-type fileHtml struct {
+// fileHTML represent an HTML metadata for header and its body.
+type fileHTML struct {
 	Title       string
 	EmbeddedCSS *template.CSS
 	Styles      []string
@@ -27,14 +27,14 @@ type fileHtml struct {
 	rawBody strings.Builder
 }
 
-func newFileHtml() (fhtml *fileHtml) {
-	fhtml = &fileHtml{
+func newFileHTML() (fhtml *fileHTML) {
+	fhtml = &fileHTML{
 		Metadata: map[string]string{},
 	}
 	return fhtml
 }
 
-func (fhtml *fileHtml) unpackAdocMetadata(doc *asciidoctor.Document) {
+func (fhtml *fileHTML) unpackAdocMetadata(doc *asciidoctor.Document) {
 	var (
 		k string
 		v string
@@ -61,7 +61,7 @@ func (fhtml *fileHtml) unpackAdocMetadata(doc *asciidoctor.Document) {
 	}
 }
 
-func (fhtml *fileHtml) unpackMarkdownMetadata(metadata map[string]any) {
+func (fhtml *fileHTML) unpackMarkdownMetadata(metadata map[string]any) {
 	var (
 		key  string
 		val  any

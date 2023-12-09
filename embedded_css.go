@@ -12,7 +12,7 @@ func embeddedCSS() *template.CSS {
 		return _embeddedCSS
 	}
 
-	var css template.CSS = template.CSS(`
+	var css = template.CSS(`
 body {
 	margin: 0;
 	font-family: 'Go', Arial, sans-serif;

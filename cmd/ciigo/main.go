@@ -70,7 +70,7 @@ func main() {
 		command     = strings.ToLower(flag.Arg(0))
 		convertOpts = ciigo.ConvertOptions{
 			Root:         flag.Arg(1),
-			HtmlTemplate: *htmlTemplate,
+			HTMLTemplate: *htmlTemplate,
 			Exclude:      *exclude,
 		}
 

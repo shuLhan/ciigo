@@ -22,7 +22,7 @@ type Converter struct {
 	tmpl       *template.Template
 	tmplSearch *template.Template
 
-	// htmlTemplateModtime modification time for HtmlTemplate.
+	// htmlTemplateModtime modification time for HTMLTemplate.
 	htmlTemplateModtime time.Time
 
 	htmlTemplate string // Path to HTML template in storage.
@@ -94,7 +94,7 @@ func (converter *Converter) convertFileMarkups(fileMarkups map[string]*FileMarku
 	for _, fmarkup = range fileMarkups {
 		skip = true
 		if !isForce {
-			htmlInfo, _ = os.Stat(fmarkup.pathHtml)
+			htmlInfo, _ = os.Stat(fmarkup.pathHTML)
 			if htmlInfo == nil {
 				// HTML file may not exist.
 				skip = false
@@ -111,7 +111,7 @@ func (converter *Converter) convertFileMarkups(fileMarkups map[string]*FileMarku
 			}
 		}
 
-		err = converter.ToHtmlFile(fmarkup)
+		err = converter.ToHTMLFile(fmarkup)
 		if err != nil {
 			log.Printf(`%s: %s`, logp, err)
 		} else {
@@ -128,30 +128,30 @@ func (converter *Converter) htmlTemplateUseInternal() (err error) {
 	return nil
 }
 
-// SetHtmlTemplateFile set the HTML template from file.
-func (converter *Converter) SetHtmlTemplateFile(pathHtmlTemplate string) (err error) {
-	converter.tmpl, err = template.ParseFiles(pathHtmlTemplate)
+// SetHTMLTemplateFile set the HTML template from file.
+func (converter *Converter) SetHTMLTemplateFile(pathHTMLTemplate string) (err error) {
+	converter.tmpl, err = template.ParseFiles(pathHTMLTemplate)
 	if err != nil {
 		return err
 	}
-	converter.htmlTemplate = pathHtmlTemplate
+	converter.htmlTemplate = pathHTMLTemplate
 	return nil
 }
 
-// ToHtmlFile convert the AsciiDoc file to HTML.
-func (converter *Converter) ToHtmlFile(fmarkup *FileMarkup) (err error) {
+// ToHTMLFile convert the AsciiDoc file to HTML.
+func (converter *Converter) ToHTMLFile(fmarkup *FileMarkup) (err error) {
 	var (
-		logp = `ToHtmlFile`
+		logp = `ToHTMLFile`
 
-		fhtml *fileHtml
+		fhtml *fileHTML
 		f     *os.File
 	)
 
 	switch fmarkup.kind {
 	case markupKindAdoc:
-		fhtml, err = converter.adocToHtml(fmarkup)
+		fhtml, err = converter.adocToHTML(fmarkup)
 	case markupKindMarkdown:
-		fhtml, err = converter.markdownToHtml(fmarkup)
+		fhtml, err = converter.markdownToHTML(fmarkup)
 	}
 	if err != nil {
 		return fmt.Errorf(`%s: %w`, logp, err)
@@ -159,7 +159,7 @@ func (converter *Converter) ToHtmlFile(fmarkup *FileMarkup) (err error) {
 
 	fhtml.Body = template.HTML(fhtml.rawBody.String())
 
-	f, err = os.Create(fmarkup.pathHtml)
+	f, err = os.Create(fmarkup.pathHTML)
 	if err != nil {
 		return fmt.Errorf(`%s: %w`, logp, err)
 	}
@@ -177,9 +177,9 @@ func (converter *Converter) ToHtmlFile(fmarkup *FileMarkup) (err error) {
 	return nil
 }
 
-func (converter *Converter) adocToHtml(fmarkup *FileMarkup) (fhtml *fileHtml, err error) {
+func (converter *Converter) adocToHTML(fmarkup *FileMarkup) (fhtml *fileHTML, err error) {
 	var (
-		logp = `adocToHtml`
+		logp = `adocToHTML`
 		doc  *asciidoctor.Document
 	)
 
@@ -188,7 +188,7 @@ func (converter *Converter) adocToHtml(fmarkup *FileMarkup) (fhtml *fileHtml, er
 		return nil, fmt.Errorf(`%s: %w`, logp, err)
 	}
 
-	fhtml = newFileHtml()
+	fhtml = newFileHTML()
 
 	err = doc.ToHTMLBody(&fhtml.rawBody)
 	if err != nil {
@@ -200,9 +200,9 @@ func (converter *Converter) adocToHtml(fmarkup *FileMarkup) (fhtml *fileHtml, er
 	return fhtml, nil
 }
 
-func (converter *Converter) markdownToHtml(fmarkup *FileMarkup) (fhtml *fileHtml, err error) {
+func (converter *Converter) markdownToHTML(fmarkup *FileMarkup) (fhtml *fileHTML, err error) {
 	var (
-		logp = `markdownToHtml`
+		logp = `markdownToHTML`
 		mdg  = goldmark.New(
 			goldmark.WithExtensions(
 				meta.Meta,
@@ -218,7 +218,7 @@ func (converter *Converter) markdownToHtml(fmarkup *FileMarkup) (fhtml *fileHtml
 		return nil, fmt.Errorf(`%s: %w`, logp, err)
 	}
 
-	fhtml = newFileHtml()
+	fhtml = newFileHTML()
 	parserCtx = parser.NewContext()
 
 	err = mdg.Convert(in, &fhtml.rawBody, parser.WithContext(parserCtx))

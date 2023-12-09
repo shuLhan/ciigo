@@ -22,7 +22,7 @@ type FileMarkup struct {
 
 	basePath string // Full path to file without markup extension.
 	path     string // Full path to markup file.
-	pathHtml string // path to HTML file.
+	pathHTML string // path to HTML file.
 
 	kind int
 }
@@ -55,7 +55,7 @@ func NewFileMarkup(filePath string, fi os.FileInfo) (fmarkup *FileMarkup, err er
 		kind:     markupKind(ext),
 	}
 
-	fmarkup.pathHtml = fmarkup.basePath + `.html`
+	fmarkup.pathHTML = fmarkup.basePath + `.html`
 
 	return fmarkup, nil
 }

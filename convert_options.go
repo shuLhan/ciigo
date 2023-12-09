@@ -24,11 +24,11 @@ type ConvertOptions struct {
 	// being scanned.
 	Exclude string
 
-	// HtmlTemplate the HTML template to be used when converting markup
+	// HTMLTemplate the HTML template to be used when converting markup
 	// file into HTML.
 	// If empty it will default to use embedded HTML template.
 	// See template_index_html.go for template format.
-	HtmlTemplate string
+	HTMLTemplate string
 
 	excRE []*regexp.Regexp
 }
@@ -53,5 +53,4 @@ func (opts *ConvertOptions) init() (err error) {
 		defExcludes = append(defExcludes, opts.Exclude)
 	}
 	return nil
-
 }

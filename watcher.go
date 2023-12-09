@@ -40,7 +40,7 @@ type watcher struct {
 //	|
 //	+-- watchFileMarkup --> UPDATE --> Converter.convertFileMarkups()
 //	|
-//	+-- watchHtmlTemplate +--> DELETE --> Converter.htmlTemplateUseInternal()
+//	+-- watchHTMLTemplate +--> DELETE --> Converter.htmlTemplateUseInternal()
 //	                      |
 //	                      +--> UPDATE --> Converter.convertFileMarkups()
 func newWatcher(converter *Converter, convertOpts *ConvertOptions) (w *watcher, err error) {
@@ -95,7 +95,7 @@ func (w *watcher) start() (err error) {
 		if err != nil {
 			return fmt.Errorf(`start: %w`, err)
 		}
-		go w.watchHtmlTemplate()
+		go w.watchHTMLTemplate()
 	}
 	return nil
 }
@@ -166,7 +166,7 @@ func (w *watcher) watchFileMarkup() {
 			}
 		}
 
-		err = w.converter.ToHtmlFile(fmarkup)
+		err = w.converter.ToHTMLFile(fmarkup)
 		if err != nil {
 			log.Printf(`%s: %s`, logp, err)
 		}
@@ -175,11 +175,11 @@ func (w *watcher) watchFileMarkup() {
 	}
 }
 
-// watchHtmlTemplate reload the HTML template and re-convert all markup
+// watchHTMLTemplate reload the HTML template and re-convert all markup
 // files.
-func (w *watcher) watchHtmlTemplate() {
+func (w *watcher) watchHTMLTemplate() {
 	var (
-		logp = `watchHtmlTemplate`
+		logp = `watchHTMLTemplate`
 
 		ns  memfs.NodeState
 		err error
@@ -192,7 +192,7 @@ func (w *watcher) watchHtmlTemplate() {
 			err = w.converter.htmlTemplateUseInternal()
 		} else {
 			log.Printf(`%s: recompiling HTML template %q ...`, logp, ns.Node.SysPath)
-			err = w.converter.SetHtmlTemplateFile(w.converter.htmlTemplate)
+			err = w.converter.SetHTMLTemplateFile(w.converter.htmlTemplate)
 		}
 		if err != nil {
 			log.Printf(`%s: %s`, logp, err)

@@ -35,7 +35,7 @@ func newServer(opts *ServeOptions) (srv *server, err error) {
 		httpdOpts  *libhttp.ServerOptions
 		epInSearch *libhttp.Endpoint
 
-		pathHtmlTemplate string
+		pathHTMLTemplate string
 	)
 
 	if opts.Mfs == nil {
@@ -78,10 +78,10 @@ func newServer(opts *ServeOptions) (srv *server, err error) {
 	}
 
 	if opts.IsDevelopment {
-		pathHtmlTemplate = opts.HtmlTemplate
+		pathHTMLTemplate = opts.HTMLTemplate
 	}
 
-	srv.converter, err = NewConverter(pathHtmlTemplate)
+	srv.converter, err = NewConverter(pathHTMLTemplate)
 	if err != nil {
 		return nil, fmt.Errorf(`%s: %w`, logp, err)
 	}
@@ -140,7 +140,7 @@ func (srv *server) onSearch(epr *libhttp.EndpointRequest) (resBody []byte, err e
 	var (
 		logp = `onSearch`
 
-		fhtml   *fileHtml
+		fhtml   *fileHTML
 		buf     bytes.Buffer
 		q       string
 		results []memfs.SearchResult
@@ -154,7 +154,7 @@ func (srv *server) onSearch(epr *libhttp.EndpointRequest) (resBody []byte, err e
 		return nil, fmt.Errorf(`%s: %w`, logp, err)
 	}
 
-	fhtml = &fileHtml{
+	fhtml = &fileHTML{
 		Body: template.HTML(buf.String()),
 	}
 
