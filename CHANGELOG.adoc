@@ -4,6 +4,22 @@ Shulhan <ms@kilabit.info>
 :sectanchors:
 :sectlinks:
 
+[#v0_11_0]
+==  ciigo v0.11.0 (2023-12-14)
+
+[#v0_11_0__breaking_changes]
+=== Breaking changes
+
+* Field [ConvertOptions.HtmlTemplate] become [ConvertOptions.HTMLTemplate]
+* Method [Converter.SetHtmlTemplateFile] become
+  [Converter.SetHTMLTemplateFile]
+* Method [Converter.ToHtmlFile] become [Converter.ToHTMLFile]
+
+[#v0_11_0]
+=== Bug fixes
+
+* asciidoc: fix custom ID on the first section not applied correctly
+
 
 [#v0_10_1]
 ==  ciigo v0.10.1 (2023-11-06)

@@ -6,7 +6,7 @@ module git.sr.ht/~shulhan/ciigo
 go 1.20
 
 require (
-	git.sr.ht/~shulhan/asciidoctor-go v0.5.1-0.20231213112841-008230e7e722
+	git.sr.ht/~shulhan/asciidoctor-go v0.5.1
 	github.com/shuLhan/share v0.51.0
 	github.com/yuin/goldmark v1.6.0
 	github.com/yuin/goldmark-meta v1.1.0
