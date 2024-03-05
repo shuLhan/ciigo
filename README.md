@@ -91,7 +91,7 @@ package main
 
 import (
 	"git.sr.ht/~shulhan/ciigo"
-	"github.com/shuLhan/share/lib/memfs"
+	"git.sr.ht/~shulhan/pakakeh.go/lib/memfs"
 )
 
 var mysiteFS *memfs.MemFS

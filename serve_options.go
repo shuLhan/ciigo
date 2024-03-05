@@ -3,7 +3,7 @@
 
 package ciigo
 
-import "github.com/shuLhan/share/lib/memfs"
+import "git.sr.ht/~shulhan/pakakeh.go/lib/memfs"
 
 const (
 	defAddress = `:8080`

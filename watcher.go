@@ -10,8 +10,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/shuLhan/share/lib/clise"
-	"github.com/shuLhan/share/lib/memfs"
+	"git.sr.ht/~shulhan/pakakeh.go/lib/clise"
+	"git.sr.ht/~shulhan/pakakeh.go/lib/memfs"
 )
 
 // watcher watch for changes on all markup files and convert them

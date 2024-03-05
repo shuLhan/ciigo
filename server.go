@@ -10,8 +10,8 @@ import (
 	"log"
 	"strings"
 
-	libhttp "github.com/shuLhan/share/lib/http"
-	"github.com/shuLhan/share/lib/memfs"
+	libhttp "git.sr.ht/~shulhan/pakakeh.go/lib/http"
+	"git.sr.ht/~shulhan/pakakeh.go/lib/memfs"
 )
 
 // server contains the HTTP server that serve the generated HTML files.
@@ -146,7 +146,7 @@ func (srv *server) onSearch(epr *libhttp.EndpointRequest) (resBody []byte, err e
 		results []memfs.SearchResult
 	)
 
-	q = epr.HttpRequest.Form.Get(`q`)
+	q = epr.HTTPRequest.Form.Get(`q`)
 	results = srv.http.Options.Memfs.Search(strings.Fields(q), 0)
 
 	err = srv.converter.tmplSearch.Execute(&buf, results)
