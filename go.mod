@@ -7,14 +7,14 @@ go 1.20
 
 require (
 	git.sr.ht/~shulhan/asciidoctor-go v0.5.2-0.20240305110034-dc67158aeeb6
-	git.sr.ht/~shulhan/pakakeh.go v0.53.2-0.20240305092154-76510776395b
+	git.sr.ht/~shulhan/pakakeh.go v0.53.2-0.20240314175935-b9e12300d905
 	github.com/yuin/goldmark v1.7.0
 	github.com/yuin/goldmark-meta v1.1.0
 )
 
 require (
-	golang.org/x/net v0.21.0 // indirect
-	golang.org/x/sys v0.17.0 // indirect
+	golang.org/x/net v0.22.0 // indirect
+	golang.org/x/sys v0.18.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 )
 

@@ -196,7 +196,7 @@ func init() {
 		Opts: &memfs.Options{
 			Root:        "_example",
 			MaxFileSize: 5242880,
-			Includes: []string{
+			Includes:    []string{
 			},
 			Excludes: []string{
 				`.*\.adoc$`,
@@ -204,7 +204,7 @@ func init() {
 				`^\..*`,
 			},
 			Embed: memfs.EmbedOptions{
-				CommentHeader: `// SPDX-FileCopyrightText: 2019 Shulhan <ms@kilabit.info>
+				CommentHeader:  `// SPDX-FileCopyrightText: 2019 Shulhan <ms@kilabit.info>
 // SPDX-License-Identifier: GPL-3.0-or-later
 `,
 				PackageName:    "main",

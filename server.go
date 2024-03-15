@@ -28,15 +28,7 @@ type server struct {
 // The htmlTemplate parameter is optional, if not set its default to
 // embedded HTML template.
 func newServer(opts *ServeOptions) (srv *server, err error) {
-	var (
-		logp = `newServer`
-
-		tmplNode   *memfs.Node
-		httpdOpts  *libhttp.ServerOptions
-		epInSearch *libhttp.Endpoint
-
-		pathHTMLTemplate string
-	)
+	var logp = `newServer`
 
 	if opts.Mfs == nil {
 		opts.Mfs = &memfs.MemFS{
@@ -54,7 +46,7 @@ func newServer(opts *ServeOptions) (srv *server, err error) {
 		opts: *opts,
 	}
 
-	httpdOpts = &libhttp.ServerOptions{
+	var httpdOpts = libhttp.ServerOptions{
 		Memfs:   opts.Mfs,
 		Address: opts.Address,
 	}
@@ -64,7 +56,7 @@ func newServer(opts *ServeOptions) (srv *server, err error) {
 		return nil, fmt.Errorf(`%s: %w`, logp, err)
 	}
 
-	epInSearch = &libhttp.Endpoint{
+	var epInSearch = libhttp.Endpoint{
 		Method:       libhttp.RequestMethodGet,
 		Path:         `/_internal/search`,
 		RequestType:  libhttp.RequestTypeQuery,
@@ -77,6 +69,8 @@ func newServer(opts *ServeOptions) (srv *server, err error) {
 		return nil, fmt.Errorf(`%s: %w`, logp, err)
 	}
 
+	var pathHTMLTemplate string
+
 	if opts.IsDevelopment {
 		pathHTMLTemplate = opts.HTMLTemplate
 	}
@@ -87,6 +81,8 @@ func newServer(opts *ServeOptions) (srv *server, err error) {
 	}
 
 	if !opts.IsDevelopment {
+		var tmplNode *memfs.Node
+
 		tmplNode, _ = opts.Mfs.Get(internalTemplatePath)
 		if tmplNode != nil {
 			srv.converter.tmpl, err = srv.converter.tmpl.Parse(string(tmplNode.Content))
