@@ -3,11 +3,11 @@
 
 module git.sr.ht/~shulhan/ciigo
 
-go 1.20
+go 1.21
 
 require (
 	git.sr.ht/~shulhan/asciidoctor-go v0.5.2-0.20240305110034-dc67158aeeb6
-	git.sr.ht/~shulhan/pakakeh.go v0.53.2-0.20240314175935-b9e12300d905
+	git.sr.ht/~shulhan/pakakeh.go v0.53.2-0.20240315075343-713d51e4792f
 	github.com/yuin/goldmark v1.7.0
 	github.com/yuin/goldmark-meta v1.1.0
 )

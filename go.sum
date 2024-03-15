@@ -1,7 +1,7 @@
 git.sr.ht/~shulhan/asciidoctor-go v0.5.2-0.20240305110034-dc67158aeeb6 h1:/0I9F83ZgfDjVDRTSNGxYaZroOxGg3o5m9GlqnWmYXs=
 git.sr.ht/~shulhan/asciidoctor-go v0.5.2-0.20240305110034-dc67158aeeb6/go.mod h1:ht3glgf7w0J2HxyKoy/ZMg//okyw3F6GrwH4/KlwhxA=
-git.sr.ht/~shulhan/pakakeh.go v0.53.2-0.20240314175935-b9e12300d905 h1:93zGHcnle3Q8J5PhRSkwAkA9Vk9zDU7ZKou6aJOxNiQ=
-git.sr.ht/~shulhan/pakakeh.go v0.53.2-0.20240314175935-b9e12300d905/go.mod h1:tTHoHDHuBxj5q1zwpLZGCKrdc6i0I3sP8kPp+JEs16c=
+git.sr.ht/~shulhan/pakakeh.go v0.53.2-0.20240315075343-713d51e4792f h1:bP4msj5TVm+kQ6GUt6QvwEXOVOzUk2MQc5c8bSto8sc=
+git.sr.ht/~shulhan/pakakeh.go v0.53.2-0.20240315075343-713d51e4792f/go.mod h1:tTHoHDHuBxj5q1zwpLZGCKrdc6i0I3sP8kPp+JEs16c=
 github.com/yuin/goldmark v1.7.0 h1:EfOIvIMZIzHdB/R/zVrikYLPPwJlfMcNczJFMs1m6sA=
 github.com/yuin/goldmark v1.7.0/go.mod h1:uzxRWxtg69N339t3louHJ7+O03ezfj6PlliRlaOzY1E=
 github.com/yuin/goldmark-meta v1.1.0 h1:pWw+JLHGZe8Rk0EGsMVssiNb/AaPMHfSRszZeUeiOUc=
