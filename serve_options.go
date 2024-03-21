@@ -20,6 +20,12 @@ type ServeOptions struct {
 
 	ConvertOptions
 
+	// If true, the serve command generate index.html automatically if its
+	// not exist in the directory.
+	// The index.html contains the list of files inside the requested
+	// path.
+	EnableIndexHTML bool
+
 	// IsDevelopment if set to true, it will serve the ConvertOptions.Root
 	// directory directly and watch all asciidoc files for changes and
 	// convert it.

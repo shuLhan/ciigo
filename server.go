@@ -47,8 +47,9 @@ func newServer(opts *ServeOptions) (srv *server, err error) {
 	}
 
 	var httpdOpts = libhttp.ServerOptions{
-		Memfs:   opts.Mfs,
-		Address: opts.Address,
+		Memfs:           opts.Mfs,
+		Address:         opts.Address,
+		EnableIndexHTML: opts.EnableIndexHTML,
 	}
 
 	srv.http, err = libhttp.NewServer(httpdOpts)
