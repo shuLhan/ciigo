@@ -4,6 +4,29 @@ Shulhan <ms@kilabit.info>
 :sectanchors:
 :sectlinks:
 
+[#v0_12_0]
+==  ciigo v0.12.0 (2024-04-04)
+
+[#v0_12_0__new_features]
+=== New features
+
+all: add server option to automatically generate index HTML::
++
+If the requested path is directory and no "index.html" file exist in
+that directory, ciigo server will render list of files as "index.html"
+automatically.
+
+[#v0_12_0__chores]
+=== Chores
+
+all: replace module "share" with "pakakeh.go"::
++
+--
+The "share" module has been moved to new repository with new name at
+"https://sr.ht/~shulhan/pakakeh.go".
+--
+
+
 [#v0_11_0]
 ==  ciigo v0.11.0 (2023-12-14)
 
