@@ -73,10 +73,7 @@ func main() {
 			HTMLTemplate: *htmlTemplate,
 			Exclude:      *exclude,
 		}
-
-		embedOpts ciigo.EmbedOptions
-		serveOpts ciigo.ServeOptions
-		err       error
+		err error
 	)
 
 	if len(command) == 0 {
@@ -92,6 +89,8 @@ func main() {
 		err = ciigo.Convert(&convertOpts)
 
 	case cmdEmbed:
+		var embedOpts ciigo.EmbedOptions
+
 		embedOpts.ConvertOptions = convertOpts
 		embedOpts.EmbedOptions.GoFileName = *outputFile
 
@@ -101,9 +100,12 @@ func main() {
 		usage()
 
 	case cmdServe:
-		serveOpts.ConvertOptions = convertOpts
-		serveOpts.Address = *address
-		serveOpts.IsDevelopment = true
+		var serveOpts = ciigo.ServeOptions{
+			ConvertOptions:  convertOpts,
+			Address:         *address,
+			EnableIndexHTML: true,
+			IsDevelopment:   true,
+		}
 		err = ciigo.Serve(&serveOpts)
 
 	case cmdVersion:
