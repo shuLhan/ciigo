@@ -36,6 +36,7 @@ import (
 	"strings"
 
 	"git.sr.ht/~shulhan/ciigo"
+	"git.sr.ht/~shulhan/pakakeh.go/lib/memfs"
 )
 
 const (
@@ -64,6 +65,9 @@ func main() {
 	exclude = flag.String("exclude", "",
 		"a regex to exclude certain paths from being scanned during covert, embeded, watch, or serve")
 
+	var flagPackageName = flag.String(`package-name`, `main`, `package name for embed`)
+	var flagVarName = flag.String(`var-name`, `memFS`, `variable name for embed`)
+
 	flag.Parse()
 
 	var (
@@ -89,10 +93,14 @@ func main() {
 		err = ciigo.Convert(&convertOpts)
 
 	case cmdEmbed:
-		var embedOpts ciigo.EmbedOptions
-
-		embedOpts.ConvertOptions = convertOpts
-		embedOpts.EmbedOptions.GoFileName = *outputFile
+		var embedOpts = ciigo.EmbedOptions{
+			ConvertOptions: convertOpts,
+			EmbedOptions: memfs.EmbedOptions{
+				GoFileName:  *outputFile,
+				PackageName: *flagPackageName,
+				VarName:     *flagVarName,
+			},
+		}
 
 		err = ciigo.GoEmbed(&embedOpts)
 
@@ -139,12 +147,16 @@ ciigo help
 
 	Print the usage (this output).
 
-ciigo [-template <file>] [-exclude <regex>] [-out <file>] embed <dir>
+ciigo [-template <file>] [-exclude <regex>] [-out <file>]
+	[-package-name <string>] [-var-name <string>]
+	embed <dir>
 
 	Convert all markup files inside directory "dir" recursively and then
 	embed them into ".go" source file.
 	The output file is optional, default to "ciigo_static.go" in current
 	directory.
+	The package name default to main.
+	The variable name default to memFS.
 
 ciigo [-template <file>]  [-exclude <regex>] [-address <ip:port>] serve <dir>
 

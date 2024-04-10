@@ -6,10 +6,12 @@ package ciigo
 import (
 	"html/template"
 	"os"
+	"path/filepath"
 	"regexp"
 	"sort"
 	"testing"
 
+	"git.sr.ht/~shulhan/pakakeh.go/lib/memfs"
 	"git.sr.ht/~shulhan/pakakeh.go/lib/test"
 )
 
@@ -74,5 +76,62 @@ func TestListFileMarkups(t *testing.T) {
 		sort.Strings(got)
 
 		test.Assert(t, `list`, c.exp, got)
+	}
+}
+
+func TestGoEmbed(t *testing.T) {
+	type testCase struct {
+		tag  string
+		opts EmbedOptions
+	}
+
+	var (
+		outDir = `testdata/goembed/out`
+
+		tdata *test.Data
+		err   error
+	)
+
+	tdata, err = test.LoadData(`testdata/goembed/GoEmbed_test.txt`)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	var listCase = []testCase{{
+		opts: EmbedOptions{
+			ConvertOptions: ConvertOptions{
+				Root: `testdata/in/`,
+			},
+			EmbedOptions: memfs.EmbedOptions{
+				PackageName: `mypackage`,
+				VarName:     `memfsIn`,
+			},
+		},
+		tag: `default`,
+	}}
+
+	var (
+		tcase testCase
+		fname string
+		fpath string
+		got   []byte
+	)
+	for _, tcase = range listCase {
+		// Set the output file name based on tag.
+		fname = tcase.tag + `.go`
+		fpath = filepath.Join(outDir, fname)
+		tcase.opts.EmbedOptions.GoFileName = filepath.Join(outDir, fname)
+
+		err = GoEmbed(&tcase.opts)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		got, err = os.ReadFile(fpath)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		test.Assert(t, tcase.tag, string(tdata.Output[fname]), string(got))
 	}
 }
