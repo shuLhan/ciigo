@@ -110,9 +110,7 @@ func GoEmbed(opts *EmbedOptions) (err error) {
 		return fmt.Errorf(`%s: %w`, logp, err)
 	}
 
-	if isHTMLTemplateNewer(opts) {
-		convertForce = true
-	}
+	convertForce = isHTMLTemplateNewer(opts)
 
 	converter.convertFileMarkups(fileMarkups, convertForce)
 
@@ -223,7 +221,7 @@ func isHTMLTemplateNewer(opts *EmbedOptions) bool {
 	)
 
 	if len(opts.HTMLTemplate) == 0 {
-		return true
+		return false
 	}
 
 	fiHTMLTmpl, err = os.Stat(opts.HTMLTemplate)
