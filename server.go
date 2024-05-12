@@ -31,16 +31,19 @@ func newServer(opts *ServeOptions) (srv *server, err error) {
 	var logp = `newServer`
 
 	if opts.Mfs == nil {
-		opts.Mfs = &memfs.MemFS{
-			Opts: &memfs.Options{
-				Root:     opts.Root,
-				Excludes: defExcludes,
-			},
-		}
 		opts.IsDevelopment = true
+		var mfsopts = &memfs.Options{
+			Root:      opts.Root,
+			Excludes:  defExcludes,
+			TryDirect: true,
+		}
+		opts.Mfs, err = memfs.New(mfsopts)
+		if err != nil {
+			return nil, fmt.Errorf(`%s: %w`, logp, err)
+		}
+	} else {
+		opts.Mfs.Opts.TryDirect = opts.IsDevelopment
 	}
-
-	opts.Mfs.Opts.TryDirect = opts.IsDevelopment
 
 	srv = &server{
 		opts: *opts,
