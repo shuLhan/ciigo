@@ -1,3 +1,5 @@
+// SPDX-FileCopyrightText: 2020 Shulhan <ms@kilabit.info>
+// SPDX-License-Identifier: GPL-3.0-or-later
 =  Changelog for ciigo
 Shulhan <ms@kilabit.info>
 :toc:
@@ -599,6 +601,3 @@ The first release support asciidoc and markdown markup language.
 
 The v0.1.0 release has been deleted because it contains error in the
 dependencies and the Go module cache make it even harder to invalidate it.
-
-// SPDX-FileCopyrightText: 2020 Shulhan <ms@kilabit.info>
-// SPDX-License-Identifier: GPL-3.0-or-later
