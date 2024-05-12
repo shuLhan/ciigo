@@ -6,6 +6,37 @@ Shulhan <ms@kilabit.info>
 :sectanchors:
 :sectlinks:
 
+
+[#v0_13_0]
+==  ciigo v0.13.0 (2024-05-12)
+
+[#v0_13_0__new_features]
+=== New features
+
+cmd/ciigo: add flag to set package and variable name for "embed"::
++
+The flag "-package-name" can be used to changes the default package name
+inside the Go embed file.
+The flag "-var-name" can be used to changes the default memfs variable
+name inside the Go embed file.
+
+
+[#v0_13_0__enhancements]
+=== Enhancements
+
+all: fix HTML files always generated when HTMLTemplate is not set::
++
+If the path to HTMLTemplate option is not set, GoEmbed should convert
+to HTML only if markup file is newer than HTML file or when HTML file
+not exist.
+
+all: initialize memfs using New::
++
+When memfs not initialized using New, the [memfs.MemFS.PathNodes] will
+be nil.
+This cause any Get on new file will return 404.
+
+
 [#v0_12_0]
 ==  ciigo v0.12.0 (2024-04-04)
 
