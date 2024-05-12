@@ -1,51 +1,50 @@
-<!--
-// SPDX-FileCopyrightText: 2020 Shulhan <ms@kilabit.info>
-// SPDX-License-Identifier: GPL-3.0-or-later
---!>
+<!-- SPDX-FileCopyrightText: 2020 Shulhan <ms@kilabit.info> -->
+<!-- SPDX-License-Identifier: GPL-3.0-or-later -->
 <!DOCTYPE html>
 <html>
-	<head>
-		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<meta name="theme-color" content="#375EAB" />
 
-		<title>{{.Title}}</title>
-		<link rel="stylesheet" href="/index.css" />
-		{{- range .Styles}}
-		<link rel="stylesheet" href="{{.}}" />
-		{{- end}}
-	</head>
-	<body>
-		<div class="topbar">
-			<div class="container">
-				<div class="top-heading">
-					<a href="/">ciigo</a>
-				</div>
-				<div class="menu">
-					<form class="item" action="/_internal/search">
-						<input type="text" name="q" placeholder="Search" />
-					</form>
-				</div>
-				<div class="menu">
-					<a href="/sub">Sub</a>
-				</div>
-			</div>
-		</div>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#375EAB" />
 
-		<div class="page">
-			<div class="container">
-				{{.Body}}
-			</div>
-			<!-- .container -->
-		</div>
-		<!-- .page -->
+    <title>{{.Title}}</title>
+    <link rel="stylesheet" href="/index.css" />
+    {{- range .Styles}}
+    <link rel="stylesheet" href="{{.}}" />
+    {{- end}}
+</head>
 
-		<div class="footer">
-			Powered by <a
-				href="https://sr.ht/~shulhan/ciigo"
-			>
-				ciigo
-			</a>
-		</div>
-	</body>
+<body>
+    <div class="topbar">
+        <div class="container">
+            <div class="top-heading">
+                <a href="/">ciigo</a>
+            </div>
+            <div class="menu">
+                <form class="item" action="/_internal/search">
+                    <input type="text" name="q" placeholder="Search" />
+                </form>
+            </div>
+            <div class="menu">
+                <a href="/sub">Sub</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="page">
+        <div class="container">
+            {{.Body}}
+        </div>
+        <!-- .container -->
+    </div>
+    <!-- .page -->
+
+    <div class="footer">
+        Powered by <a href="https://sr.ht/~shulhan/ciigo">
+            ciigo
+        </a>
+    </div>
+</body>
+
 </html>
