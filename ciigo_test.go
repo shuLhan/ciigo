@@ -103,8 +103,9 @@ func TestGoEmbed(t *testing.T) {
 				Root: `testdata/in/`,
 			},
 			EmbedOptions: memfs.EmbedOptions{
-				PackageName: `mypackage`,
-				VarName:     `memfsIn`,
+				PackageName:    `mypackage`,
+				VarName:        `memfsIn`,
+				WithoutModTime: true,
 			},
 		},
 		tag: `default`,

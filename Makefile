@@ -15,7 +15,7 @@ lint:
 	-revive ./...
 
 test:
-	go run ./cmd/ciigo-example embed
+	find ./testdata -name "*.html" -delete
 	CGO_ENABLED=1 go test -failfast -v -race -p=1 -coverprofile=cover.out ./...
 	go tool cover -html=cover.out -o cover.html
 
