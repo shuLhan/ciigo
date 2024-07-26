@@ -8,12 +8,12 @@ import (
 	"git.sr.ht/~shulhan/pakakeh.go/lib/memfs"
 )
 
-func generate_testdata_in_() *memfs.Node {
+func generate_testdata_in() *memfs.Node {
 	var node = &memfs.Node{
-		SysPath:     "testdata/in/",
+		SysPath:     "testdata/in",
 		Path:        "/",
 		ContentType: "",
-		GenFuncName: "generate_testdata_in_",
+		GenFuncName: "generate_testdata_in",
 	}
 	node.SetMode(0o20000000755)
 	node.SetName("/")
@@ -93,7 +93,7 @@ func init() {
 	memfsIn = &memfs.MemFS{
 		PathNodes: memfs.NewPathNode(),
 		Opts: &memfs.Options{
-			Root:        "testdata/in/",
+			Root:        "testdata/in",
 			MaxFileSize: 5242880,
 			Includes:    []string{
 			},
@@ -112,7 +112,7 @@ func init() {
 		},
 	}
 	memfsIn.PathNodes.Set("/",
-		_memfsIn_getNode(memfsIn, "/", generate_testdata_in_))
+		_memfsIn_getNode(memfsIn, "/", generate_testdata_in))
 	memfsIn.PathNodes.Set("/clu",
 		_memfsIn_getNode(memfsIn, "/clu", generate_testdata_in_clu))
 	memfsIn.PathNodes.Set("/clu/de",
