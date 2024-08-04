@@ -208,18 +208,16 @@ If you need to use another port, you can change it at `cmd/mysite/main.go`.
 That's it!
 
 
-##  Limitations and known bugs
-
-Using symlink on ".adoc" file inside Root directory that reference file
-outside of Root is not supported, yet.
-
-
 ##  Links
 
-[Ciigo repository](https://git.sr.ht/shulhan/ciigo).
+<https://git.sr.ht/~shulhan/ciigo> - Link to the source code.
 
-[Go module
-documentation](https://pkg.go.dev/git.sr.ht/https://git.sr.ht/shulhan/ciigoshulhan/ciigo).
+<https://lists.sr.ht/~shulhan/ciigo> - Link to development and discussion.
+
+<https://todo.sr.ht/~shulhan/ciigo> - Link to submit an issue, feedback, or
+request for new feature.
+
+<https://pkg.go.dev/git.sr.ht/~shulhan/ciigo> - Go module documentation.
 
 
 ##  License
