@@ -7,7 +7,7 @@ go 1.21
 
 require (
 	git.sr.ht/~shulhan/asciidoctor-go v0.5.2
-	git.sr.ht/~shulhan/pakakeh.go v0.55.2
+	git.sr.ht/~shulhan/pakakeh.go v0.56.0
 	github.com/yuin/goldmark v1.7.4
 	github.com/yuin/goldmark-meta v1.1.0
 )
