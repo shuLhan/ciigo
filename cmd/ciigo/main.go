@@ -3,29 +3,6 @@
 
 // ciigo is a CLI to convert, embed, and/or serve a directory that contains
 // markup files, as HTML files.
-//
-// # Usage
-//
-// The following section describe how to use ciigo CLI.
-//
-//	ciigo [-template <file>] [-exclude <regex>] convert <dir>
-//
-// Scan the "dir" recursively to find markup files and convert them into HTML
-// files.
-// The template "file" is optional, default to embedded HTML template.
-//
-//	ciigo [-template <file>] [-exclude <regex>] [-out <file>] embed <dir>
-//
-// Convert all the markup files inside directory "dir" recursively and then
-// embed them into ".go" source file.
-// The output file is optional, default to "ciigo_static.go" in current
-// directory.
-//
-//	ciigo [-template <file>] [-exclude <regex>] [-address <ip:port>] serve <dir>
-//
-// Serve all files inside directory "dir" using HTTP server, watch changes on
-// markup files and convert them to HTML files.
-// If the address is not set, its default to ":8080".
 package main
 
 import (

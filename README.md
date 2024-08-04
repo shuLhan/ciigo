@@ -9,8 +9,11 @@ markup format.
 
 As showcase, the following websites are build using ciigo,
 
-* [kilabit.info](https://kilabit.info)
-* [golang-id.org](https://golang-id.org)
+* [kilabit.info](https://kilabit.info) -
+  [Source code](https://git.sr.ht/~shulhan/kilabit.info).
+
+* [golang-id.org](https://golang-id.org) -
+  [Source code](https://git.sr.ht/~shulhan/golang-id-web).
 
 
 ##  ciigo as CLI
@@ -21,29 +24,46 @@ markup files, as HTML files.
 ###  Usage
 
 ```
-$ ciigo [-template <file>] [-exclude <regex>] convert <dir>
+ciigo [-template <file>] [-exclude <regex>] convert <dir>
 ```
 
-Scan the "dir" recursively to find markup files (.adoc) and convert them into
-HTML files.
+Scan the "dir" recursively to find markup files (.adoc or .md) and convert
+them into HTML files.
 The template "file" is optional, default to embedded HTML template.
 
 ```
-$ ciigo [-template <file>] [-exclude <regex>] [-out <file>] generate <dir>
+ciigo [-template <file>] [-exclude <regex>] [-out <file>] \
+	[-package-name <string>] [-var-name <string>] \
+	embed <dir>
 ```
 
-Convert all markup files inside directory "dir" recursively and then
-embed them into ".go" source file.
+Convert all markup files inside directory "dir" recursively and then embed
+them into ".go" source file.
 The output file is optional, default to "ciigo_static.go" in current
 directory.
+The package name default to main.
+The variable name default to memFS.
 
 ```
-$ ciigo [-template <file>] [-exclude <regex>] [-address <ip:port>] serve <dir>
+ciigo help
+```
+
+Print the usage.
+
+```
+ciigo [-template <file>]  [-exclude <regex>] [-address <ip:port>] \
+    serve <dir>
 ```
 
 Serve all files inside directory "dir" using HTTP server, watch
 changes on markup files and convert them to HTML files automatically.
 If the address is not set, its default to ":8080".
+
+```
+ciigo version
+```
+
+Print the current ciigo version.
 
 
 ##  ciigo as library
