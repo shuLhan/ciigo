@@ -239,6 +239,8 @@ request for new feature.
 
 <https://pkg.go.dev/git.sr.ht/~shulhan/ciigo> - Go module documentation.
 
+[Change log](/CHANGELOG.html) - Log of each releases.
+
 
 ##  License
 

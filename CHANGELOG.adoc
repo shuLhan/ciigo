@@ -6,6 +6,35 @@ Shulhan <ms@kilabit.info>
 :sectanchors:
 :sectlinks:
 
+[#v0_13_1]
+==  ciigo v0.13.1 (2024-08-04)
+
+[#v0_13_1__bug_fixes]
+=== Bug fixes
+
+Fix "serve" not detecting new files::
++
+If there is new files on the root of directory it will not detected
+automatically.
+This release now fix this issue.
+
+[#v0_13_1__others]
+=== Others
+
+all: remove Limitations and update Links::
++
+The asciidoc-go library now support scanning symlink inside Root
+directory.
+The Links sections merge the previous contents from old index.adoc.
+
+all: update the CLI usage in the README::
++
+There are three places for command usage: one in main Go doc, one in the
+program usage, and one in README.
+If we changes the flags we need to update three of them, and sometimes
+we forgot.
+To simplify, we remove the one in the Go doc main program.
+
 
 [#v0_13_0]
 ==  ciigo v0.13.0 (2024-05-12)
