@@ -1,5 +1,5 @@
-git.sr.ht/~shulhan/asciidoctor-go v0.5.2 h1:tjG/NQJ1om2F70L7DwOvmr+n1kfgk9xhIBX+MKzFOIQ=
-git.sr.ht/~shulhan/asciidoctor-go v0.5.2/go.mod h1:fHXUiw7IbOOMyoHHvnd351Jini/MNZgutiFTtsCQ+Yk=
+git.sr.ht/~shulhan/asciidoctor-go v0.5.3-0.20240815173049-e9b1dce76d78 h1:wsgKhkqtP90bXBt+i3ld/wfmRomAL6u3+gzw8OtZEVQ=
+git.sr.ht/~shulhan/asciidoctor-go v0.5.3-0.20240815173049-e9b1dce76d78/go.mod h1:Onfsr4NNCBTwGvtc/BChy3LGoYeDHAh5p9gF8kHpAY0=
 git.sr.ht/~shulhan/pakakeh.go v0.56.0 h1:fZLK/wnt1YRKHJfEpTvVYLtn+tbcQbuehZiSXdPIByE=
 git.sr.ht/~shulhan/pakakeh.go v0.56.0/go.mod h1:UuyZtTCMJaTZI/33DBlyyJt1eF96fDPhPg9ZBHptWMU=
 github.com/yuin/goldmark v1.7.4 h1:BDXOHExt+A7gwPCJgPIIq7ENvceR7we7rOS9TNoLZeg=

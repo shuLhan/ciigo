@@ -43,15 +43,15 @@ func (fhtml *fileHTML) unpackAdocMetadata(doc *asciidoctor.Document) {
 	fhtml.Title = doc.Title.String()
 	fhtml.Styles = fhtml.Styles[:0]
 
-	for k, v = range doc.Attributes {
+	for k, v = range doc.Attributes.Entry {
 		switch k {
 		case metadataStylesheet:
 			fhtml.Styles = append(fhtml.Styles, v)
-		case asciidoctor.MetaNameAuthorNames:
-			fhtml.Metadata[asciidoctor.MetaNameAuthor] = v
-		case asciidoctor.MetaNameDescription,
-			asciidoctor.MetaNameGenerator,
-			asciidoctor.MetaNameKeywords:
+		case asciidoctor.DocAttrAuthorNames:
+			fhtml.Metadata[asciidoctor.DocAttrAuthor] = v
+		case asciidoctor.DocAttrDescription,
+			asciidoctor.DocAttrGenerator,
+			asciidoctor.DocAttrKeywords:
 			fhtml.Metadata[k] = v
 		}
 	}
