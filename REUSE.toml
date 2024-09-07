@@ -1,0 +1,10 @@
+## SPDX-FileCopyrightText: 2024 M. Shulhan <ms@kilabit.info>
+##
+## SPDX-License-Identifier: GPL-3.0-or-later
+
+version = 1
+
+[[annotations]]
+path = ["go.sum", "README.md", "_example/favicon.ico", "testdata/**", "_AUR/**"]
+SPDX-FileCopyrightText = "2022 Shulhan <ms@kilabit.info>"
+SPDX-License-Identifier = "GPL-3.0-or-later"
