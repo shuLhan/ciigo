@@ -250,9 +250,12 @@ dd {
 }
 #toc ul .sectlevel1 {
 	padding: 0px;
-	margin: 4px;
 }
-#toc ul .sectlevel2 {
+#toc ul .sectlevel1,
+#toc ul .sectlevel2,
+#toc ul .sectlevel3,
+#toc ul .sectlevel4,
+#toc ul .sectlevel5 {
 	margin: 4px;
 }
 
