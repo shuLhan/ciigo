@@ -14,21 +14,19 @@ import (
 	"git.sr.ht/~shulhan/pakakeh.go/lib/memfs"
 )
 
-// server contains the HTTP server that serve the generated HTML files.
-type server struct {
-	http      *libhttp.Server
-	converter *Converter
-	watcher   *watcher
-	opts      ServeOptions
-}
-
-// newServer create an HTTP server to serve HTML files in directory "root".
+// InitHTTPServer create an HTTP server to serve HTML files in directory
+// defined in "[ConvertOptions].Root".
 //
 // The address parameter is optional, if not set its default to ":8080".
 // The htmlTemplate parameter is optional, if not set its default to
 // embedded HTML template.
-func newServer(opts *ServeOptions) (srv *server, err error) {
-	var logp = `newServer`
+func (ciigo *Ciigo) InitHTTPServer(opts ServeOptions) (err error) {
+	var logp = `initServer`
+
+	err = opts.init()
+	if err != nil {
+		return fmt.Errorf(`%s: %w`, logp, err)
+	}
 
 	if opts.Mfs == nil {
 		opts.IsDevelopment = true
@@ -39,15 +37,13 @@ func newServer(opts *ServeOptions) (srv *server, err error) {
 		}
 		opts.Mfs, err = memfs.New(mfsopts)
 		if err != nil {
-			return nil, fmt.Errorf(`%s: %w`, logp, err)
+			return fmt.Errorf(`%s: %w`, logp, err)
 		}
 	} else {
 		opts.Mfs.Opts.TryDirect = opts.IsDevelopment
 	}
 
-	srv = &server{
-		opts: *opts,
-	}
+	ciigo.serveOpts = opts
 
 	var httpdOpts = libhttp.ServerOptions{
 		Memfs:           opts.Mfs,
@@ -55,9 +51,9 @@ func newServer(opts *ServeOptions) (srv *server, err error) {
 		EnableIndexHTML: opts.EnableIndexHTML,
 	}
 
-	srv.http, err = libhttp.NewServer(httpdOpts)
+	ciigo.HTTPServer, err = libhttp.NewServer(httpdOpts)
 	if err != nil {
-		return nil, fmt.Errorf(`%s: %w`, logp, err)
+		return fmt.Errorf(`%s: %w`, logp, err)
 	}
 
 	var epInSearch = libhttp.Endpoint{
@@ -65,12 +61,12 @@ func newServer(opts *ServeOptions) (srv *server, err error) {
 		Path:         `/_internal/search`,
 		RequestType:  libhttp.RequestTypeQuery,
 		ResponseType: libhttp.ResponseTypeHTML,
-		Call:         srv.onSearch,
+		Call:         ciigo.onSearch,
 	}
 
-	err = srv.http.RegisterEndpoint(epInSearch)
+	err = ciigo.HTTPServer.RegisterEndpoint(epInSearch)
 	if err != nil {
-		return nil, fmt.Errorf(`%s: %w`, logp, err)
+		return fmt.Errorf(`%s: %w`, logp, err)
 	}
 
 	var pathHTMLTemplate string
@@ -79,9 +75,9 @@ func newServer(opts *ServeOptions) (srv *server, err error) {
 		pathHTMLTemplate = opts.HTMLTemplate
 	}
 
-	srv.converter, err = NewConverter(pathHTMLTemplate)
+	ciigo.converter, err = NewConverter(pathHTMLTemplate)
 	if err != nil {
-		return nil, fmt.Errorf(`%s: %w`, logp, err)
+		return fmt.Errorf(`%s: %w`, logp, err)
 	}
 
 	if !opts.IsDevelopment {
@@ -89,54 +85,53 @@ func newServer(opts *ServeOptions) (srv *server, err error) {
 
 		tmplNode, _ = opts.Mfs.Get(internalTemplatePath)
 		if tmplNode != nil {
-			srv.converter.tmpl, err = srv.converter.tmpl.Parse(string(tmplNode.Content))
+			ciigo.converter.tmpl, err = ciigo.converter.tmpl.Parse(string(tmplNode.Content))
 			if err != nil {
-				return nil, fmt.Errorf(`%s: %s`, logp, err)
+				return fmt.Errorf(`%s: %s`, logp, err)
 			}
 		}
 	}
 
 	if opts.IsDevelopment {
-		srv.watcher, err = newWatcher(srv.converter, &opts.ConvertOptions)
+		ciigo.watcher, err = newWatcher(ciigo.converter, opts.ConvertOptions)
 		if err != nil {
-			return nil, fmt.Errorf(`%s: %w`, logp, err)
+			return fmt.Errorf(`%s: %w`, logp, err)
 		}
 
-		srv.converter.convertFileMarkups(srv.watcher.fileMarkups, false)
+		ciigo.converter.convertFileMarkups(ciigo.watcher.fileMarkups, false)
 	}
 
-	return srv, nil
+	return nil
 }
 
-// start the web server.
-func (srv *server) start() (err error) {
-	var (
-		logp = `start`
-	)
+// Serve start the HTTP web server.
+func (ciigo *Ciigo) Serve() (err error) {
+	var logp = `Serve`
 
-	if srv.opts.IsDevelopment {
-		err = srv.watcher.start()
+	if ciigo.serveOpts.IsDevelopment {
+		err = ciigo.watcher.start()
 		if err != nil {
 			return fmt.Errorf(`%s: %w`, logp, err)
 		}
 	}
 
 	log.Printf(`ciigo: starting HTTP server at http://%s for %q`,
-		srv.http.Options.Address, srv.http.Options.Memfs.Opts.Root)
+		ciigo.HTTPServer.Options.Address,
+		ciigo.HTTPServer.Options.Memfs.Opts.Root)
 
-	err = srv.http.Start()
+	err = ciigo.HTTPServer.Start()
 	if err != nil {
 		return fmt.Errorf(`%s: %w`, logp, err)
 	}
 
-	if srv.opts.IsDevelopment {
-		srv.watcher.stop()
+	if ciigo.serveOpts.IsDevelopment {
+		ciigo.watcher.stop()
 	}
 
 	return nil
 }
 
-func (srv *server) onSearch(epr *libhttp.EndpointRequest) (resBody []byte, err error) {
+func (ciigo *Ciigo) onSearch(epr *libhttp.EndpointRequest) (resBody []byte, err error) {
 	var (
 		logp = `onSearch`
 
@@ -147,9 +142,9 @@ func (srv *server) onSearch(epr *libhttp.EndpointRequest) (resBody []byte, err e
 	)
 
 	q = epr.HTTPRequest.Form.Get(`q`)
-	results = srv.http.Options.Memfs.Search(strings.Fields(q), 0)
+	results = ciigo.HTTPServer.Options.Memfs.Search(strings.Fields(q), 0)
 
-	err = srv.converter.tmplSearch.Execute(&buf, results)
+	err = ciigo.converter.tmplSearch.Execute(&buf, results)
 	if err != nil {
 		return nil, fmt.Errorf(`%s: %w`, logp, err)
 	}
@@ -160,7 +155,7 @@ func (srv *server) onSearch(epr *libhttp.EndpointRequest) (resBody []byte, err e
 
 	buf.Reset()
 
-	err = srv.converter.tmpl.Execute(&buf, fhtml)
+	err = ciigo.converter.tmpl.Execute(&buf, fhtml)
 	if err != nil {
 		return nil, fmt.Errorf(`%s: %w`, logp, err)
 	}

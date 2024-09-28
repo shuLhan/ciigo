@@ -17,6 +17,7 @@ import (
 	"regexp"
 	"strings"
 
+	libhttp "git.sr.ht/~shulhan/pakakeh.go/lib/http"
 	"git.sr.ht/~shulhan/pakakeh.go/lib/memfs"
 )
 
@@ -36,39 +37,27 @@ var defExcludes = []string{
 	`^\..*`,
 }
 
+// Ciigo provides customizable and reusable instance of ciigo for embedding,
+// converting, and/or serving HTTP server.
+// This type is introduced so one can add HTTP handler or endpoint along
+// with serving the files.
+type Ciigo struct {
+	HTTPServer *libhttp.Server
+	converter  *Converter
+	watcher    *watcher
+	serveOpts  ServeOptions
+}
+
 // Convert all markup files inside directory "dir" recursively into HTML
 // files using ConvertOptions HTMLTemplate file as base template.
 // If HTMLTemplate is empty it will default to use embedded HTML template.
 // See template_index_html.go for template format.
 func Convert(opts *ConvertOptions) (err error) {
-	var (
-		logp = `Convert`
-
-		converter   *Converter
-		fileMarkups map[string]*FileMarkup
-	)
-
 	if opts == nil {
 		opts = &ConvertOptions{}
 	}
-	err = opts.init()
-	if err != nil {
-		return fmt.Errorf(`%s: %w`, logp, err)
-	}
-
-	converter, err = NewConverter(opts.HTMLTemplate)
-	if err != nil {
-		return fmt.Errorf(`%s: %w`, logp, err)
-	}
-
-	fileMarkups, err = listFileMarkups(opts.Root, opts.excRE)
-	if err != nil {
-		return fmt.Errorf(`%s: %w`, logp, err)
-	}
-
-	converter.convertFileMarkups(fileMarkups, false)
-
-	return nil
+	var ciigo = &Ciigo{}
+	return ciigo.Convert(*opts)
 }
 
 // GoEmbed generate a static Go file that embed all files inside Root except
@@ -82,89 +71,25 @@ func Convert(opts *ConvertOptions) (err error) {
 // template.
 // See template_index_html.go for template format.
 func GoEmbed(opts *EmbedOptions) (err error) {
-	var (
-		logp = `GoEmbed`
-
-		converter    *Converter
-		fileMarkups  map[string]*FileMarkup
-		mfs          *memfs.MemFS
-		mfsOpts      *memfs.Options
-		convertForce bool
-	)
-
 	if opts == nil {
 		opts = &EmbedOptions{}
 	}
-	err = opts.init()
-	if err != nil {
-		return fmt.Errorf(`%s: %w`, logp, err)
-	}
-
-	converter, err = NewConverter(opts.HTMLTemplate)
-	if err != nil {
-		return fmt.Errorf(`%s: %w`, logp, err)
-	}
-
-	fileMarkups, err = listFileMarkups(opts.Root, opts.excRE)
-	if err != nil {
-		return fmt.Errorf(`%s: %w`, logp, err)
-	}
-
-	convertForce = isHTMLTemplateNewer(opts)
-
-	converter.convertFileMarkups(fileMarkups, convertForce)
-
-	mfsOpts = &memfs.Options{
-		Root:     opts.Root,
-		Excludes: defExcludes,
-		Embed:    opts.EmbedOptions,
-	}
-
-	mfs, err = memfs.New(mfsOpts)
-	if err != nil {
-		return fmt.Errorf(`%s: %w`, logp, err)
-	}
-
-	if len(opts.HTMLTemplate) > 0 {
-		_, err = mfs.AddFile(internalTemplatePath, opts.HTMLTemplate)
-		if err != nil {
-			return fmt.Errorf(`%s: %w`, logp, err)
-		}
-	}
-
-	err = mfs.GoEmbed()
-	if err != nil {
-		return fmt.Errorf(`%s: %w`, logp, err)
-	}
-
-	return nil
+	var ciigo = &Ciigo{}
+	return ciigo.GoEmbed(*opts)
 }
 
-// Serve the content at directory "dir" using HTTP server at specific
-// "address".
+// Serve the content under directory "[ServeOptions].ConvertOptions.Root"
+// using HTTP server at specific "[ServeOptions].Address".
 func Serve(opts *ServeOptions) (err error) {
-	var (
-		logp = `Serve`
-		srv  *server
-	)
-
 	if opts == nil {
 		opts = &ServeOptions{}
 	}
-	err = opts.init()
+	var ciigo = &Ciigo{}
+	err = ciigo.InitHTTPServer(*opts)
 	if err != nil {
-		return fmt.Errorf(`%s: %w`, logp, err)
+		return err
 	}
-
-	srv, err = newServer(opts)
-	if err != nil {
-		return fmt.Errorf(`%s: %w`, logp, err)
-	}
-	err = srv.start()
-	if err != nil {
-		return fmt.Errorf(`%s: %w`, logp, err)
-	}
-	return nil
+	return ciigo.Serve()
 }
 
 // Watch any changes on markup files on directory Root recursively and
@@ -176,42 +101,16 @@ func Serve(opts *ServeOptions) (err error) {
 // If the HTML template file deleted, it will replace them with internal,
 // default HTML template.
 func Watch(opts *ConvertOptions) (err error) {
-	var (
-		logp = `Watch`
-
-		converter *Converter
-		w         *watcher
-	)
-
 	if opts == nil {
 		opts = &ConvertOptions{}
 	}
-	err = opts.init()
-	if err != nil {
-		return fmt.Errorf(`%s: %w`, logp, err)
-	}
-
-	converter, err = NewConverter(opts.HTMLTemplate)
-	if err != nil {
-		return fmt.Errorf(`%s: %w`, logp, err)
-	}
-
-	w, err = newWatcher(converter, opts)
-	if err != nil {
-		return fmt.Errorf(`%s: %w`, logp, err)
-	}
-
-	err = w.start()
-	if err != nil {
-		return fmt.Errorf(`%s: %w`, logp, err)
-	}
-
-	return nil
+	var ciigo = &Ciigo{}
+	return ciigo.Watch(*opts)
 }
 
 // isHTMLTemplateNewer will return true if HTMLTemplate is not defined or
 // newer than embedded GoFileName.
-func isHTMLTemplateNewer(opts *EmbedOptions) bool {
+func isHTMLTemplateNewer(opts EmbedOptions) bool {
 	var (
 		logp = `isHTMLTemplateNewer`
 
@@ -347,4 +246,118 @@ func isExcluded(path string, excs []*regexp.Regexp) bool {
 		}
 	}
 	return false
+}
+
+// Convert all markup files inside directory [ConvertOptions.Root]
+// recursively into HTML files using [ConvertOptions.HTMLTemplate] file as
+// base template.
+// If HTMLTemplate is empty it use the default embedded HTML template.
+// See template_index_html.go for template format.
+func (ciigo *Ciigo) Convert(opts ConvertOptions) (err error) {
+	var logp = `Convert`
+
+	err = opts.init()
+	if err != nil {
+		return fmt.Errorf(`%s: %w`, logp, err)
+	}
+
+	ciigo.serveOpts.ConvertOptions = opts
+
+	ciigo.converter, err = NewConverter(opts.HTMLTemplate)
+	if err != nil {
+		return fmt.Errorf(`%s: %w`, logp, err)
+	}
+
+	var fileMarkups map[string]*FileMarkup
+
+	fileMarkups, err = listFileMarkups(opts.Root, opts.excRE)
+	if err != nil {
+		return fmt.Errorf(`%s: %w`, logp, err)
+	}
+
+	ciigo.converter.convertFileMarkups(fileMarkups, false)
+
+	return nil
+}
+
+// GoEmbed embed the file system (directories and files) inside the
+// [ConvertOptions.Root] into a Go code.
+// One can exclude files by writing regular expression in
+// [ConvertOptions.Exclude].
+func (ciigo *Ciigo) GoEmbed(embedOpts EmbedOptions) (err error) {
+	var logp = `GoEmbed`
+
+	err = embedOpts.init()
+	if err != nil {
+		return fmt.Errorf(`%s: %w`, logp, err)
+	}
+
+	ciigo.converter, err = NewConverter(embedOpts.HTMLTemplate)
+	if err != nil {
+		return fmt.Errorf(`%s: %w`, logp, err)
+	}
+
+	var fileMarkups map[string]*FileMarkup
+
+	fileMarkups, err = listFileMarkups(embedOpts.Root, embedOpts.excRE)
+	if err != nil {
+		return fmt.Errorf(`%s: %w`, logp, err)
+	}
+
+	var convertForce = isHTMLTemplateNewer(embedOpts)
+
+	ciigo.converter.convertFileMarkups(fileMarkups, convertForce)
+
+	var mfsOpts = &memfs.Options{
+		Root:     embedOpts.Root,
+		Excludes: defExcludes,
+		Embed:    embedOpts.EmbedOptions,
+	}
+
+	var mfs *memfs.MemFS
+
+	mfs, err = memfs.New(mfsOpts)
+	if err != nil {
+		return fmt.Errorf(`%s: %w`, logp, err)
+	}
+
+	if len(embedOpts.HTMLTemplate) > 0 {
+		_, err = mfs.AddFile(internalTemplatePath, embedOpts.HTMLTemplate)
+		if err != nil {
+			return fmt.Errorf(`%s: %w`, logp, err)
+		}
+	}
+
+	err = mfs.GoEmbed()
+	if err != nil {
+		return fmt.Errorf(`%s: %w`, logp, err)
+	}
+	return nil
+}
+
+// Watch start a watcher on [ConvertOptions.Root] directory that monitor any
+// changes to markup files and convert them to HTML files.
+func (ciigo *Ciigo) Watch(convertOpts ConvertOptions) (err error) {
+	var logp = `Watch`
+
+	err = convertOpts.init()
+	if err != nil {
+		return fmt.Errorf(`%s: %w`, logp, err)
+	}
+
+	ciigo.converter, err = NewConverter(convertOpts.HTMLTemplate)
+	if err != nil {
+		return fmt.Errorf(`%s: %w`, logp, err)
+	}
+
+	ciigo.watcher, err = newWatcher(ciigo.converter, convertOpts)
+	if err != nil {
+		return fmt.Errorf(`%s: %w`, logp, err)
+	}
+
+	err = ciigo.watcher.start()
+	if err != nil {
+		return fmt.Errorf(`%s: %w`, logp, err)
+	}
+	return nil
 }

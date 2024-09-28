@@ -36,7 +36,7 @@ func TestWatcher(t *testing.T) {
 
 	var testWatcher *watcher
 
-	testWatcher, err = newWatcher(converter, &convertOpts)
+	testWatcher, err = newWatcher(converter, convertOpts)
 	if err != nil {
 		t.Fatal(err)
 	}

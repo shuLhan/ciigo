@@ -9,7 +9,7 @@ import (
 )
 
 const (
-	// DefaultRoot define default Root value for GenerateOptions.
+	// DefaultRoot define default Root value for ConvertOptions.
 	DefaultRoot = `.`
 )
 

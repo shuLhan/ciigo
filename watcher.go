@@ -43,7 +43,7 @@ type watcher struct {
 //	+-- watchHTMLTemplate +--> DELETE --> Converter.htmlTemplateUseInternal()
 //	                      |
 //	                      +--> UPDATE --> Converter.convertFileMarkups()
-func newWatcher(converter *Converter, convertOpts *ConvertOptions) (w *watcher, err error) {
+func newWatcher(converter *Converter, convertOpts ConvertOptions) (w *watcher, err error) {
 	var (
 		logp = `newWatcher`
 	)
