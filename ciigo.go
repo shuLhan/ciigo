@@ -52,12 +52,9 @@ type Ciigo struct {
 // files using ConvertOptions HTMLTemplate file as base template.
 // If HTMLTemplate is empty it will default to use embedded HTML template.
 // See template_index_html.go for template format.
-func Convert(opts *ConvertOptions) (err error) {
-	if opts == nil {
-		opts = &ConvertOptions{}
-	}
+func Convert(opts ConvertOptions) (err error) {
 	var ciigo = &Ciigo{}
-	return ciigo.Convert(*opts)
+	return ciigo.Convert(opts)
 }
 
 // GoEmbed generate a static Go file that embed all files inside Root except
@@ -70,22 +67,16 @@ func Convert(opts *ConvertOptions) (err error) {
 // If HTMLTemplate option is empty it default to use embedded HTML
 // template.
 // See template_index_html.go for template format.
-func GoEmbed(opts *EmbedOptions) (err error) {
-	if opts == nil {
-		opts = &EmbedOptions{}
-	}
+func GoEmbed(opts EmbedOptions) (err error) {
 	var ciigo = &Ciigo{}
-	return ciigo.GoEmbed(*opts)
+	return ciigo.GoEmbed(opts)
 }
 
 // Serve the content under directory "[ServeOptions].ConvertOptions.Root"
 // using HTTP server at specific "[ServeOptions].Address".
-func Serve(opts *ServeOptions) (err error) {
-	if opts == nil {
-		opts = &ServeOptions{}
-	}
+func Serve(opts ServeOptions) (err error) {
 	var ciigo = &Ciigo{}
-	err = ciigo.InitHTTPServer(*opts)
+	err = ciigo.InitHTTPServer(opts)
 	if err != nil {
 		return err
 	}
@@ -100,12 +91,9 @@ func Serve(opts *ServeOptions) (err error) {
 // If the HTML template file modified, it will re-convert all markup files.
 // If the HTML template file deleted, it will replace them with internal,
 // default HTML template.
-func Watch(opts *ConvertOptions) (err error) {
-	if opts == nil {
-		opts = &ConvertOptions{}
-	}
+func Watch(opts ConvertOptions) (err error) {
 	var ciigo = &Ciigo{}
-	return ciigo.Watch(*opts)
+	return ciigo.Watch(opts)
 }
 
 // isHTMLTemplateNewer will return true if HTMLTemplate is not defined or

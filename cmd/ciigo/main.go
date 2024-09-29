@@ -67,7 +67,7 @@ func main() {
 
 	switch command {
 	case cmdConvert:
-		err = ciigo.Convert(&convertOpts)
+		err = ciigo.Convert(convertOpts)
 
 	case cmdEmbed:
 		var embedOpts = ciigo.EmbedOptions{
@@ -79,7 +79,7 @@ func main() {
 			},
 		}
 
-		err = ciigo.GoEmbed(&embedOpts)
+		err = ciigo.GoEmbed(embedOpts)
 
 	case cmdHelp:
 		usage()
@@ -91,7 +91,7 @@ func main() {
 			EnableIndexHTML: true,
 			IsDevelopment:   true,
 		}
-		err = ciigo.Serve(&serveOpts)
+		err = ciigo.Serve(serveOpts)
 
 	case cmdVersion:
 		fmt.Println(ciigo.Version)

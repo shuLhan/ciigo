@@ -23,7 +23,7 @@ var ciigoFS *memfs.MemFS
 
 func main() {
 	var (
-		opts = &ciigo.ServeOptions{
+		opts = ciigo.ServeOptions{
 			ConvertOptions: ciigo.ConvertOptions{
 				Root:         "_example",
 				HTMLTemplate: "_example/html.tmpl",
@@ -71,7 +71,7 @@ func doEmbed() {
 		err error
 	)
 
-	err = ciigo.GoEmbed(&opts)
+	err = ciigo.GoEmbed(opts)
 	if err != nil {
 		log.Fatal(err)
 	}

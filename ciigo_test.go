@@ -123,7 +123,7 @@ func TestGoEmbed(t *testing.T) {
 		fpath = filepath.Join(outDir, fname)
 		tcase.opts.EmbedOptions.GoFileName = filepath.Join(outDir, fname)
 
-		err = GoEmbed(&tcase.opts)
+		err = GoEmbed(tcase.opts)
 		if err != nil {
 			t.Fatal(err)
 		}
