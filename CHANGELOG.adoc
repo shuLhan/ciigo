@@ -7,6 +7,36 @@ Shulhan <ms@kilabit.info>
 :sectlinks:
 
 
+[#v0_14_0]
+==  ciigo v0.14.0 (2024-10-06)
+
+[#v0_14_0__breaking_changes]
+=== Breaking changes
+
+all: refactoring functions to accept non pointer struct option::
++
+The function that accept struct XxxOptions should only received
+the copy of struct, not pointer.
+
+[#v0_14_0__new_features]
+=== New features
+
+all: introduce new type Ciigo::
++
+The Ciigo type provides customizable and reusable instance of ciigo for
+embedding, converting, and/or serving HTTP server.
+This type is introduced so one can add HTTP handler or endpoint along with
+serving the files.
+
+[#v0_14_0__enhancements]
+=== Enhancements
+
+all: set margin on sectlevel3, sectlevel4, sectlevel5::
++
+Using default margin (1.25rem) cause the TOC for level 3 until 5 have
+wide gap in between them.
+
+
 [#v0_13_2]
 ==  ciigo v0.13.2 (2024-09-07)
 

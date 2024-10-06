@@ -28,7 +28,7 @@ const (
 )
 
 // Version define the latest tagged release of this module.
-var Version = `0.13.2`
+var Version = `0.14.0`
 
 // defExcludes define default files to be excludes on GoEmbed.
 var defExcludes = []string{
