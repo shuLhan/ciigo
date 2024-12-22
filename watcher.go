@@ -4,34 +4,35 @@
 package ciigo
 
 import (
-	"fmt"
 	"log"
+	"os"
 	"path/filepath"
-	"strings"
 	"time"
 
 	"git.sr.ht/~shulhan/pakakeh.go/lib/clise"
-	"git.sr.ht/~shulhan/pakakeh.go/lib/memfs"
+	"git.sr.ht/~shulhan/pakakeh.go/lib/watchfs/v2"
 )
 
 // watcher watch for changes on all markup files and convert them
 // automatically to HTML.
 type watcher struct {
 	changes       *clise.Clise
-	watchDir      *memfs.DirWatcher
-	watchTemplate *memfs.Watcher
+	watchDir      *watchfs.DirWatcher
+	watchTemplate *watchfs.FileWatcher
 	converter     *Converter
 
-	// fileMarkups contains all markup files found inside "dir".
+	// fileMarkups contains all markup files found inside the
+	// [options.Root] directory recursively.
 	// Its used to convert all markup files when the template file
 	// changes.
 	fileMarkups map[string]*FileMarkup
 
-	dir string
+	opts watchfs.DirWatcherOptions
 }
 
 // newWatcher create a watcher that monitor every files changes in directory
-// "dir" for new, modified, and deleted markup files and HTML template file.
+// [options.Root] for new, modified, and deleted markup files and HTML
+// template file.
 //
 // The watcher depends on Converter to convert the markup to HTML using
 // the HTML template in Converter.
@@ -43,58 +44,63 @@ type watcher struct {
 //	+-- watchHTMLTemplate +--> DELETE --> Converter.htmlTemplateUseInternal()
 //	                      |
 //	                      +--> UPDATE --> Converter.convertFileMarkups()
-func newWatcher(converter *Converter, convertOpts ConvertOptions) (w *watcher, err error) {
-	var (
-		logp = `newWatcher`
-	)
-
+func newWatcher(
+	converter *Converter, convertOpts ConvertOptions,
+) (w *watcher, err error) {
 	w = &watcher{
-		dir:       convertOpts.Root,
 		converter: converter,
 		changes:   clise.New(1),
 	}
-	w.watchDir = &memfs.DirWatcher{
-		Options: memfs.Options{
-			Root: convertOpts.Root,
-			Includes: []string{
-				`.*\.adoc$`,
-				`.*\.md$`,
-			},
-			Excludes: []string{
-				`^\..*`,
-				`node_modules/.*`,
-				`vendor/.*`,
-			},
+	w.opts = watchfs.DirWatcherOptions{
+		FileWatcherOptions: watchfs.FileWatcherOptions{
+			File:     filepath.Join(convertOpts.Root, `.ciigo_rescan`),
+			Interval: time.Second,
 		},
-		Delay: time.Second,
+		Root: convertOpts.Root,
+		Includes: []string{
+			`.*\.(adoc|md)$`,
+		},
+		Excludes: []string{
+			`^\..*`,
+			`node_modules/.*`,
+			`vendor/.*`,
+		},
 	}
 
-	if len(convertOpts.Exclude) > 0 {
-		w.watchDir.Options.Excludes = append(w.watchDir.Options.Excludes, convertOpts.Exclude)
-	}
+	w.opts.Excludes = append(w.opts.Excludes, convertOpts.Exclude...)
 
-	w.fileMarkups, err = listFileMarkups(convertOpts.Root, convertOpts.excRE)
+	w.watchDir, err = watchfs.WatchDir(w.opts)
 	if err != nil {
-		return nil, fmt.Errorf(`%s: %w`, logp, err)
+		return nil, err
 	}
+
+	w.scanFileMarkup()
 
 	return w, nil
 }
 
+func (w *watcher) scanFileMarkup() {
+	w.fileMarkups = make(map[string]*FileMarkup)
+	var files = w.watchDir.Files()
+	for path, fi := range files {
+		fmarkup, err := NewFileMarkup(path, fi)
+		if err != nil {
+			continue
+		}
+		w.fileMarkups[path] = fmarkup
+	}
+}
+
 // start watching for changes.
 func (w *watcher) start() (err error) {
-	err = w.watchDir.Start()
-	if err != nil {
-		return fmt.Errorf(`start: %w`, err)
-	}
-
 	go w.watchFileMarkup()
 
 	if len(w.converter.htmlTemplate) > 0 {
-		w.watchTemplate, err = memfs.NewWatcher(w.converter.htmlTemplate, 0)
-		if err != nil {
-			return fmt.Errorf(`start: %w`, err)
+		var opts = watchfs.FileWatcherOptions{
+			File:     w.converter.htmlTemplate,
+			Interval: 5 * time.Second,
 		}
+		w.watchTemplate = watchfs.WatchFile(opts)
 		go w.watchHTMLTemplate()
 	}
 	return nil
@@ -107,71 +113,56 @@ func (w *watcher) stop() {
 	}
 }
 
-// watchFileMarkup watch the markup files inside the "content" directory,
-// and re-generate them into HTML file when changed.
+// watchFileMarkup watch the file ".ciigo_rescan" inside the "content"
+// directory and reconvert all the markup into HTML files when its changes.
 func (w *watcher) watchFileMarkup() {
 	var (
 		logp = `watchFileMarkup`
 
-		ns      memfs.NodeState
+		listfi  []os.FileInfo
 		fmarkup *FileMarkup
-		ext     string
 		err     error
 		ok      bool
 	)
 
-	for ns = range w.watchDir.C {
-		ext = strings.ToLower(filepath.Ext(ns.Node.SysPath))
-		if !isExtensionMarkup(ext) {
+	for listfi = range w.watchDir.C {
+		if len(listfi) == 0 {
 			continue
 		}
 
-		switch ns.State {
-		case memfs.FileStateDeleted:
-			log.Printf(`%s: %q deleted`, logp, ns.Node.SysPath)
-			fmarkup, ok = w.fileMarkups[ns.Node.SysPath]
-			if ok {
-				delete(w.fileMarkups, ns.Node.SysPath)
-				w.changes.Push(fmarkup)
-			}
-			continue
+		for _, fi := range listfi {
+			var name = fi.Name()
 
-		case memfs.FileStateCreated:
-			log.Printf(`%s: %s created`, logp, ns.Node.SysPath)
-			fmarkup, err = NewFileMarkup(ns.Node.SysPath, nil)
-			if err != nil {
-				log.Printf("%s: %s\n", logp, err)
+			if fi.Size() == watchfs.FileFlagDeleted {
+				log.Printf(`%s: %q deleted`, logp, name)
+				fmarkup, ok = w.fileMarkups[name]
+				if ok {
+					delete(w.fileMarkups, name)
+					w.changes.Push(fmarkup)
+				}
 				continue
 			}
 
-			w.fileMarkups[ns.Node.SysPath] = fmarkup
-
-		case memfs.FileStateUpdateMode:
-			log.Printf(`%s: %s mode updated`, logp, ns.Node.SysPath)
-			continue
-
-		case memfs.FileStateUpdateContent:
-			log.Printf(`%s: %s content updated`, logp, ns.Node.SysPath)
-			fmarkup = w.fileMarkups[ns.Node.SysPath]
+			fmarkup = w.fileMarkups[name]
 			if fmarkup == nil {
-				log.Printf("%s: %s not found\n", logp, ns.Node.SysPath)
-
-				fmarkup, err = NewFileMarkup(ns.Node.SysPath, nil)
+				log.Printf(`%s: %s created`, logp, name)
+				fmarkup, err = NewFileMarkup(name, nil)
 				if err != nil {
-					log.Printf("%s: %s\n", logp, err)
+					log.Printf(`%s: %s`, logp, err)
 					continue
 				}
 
-				w.fileMarkups[ns.Node.SysPath] = fmarkup
+				w.fileMarkups[name] = fmarkup
 			}
-		}
 
-		err = w.converter.ToHTMLFile(fmarkup)
-		if err != nil {
-			log.Printf(`%s: %s`, logp, err)
-		}
+			err = w.converter.ToHTMLFile(fmarkup)
+			if err != nil {
+				log.Printf(`%s: %s`, logp, err)
+			}
 
-		w.changes.Push(fmarkup)
+			log.Printf(`%s: %q converted`, logp, fmarkup.path)
+			w.changes.Push(fmarkup)
+		}
 	}
 }
 
@@ -181,19 +172,18 @@ func (w *watcher) watchHTMLTemplate() {
 	var (
 		logp = `watchHTMLTemplate`
 
-		ns  memfs.NodeState
 		err error
 	)
 
-	for ns = range w.watchTemplate.C {
-		if ns.State == memfs.FileStateDeleted {
-			log.Printf("%s: HTML template file %q has been deleted\n",
-				logp, ns.Node.SysPath)
+	for fi := range w.watchTemplate.C {
+		if fi == nil {
+			log.Printf(`%s: HTML template file has been deleted`, logp)
 			err = w.converter.htmlTemplateUseInternal()
-		} else {
-			log.Printf(`%s: recompiling HTML template %q ...`, logp, ns.Node.SysPath)
-			err = w.converter.SetHTMLTemplateFile(w.converter.htmlTemplate)
+			continue
 		}
+
+		log.Printf(`%s: recompiling HTML template %q ...`, logp, fi.Name())
+		err = w.converter.SetHTMLTemplateFile(w.converter.htmlTemplate)
 		if err != nil {
 			log.Printf(`%s: %s`, logp, err)
 			continue

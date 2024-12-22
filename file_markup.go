@@ -20,7 +20,6 @@ const (
 type FileMarkup struct {
 	info os.FileInfo // info contains FileInfo of markup file.
 
-	basePath string // Full path to file without markup extension.
 	path     string // Full path to markup file.
 	pathHTML string // path to HTML file.
 
@@ -30,11 +29,7 @@ type FileMarkup struct {
 // NewFileMarkup create new FileMarkup instance form file in "filePath".
 // The "fi" option is optional, if its nil it will Stat-ed manually.
 func NewFileMarkup(filePath string, fi os.FileInfo) (fmarkup *FileMarkup, err error) {
-	var (
-		logp = `NewFileMarkup`
-
-		ext string
-	)
+	var logp = `NewFileMarkup`
 
 	if len(filePath) == 0 {
 		return nil, fmt.Errorf(`%s: empty path`, logp)
@@ -46,16 +41,15 @@ func NewFileMarkup(filePath string, fi os.FileInfo) (fmarkup *FileMarkup, err er
 		}
 	}
 
-	ext = strings.ToLower(filepath.Ext(filePath))
+	var ext = strings.ToLower(filepath.Ext(filePath))
+	var basePath = strings.TrimSuffix(filePath, ext)
 
 	fmarkup = &FileMarkup{
-		path:     filePath,
 		info:     fi,
-		basePath: strings.TrimSuffix(filePath, ext),
+		path:     filePath,
+		pathHTML: basePath + `.html`,
 		kind:     markupKind(ext),
 	}
-
-	fmarkup.pathHTML = fmarkup.basePath + `.html`
 
 	return fmarkup, nil
 }

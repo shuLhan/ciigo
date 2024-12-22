@@ -52,7 +52,7 @@ func main() {
 		convertOpts = ciigo.ConvertOptions{
 			Root:         flag.Arg(1),
 			HTMLTemplate: *htmlTemplate,
-			Exclude:      *exclude,
+			Exclude:      []string{*exclude},
 		}
 		err error
 	)

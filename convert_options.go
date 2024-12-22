@@ -6,6 +6,7 @@ package ciigo
 import (
 	"fmt"
 	"regexp"
+	"strings"
 )
 
 const (
@@ -22,7 +23,7 @@ type ConvertOptions struct {
 
 	// Exclude define regular expresion to exclude certain paths from
 	// being scanned.
-	Exclude string
+	Exclude []string
 
 	// HTMLTemplate the HTML template to be used when converting markup
 	// file into HTML.
@@ -41,16 +42,20 @@ func (opts *ConvertOptions) init() (err error) {
 	if len(opts.Root) == 0 {
 		opts.Root = DefaultRoot
 	}
-	if len(opts.Exclude) > 0 {
-		var re *regexp.Regexp
+	for _, str := range opts.Exclude {
+		str = strings.TrimSpace(str)
+		if len(str) == 0 {
+			continue
+		}
 
-		re, err = regexp.Compile(opts.Exclude)
+		var re *regexp.Regexp
+		re, err = regexp.Compile(str)
 		if err != nil {
 			return fmt.Errorf(`%s: %w`, logp, err)
 		}
 
 		opts.excRE = append(opts.excRE, re)
-		defExcludes = append(defExcludes, opts.Exclude)
+		defExcludes = append(defExcludes, str)
 	}
 	return nil
 }

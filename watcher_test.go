@@ -40,8 +40,7 @@ func TestWatcher(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-
-	testWatcher.watchDir.Delay = 100 * time.Millisecond
+	testWatcher.opts.FileWatcherOptions.Interval = 50 * time.Millisecond
 
 	err = testWatcher.start()
 	if err != nil {
@@ -55,7 +54,7 @@ func TestWatcher(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	var pathFileMarkup = filepath.Join(testWatcher.dir, `test.adoc`)
+	var pathFileMarkup = filepath.Join(testWatcher.opts.Root, `test.adoc`)
 
 	t.Run(`testAdocCreate`, func(tt *testing.T) {
 		testAdocCreate(tt, testWatcher, tdata, pathFileMarkup)
@@ -67,7 +66,7 @@ func TestWatcher(t *testing.T) {
 		testAdocDelete(tt, testWatcher, pathFileMarkup)
 	})
 
-	pathFileMarkup = filepath.Join(testWatcher.dir, `test.md`)
+	pathFileMarkup = filepath.Join(testWatcher.opts.Root, `test.md`)
 
 	t.Run(`testMarkdownCreate`, func(tt *testing.T) {
 		testMarkdownCreate(tt, testWatcher, tdata, pathFileMarkup)
@@ -91,14 +90,11 @@ func testAdocCreate(t *testing.T, testWatcher *watcher, tdata *test.Data, pathFi
 		gotBody []byte
 	)
 
-	// Let the OS sync the file system before we create new file,
-	// otherwise the modtime for fs.Root does not changes.
-	time.Sleep(100 * time.Millisecond)
-
 	err = os.WriteFile(pathFile, expBody, 0600)
 	if err != nil {
 		t.Fatal(err)
 	}
+	testWatcher.watchDir.ForceRescan()
 
 	got = testWatcher.waitChanges()
 
@@ -124,14 +120,11 @@ func testAdocUpdate(t *testing.T, testWatcher *watcher, tdata *test.Data, pathFi
 		gotBody []byte
 	)
 
-	// Let the OS sync the file system before we create new file,
-	// otherwise the modtime for fs.Root does not changes.
-	time.Sleep(100 * time.Millisecond)
-
 	err = os.WriteFile(pathFile, expBody, 0600)
 	if err != nil {
 		t.Fatal(err)
 	}
+	testWatcher.watchDir.ForceRescan()
 
 	got = testWatcher.waitChanges()
 
@@ -159,6 +152,7 @@ func testAdocDelete(t *testing.T, testWatcher *watcher, pathFile string) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	testWatcher.watchDir.ForceRescan()
 
 	got = testWatcher.waitChanges()
 
@@ -178,14 +172,11 @@ func testMarkdownCreate(t *testing.T, testWatcher *watcher, tdata *test.Data, pa
 		gotBody []byte
 	)
 
-	// Let the OS sync the file system before we create new file,
-	// otherwise the modtime for fs.Root does not changes.
-	time.Sleep(100 * time.Millisecond)
-
 	err = os.WriteFile(pathFileMarkdown, body, 0600)
 	if err != nil {
 		t.Fatal(err)
 	}
+	testWatcher.watchDir.ForceRescan()
 
 	got = testWatcher.waitChanges()
 
@@ -211,14 +202,11 @@ func testMarkdownUpdate(t *testing.T, testWatcher *watcher, tdata *test.Data, pa
 		gotBody []byte
 	)
 
-	// Let the OS sync the file system before we create new file,
-	// otherwise the modtime for fs.Root does not changes.
-	time.Sleep(100 * time.Millisecond)
-
 	err = os.WriteFile(pathFileMarkdown, body, 0600)
 	if err != nil {
 		t.Fatal(err)
 	}
+	testWatcher.watchDir.ForceRescan()
 
 	got = testWatcher.waitChanges()
 
@@ -241,12 +229,11 @@ func testMarkdownDelete(t *testing.T, testWatcher *watcher, pathFileMarkdown str
 		gotIsExist bool
 	)
 
-	time.Sleep(100 * time.Millisecond)
-
 	err = os.Remove(pathFileMarkdown)
 	if err != nil {
 		t.Fatal(err)
 	}
+	testWatcher.watchDir.ForceRescan()
 
 	got = testWatcher.waitChanges()
 	test.Assert(t, `md file updated`, pathFileMarkdown, got.path)
