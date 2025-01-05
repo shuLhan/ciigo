@@ -255,3 +255,43 @@ func removeFooter(in []byte, nlast int) (out []byte) {
 	out = bytes.Join(lines, []byte("\n"))
 	return out
 }
+
+func TestWatcherGetFileMarkupByHTML(t *testing.T) {
+	var w = watcher{
+		fileMarkups: map[string]*FileMarkup{
+			`/markup/with/adoc/file.adoc`: &FileMarkup{
+				kind: markupKindAdoc,
+			},
+			`/markup/with/md/file.md`: &FileMarkup{
+				kind: markupKindMarkdown,
+			},
+		},
+	}
+
+	var listCase = []struct {
+		expFileMarkup *FileMarkup
+		fileHTML      string
+		expIsNew      bool
+	}{{
+		fileHTML: `/notexist.html`,
+	}, {
+		fileHTML:      `/markup/with/adoc/file.html`,
+		expFileMarkup: w.fileMarkups[`/markup/with/adoc/file.adoc`],
+	}, {
+		fileHTML:      `/markup/with/adoc/file.HTML`,
+		expFileMarkup: w.fileMarkups[`/markup/with/adoc/file.adoc`],
+	}, {
+		fileHTML:      `/markup/with/md/file.HTML`,
+		expFileMarkup: w.fileMarkups[`/markup/with/md/file.md`],
+	}}
+
+	var (
+		gotFileMarkup *FileMarkup
+		gotIsNew      bool
+	)
+	for _, tcase := range listCase {
+		gotFileMarkup, gotIsNew = w.getFileMarkupByHTML(tcase.fileHTML)
+		test.Assert(t, tcase.fileHTML, tcase.expFileMarkup, gotFileMarkup)
+		test.Assert(t, tcase.fileHTML+` isNew`, tcase.expIsNew, gotIsNew)
+	}
+}

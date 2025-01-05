@@ -1,0 +1,99 @@
+
+>>> one.adoc
+= One
+
+<<< one.html
+<div id="header">
+<h1>One</h1>
+</div>
+<div id="content">
+</div>
+<div id="footer">
+<div id="footer-text">
+[REDACTED]
+</div>
+</div>
+
+>>> two.md
+# Two
+
+<<< two.html
+<h1>Two</h1>
+
+
+
+>>> three.html
+<html>
+</html>
+
+<<< three.html
+<html>
+</html>
+
+>>> three.adoc
+= Three
+
+<<< new_three.html
+<div id="header">
+<h1>Three</h1>
+</div>
+<div id="content">
+</div>
+<div id="footer">
+<div id="footer-text">
+[REDACTED]
+</div>
+</div>
+
+>>> update_one.adoc
+= One
+
+Updated.
+
+<<< update_one.html
+<div id="header">
+<h1>One</h1>
+</div>
+<div id="content">
+<div class="paragraph">
+<p>Updated.</p>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+[REDACTED]
+</div>
+</div>
+
+
+>>> /journal/index.adoc
+= Journal
+
+Hello world!
+
+<<< /journal/index.html
+<div id="header">
+<h1>Journal</h1>
+</div>
+<div id="content">
+<div class="paragraph">
+<p>Hello world!</p>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+[REDACTED]
+</div>
+</div>
+
+>>> /journal2/index.adoc
+= Journal 2
+
+Hello world!
+
+<<< /journal2/index.html
+<a href="/journal2/">Found</a>.
+
+
+
+>>> END

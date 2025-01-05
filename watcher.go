@@ -7,6 +7,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"strings"
 	"time"
 
 	"git.sr.ht/~shulhan/pakakeh.go/lib/clise"
@@ -77,6 +78,64 @@ func newWatcher(
 	w.scanFileMarkup()
 
 	return w, nil
+}
+
+// getFileMarkupByHTML get the file markup based on the HTML file name.
+func (w *watcher) getFileMarkupByHTML(fileHTML string) (
+	fmarkup *FileMarkup, isNew bool,
+) {
+	// Use file extension to handle insensitive cases of '.html' suffix.
+	var ext = filepath.Ext(fileHTML)
+	if strings.ToLower(ext) != `.html` {
+		return nil, false
+	}
+
+	var (
+		pathMarkup string
+		ok         bool
+	)
+	pathMarkup, ok = strings.CutSuffix(fileHTML, ext)
+	if !ok {
+		return nil, false
+	}
+	pathMarkup = filepath.Join(w.opts.Root, pathMarkup)
+
+	var pathMarkupAdoc = pathMarkup + `.adoc`
+	fmarkup = w.fileMarkups[pathMarkupAdoc]
+	if fmarkup != nil {
+		return fmarkup, false
+	}
+
+	var pathMarkupMd = pathMarkup + `.md`
+	fmarkup = w.fileMarkups[pathMarkupMd]
+	if fmarkup != nil {
+		return fmarkup, false
+	}
+
+	// Directly check on the file system.
+
+	var fi os.FileInfo
+	var err error
+	fi, err = os.Stat(pathMarkupAdoc)
+	if err == nil {
+		fmarkup, err = NewFileMarkup(pathMarkupAdoc, fi)
+		if err != nil {
+			return nil, false
+		}
+		w.fileMarkups[pathMarkupAdoc] = fmarkup
+		return fmarkup, true
+	}
+
+	fi, err = os.Stat(pathMarkupMd)
+	if err == nil {
+		fmarkup, err = NewFileMarkup(pathMarkupMd, fi)
+		if err != nil {
+			return nil, false
+		}
+		w.fileMarkups[pathMarkupMd] = fmarkup
+		return fmarkup, true
+	}
+	return nil, false
 }
 
 func (w *watcher) scanFileMarkup() {

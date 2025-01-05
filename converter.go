@@ -84,29 +84,13 @@ func (converter *Converter) convertFileMarkups(fileMarkups map[string]*FileMarku
 	var (
 		logp = `convertFileMarkups`
 
-		fmarkup     *FileMarkup
-		htmlInfo    os.FileInfo
-		htmlModtime time.Time
-		err         error
-		skip        bool
+		fmarkup *FileMarkup
+		err     error
 	)
 
 	for _, fmarkup = range fileMarkups {
-		skip = true
 		if !isForce {
-			htmlInfo, _ = os.Stat(fmarkup.pathHTML)
-			if htmlInfo == nil {
-				// HTML file may not exist.
-				skip = false
-			} else {
-				htmlModtime = htmlInfo.ModTime()
-				if converter.htmlTemplateModtime.After(htmlModtime) {
-					skip = false
-				} else if fmarkup.info.ModTime().After(htmlModtime) {
-					skip = false
-				}
-			}
-			if skip {
+			if !converter.shouldConvert(fmarkup) {
 				continue
 			}
 		}
@@ -229,4 +213,44 @@ func (converter *Converter) markdownToHTML(fmarkup *FileMarkup) (fhtml *fileHTML
 	fhtml.unpackMarkdownMetadata(meta.Get(parserCtx))
 
 	return fhtml, nil
+}
+
+// shouldConvert will return true if the file markup fmarkup needs to be
+// converted to HTML.
+// It return true if the HTML file not exist or the template or markup file is
+// newer than the HTML file.
+func (converter *Converter) shouldConvert(fmarkup *FileMarkup) bool {
+	var fi os.FileInfo
+	fi, _ = os.Stat(fmarkup.pathHTML)
+	if fi == nil {
+		// HTML file may not exist.
+		return true
+	}
+
+	var htmlModtime = fi.ModTime()
+	var err error
+
+	if len(converter.htmlTemplate) != 0 {
+		fi, err = os.Stat(converter.htmlTemplate)
+		if err != nil {
+			// The template file may has been deleted.
+			return true
+		}
+
+		if fi.ModTime().After(htmlModtime) {
+			converter.htmlTemplateModtime = fi.ModTime()
+			return true
+		}
+	}
+
+	fi, err = os.Stat(fmarkup.path)
+	if err != nil {
+		// The markup file may has been deleted.
+		return false
+	}
+	if fi.ModTime().After(htmlModtime) || fmarkup.info.Size() != fi.Size() {
+		fmarkup.info = fi
+		return true
+	}
+	return false
 }
