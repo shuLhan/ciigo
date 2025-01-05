@@ -162,10 +162,8 @@ func listFileMarkups(dir string, excRE []*regexp.Regexp) (
 
 	d, err = os.Open(dir)
 	if err != nil {
-		if os.IsPermission(err) {
-			return nil, nil
-		}
-		return nil, fmt.Errorf(`%s: %w`, logp, err)
+		log.Printf(`%s: %s`, logp, err)
+		return nil, nil
 	}
 
 	fis, err = d.Readdir(0)
@@ -186,7 +184,9 @@ func listFileMarkups(dir string, excRE []*regexp.Regexp) (
 		if fi.Mode()&os.ModeSymlink == os.ModeSymlink {
 			fi, err = os.Stat(filePath)
 			if err != nil {
-				return nil, fmt.Errorf(`%s: %w`, logp, err)
+				// Broken symlink.
+				log.Printf(`%s: %s`, logp, err)
+				continue
 			}
 		}
 
