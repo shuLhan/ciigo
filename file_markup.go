@@ -41,7 +41,7 @@ func NewFileMarkup(filePath string, fi os.FileInfo) (fmarkup *FileMarkup, err er
 		}
 	}
 
-	var ext = strings.ToLower(filepath.Ext(filePath))
+	var ext = filepath.Ext(filePath)
 	var basePath = strings.TrimSuffix(filePath, ext)
 
 	fmarkup = &FileMarkup{
@@ -55,7 +55,7 @@ func NewFileMarkup(filePath string, fi os.FileInfo) (fmarkup *FileMarkup, err er
 }
 
 func markupKind(ext string) int {
-	switch ext {
+	switch strings.ToLower(ext) {
 	case extAsciidoc:
 		return markupKindAdoc
 	case extMarkdown:
