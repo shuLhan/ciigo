@@ -37,7 +37,7 @@ func main() {
 	htmlTemplate = flag.String("template", "", "path to HTML template")
 	outputFile = flag.String("out", "ciigo_static.go",
 		"path to output of .go embed file")
-	address = flag.String("address", `127.0.0.1:8080`,
+	address = flag.String(`address`, `127.0.0.1:6320`,
 		"the binding address for HTTP server")
 	exclude = flag.String("exclude", "",
 		"a regex to exclude certain paths from being scanned during covert, embeded, watch, or serve")

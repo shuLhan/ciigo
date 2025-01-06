@@ -30,7 +30,7 @@ build:
 	CGO_ENABLED=0 go build $(LDFLAGS) -o $(DIR_BUILD) ./cmd/...
 
 serve-doc:
-	go run ./cmd/ciigo serve _doc
+	go run ./cmd/ciigo -address=127.0.0.1:20757 serve _doc
 
 .PHONY: chroot-setup chroot-test
 
