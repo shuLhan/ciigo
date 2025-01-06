@@ -7,12 +7,12 @@ VERSION:=$(shell git describe --tags)
 LDFLAGS:=-ldflags "-s -w -X 'git.sr.ht/~shulhan/ciigo.Version=$(VERSION)'"
 DIR_BUILD:=_bin
 
-all: test lint build
+all: lint build test
 
 lint:
 	-fieldalignment ./...
 	-shadow ./...
-	-revive ./...
+	go vet ./...
 
 test:
 	find ./testdata -name "*.html" -delete
