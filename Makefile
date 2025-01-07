@@ -23,7 +23,7 @@ install: build
 	mv _bin/ciigo $(GOBIN)
 
 run-example:
-	DEBUG=1 go run ./cmd/ciigo-example
+	go run ./internal/cmd/ciigo-example
 
 build:
 	mkdir -p $(DIR_BUILD)

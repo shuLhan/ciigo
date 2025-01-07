@@ -16,7 +16,7 @@ import (
 )
 
 const (
-	cmdEmbed = "embed"
+	cmdEmbed = `embed`
 )
 
 var ciigoFS *memfs.MemFS
@@ -25,11 +25,12 @@ func main() {
 	var (
 		opts = ciigo.ServeOptions{
 			ConvertOptions: ciigo.ConvertOptions{
-				Root:         "_example",
-				HTMLTemplate: "_example/html.tmpl",
+				Root:         `_example`,
+				HTMLTemplate: `_example/html.tmpl`,
 			},
-			Mfs:     ciigoFS,
-			Address: ":8080",
+			Mfs:           ciigoFS,
+			Address:       `127.0.0.1:8080`,
+			IsDevelopment: true,
 		}
 
 		cmd string
@@ -51,27 +52,26 @@ func main() {
 }
 
 func doEmbed() {
-	var (
-		opts = ciigo.EmbedOptions{
-			ConvertOptions: ciigo.ConvertOptions{
-				Root:         "_example",
-				HTMLTemplate: "_example/html.tmpl",
+	var opts = ciigo.EmbedOptions{
+		ConvertOptions: ciigo.ConvertOptions{
+			Root:         `_example`,
+			HTMLTemplate: `_example/html.tmpl`,
+			Exclude: []string{
+				`.*/\..*$`,
 			},
-			EmbedOptions: memfs.EmbedOptions{
-				CommentHeader: `// SPDX-FileCopyrightText: 2019 Shulhan <ms@kilabit.info>
+		},
+		EmbedOptions: memfs.EmbedOptions{
+			CommentHeader: `// SPDX-FileCopyrightText: 2019 Shulhan <ms@kilabit.info>
 // SPDX-License-Identifier: GPL-3.0-or-later
 `,
-				PackageName:    "main",
-				VarName:        "ciigoFS",
-				GoFileName:     "cmd/ciigo-example/static.go",
-				WithoutModTime: true,
-			},
-		}
+			PackageName:    `main`,
+			VarName:        `ciigoFS`,
+			GoFileName:     `internal/cmd/ciigo-example/static.go`,
+			WithoutModTime: true,
+		},
+	}
 
-		err error
-	)
-
-	err = ciigo.GoEmbed(opts)
+	var err = ciigo.GoEmbed(opts)
 	if err != nil {
 		log.Fatal(err)
 	}

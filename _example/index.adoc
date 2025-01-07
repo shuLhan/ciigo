@@ -3,19 +3,19 @@
 =  Welcome to ciigo
 Shulhan <ms@kilabit.info>
 25 September 2019
-:url-godoc: https://pkg.go.dev/git.sr.ht/~shulhan/ciigo
-
-image:https://img.shields.io/badge/go.dev-reference-007d9c?logo=go&logoColor=white&style=flat-square[GoDoc, link={url-godoc}]
+:sectanchors:
+:sectlinks:
+:toc:
 
 `ciigo` is a library and a program to write static web server with embedded
 files using
-https://asciidoctor.org/docs/what-is-asciidoc/[asciidoc]
+https://asciidoctor.org/docs/what-is-asciidoc/[AsciiDoc^]
 markup format.
 
 ==  ciigo as library
 
 For an up to date documentation of how to use the library see the
-https://pkg.go.dev/git.sr.ht/~shulhan/ciigo[Go documentation page].
+https://git.sr.ht/~shulhan/ciigo[repository page^].
 
 ==  ciigo as CLI
 
