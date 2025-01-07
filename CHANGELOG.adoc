@@ -7,6 +7,50 @@ Shulhan <ms@kilabit.info>
 :sectlinks:
 
 
+[#v0_15_0]
+==  ciigo v0.15.0 (2025-01-08)
+
+This is the first major release of ciigo on the new year of 2025.
+We bring many enhancements and update on the documentation.
+
+[ENHANCEMENT] +
+The first changes is refactoring to use
+https://pkg.go.dev/git.sr.ht/~shulhan/pakakeh.go/lib/watchfs/v2[watchfs/v2^].
+The [watchfs/v2] bring new enhancements by watching only single file
+instead of all markup files for changes.
+This minimize number of goroutine calling [os.Stat] on each markup
+files.
+
+[BUG FIX] +
+When listing the file markups, if the node is symlink (either file or
+directory) and target its not exist, continue to the next node instead
+of returning error.
+The same is true for directory that cannot be opened, probably due to
+broken symlink or permission.
+
+[ENHANCEMENT] +
+In development mode, where [ServeOptions.IsDevelopment] is set to true
+or when running "ciigo serve", the ciigo HTTP server will check if the
+new markup file is newer than HTML file when user press refresh or
+reload on the browser.
+If its newer, it will convert the markup file and return the new content
+of HTML file.
+
+This allow quick preview without waiting for watcher to complete.
+
+[ENHANCEMENT] +
+The README has been revamped to include section on how to install
+ciigo as program, how to running ciigo convert and serve, how to write
+content and view it live on browser, and how to deploy it.
+
+On the section "ciigo as library" we point the user the sample code at
+"internal/cmd/ciigo-example" instead of writing long code at the front.
+
+[BUG FIX] +
+This release also fix Exclude option does not get processed when calling
+GoEmbed, or running "ciigo embed".
+
+
 [#v0_14_0]
 ==  ciigo v0.14.0 (2024-10-06)
 
