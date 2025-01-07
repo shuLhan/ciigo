@@ -296,9 +296,11 @@ func (ciigo *Ciigo) GoEmbed(embedOpts EmbedOptions) (err error) {
 
 	ciigo.converter.convertFileMarkups(fileMarkups, convertForce)
 
+	var excludes = append(defExcludes, embedOpts.Exclude...)
+
 	var mfsOpts = &memfs.Options{
 		Root:     embedOpts.Root,
-		Excludes: defExcludes,
+		Excludes: excludes,
 		Embed:    embedOpts.EmbedOptions,
 	}
 
