@@ -7,6 +7,31 @@ Shulhan <ms@kilabit.info>
 :sectlinks:
 
 
+[#v0_15_1]
+==  ciigo v0.15.1 (2025-02-01)
+
+[BUG FIX]
+Fix section detected as paragraph after list and comment.
+Previously, given the following markup,
+----
+* Sub list
++
+Sub list content.
+
+//}}}
+//{{{
+== Sub 2
+//}}
+----
+The section "Sub 2" will be parsed as paragraph instead of new section.
+
+[CHORE]
+In the linter, we replace the fieldalignment and shadow using our internal
+gocheck command.
+This linters actually have an API that can be combined into a program,
+which provided by package "pakakeh.go/lib/goanalysis".
+
+
 [#v0_15_0]
 ==  ciigo v0.15.0 (2025-01-08)
 
