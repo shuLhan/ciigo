@@ -2,6 +2,7 @@
 ## SPDX-License-Identifier: GPL-3.0-or-later
 
 VERSION:=$(shell git describe --tags)
+ENV_GOBIN:=$(shell go env GOBIN)
 LDFLAGS:=-ldflags "-s -w -X 'git.sr.ht/~shulhan/ciigo.Version=$(VERSION)'"
 DIR_BUILD:=_bin
 
@@ -21,7 +22,7 @@ test:
 
 .PHONY: install
 install: build
-	mv _bin/ciigo $(GOBIN)
+	mv _bin/ciigo $(ENV_GOBIN)
 
 .PHONY: run-example
 run-example:
