@@ -23,7 +23,7 @@ import (
 // The htmlTemplate parameter is optional, if not set its default to
 // embedded HTML template.
 func (ciigo *Ciigo) InitHTTPServer(opts ServeOptions) (err error) {
-	var logp = `initServer`
+	var logp = `InitHTTPServer`
 
 	err = opts.init()
 	if err != nil {
