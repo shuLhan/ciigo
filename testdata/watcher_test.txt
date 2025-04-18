@@ -1,5 +1,6 @@
 >>> create.adoc
-# watch create
+= watch create
+:generator!:
 
 <<< create.adoc.html
 <!DOCTYPE html>
@@ -8,7 +9,6 @@
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<meta name="theme-color" content="#375EAB">
-		<meta name="generator" content="asciidoctor-go 0.7.0">
 		<title>watch create</title>
 		<link rel="stylesheet" href="">
 	</head>
@@ -36,8 +36,9 @@
 
 >>> update.adoc
 # watch updated
-:stylesheet: /path/to/style.css
+:generator!:
 :keywords: ciigo,asciidoc
+:stylesheet: /path/to/style.css
 
 Hello, body.
 
@@ -48,7 +49,6 @@ Hello, body.
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<meta name="theme-color" content="#375EAB">
-		<meta name="generator" content="asciidoctor-go 0.7.0">
 		<meta name="keywords" content="ciigo,asciidoc">
 		<title>watch updated</title>
 		<link rel="stylesheet" href="/path/to/style.css">

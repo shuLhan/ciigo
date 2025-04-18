@@ -1,2 +1,3 @@
 = dummy
 :last-update-label!:
+:generator!:
