@@ -8,11 +8,9 @@
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<meta name="theme-color" content="#375EAB">
-		<meta name="generator" content="asciidoctor-go 0.6.2">
+		<meta name="generator" content="asciidoctor-go 0.7.0">
 		<title>watch create</title>
-		<style>
-		body{}
-		</style>
+		<link rel="stylesheet" href="">
 	</head>
 	<body>
 		<div class="topbar">
@@ -50,7 +48,7 @@ Hello, body.
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<meta name="theme-color" content="#375EAB">
-		<meta name="generator" content="asciidoctor-go 0.6.2">
+		<meta name="generator" content="asciidoctor-go 0.7.0">
 		<meta name="keywords" content="ciigo,asciidoc">
 		<title>watch updated</title>
 		<link rel="stylesheet" href="/path/to/style.css">
