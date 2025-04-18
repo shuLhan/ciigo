@@ -6,7 +6,7 @@ module git.sr.ht/~shulhan/ciigo
 go 1.23.4
 
 require (
-	git.sr.ht/~shulhan/asciidoctor-go v0.7.0
+	git.sr.ht/~shulhan/asciidoctor-go v0.7.1
 	git.sr.ht/~shulhan/pakakeh.go v0.60.1
 	github.com/yuin/goldmark v1.7.10
 	github.com/yuin/goldmark-meta v1.1.0

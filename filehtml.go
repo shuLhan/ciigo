@@ -12,8 +12,7 @@ import (
 )
 
 const (
-	metadataStylesheet = `stylesheet`
-	metadataTitle      = `title`
+	metadataTitle = `title`
 )
 
 // fileHTML represent an HTML metadata for header and its body.
@@ -45,8 +44,10 @@ func (fhtml *fileHTML) unpackAdocMetadata(doc *asciidoctor.Document) {
 
 	for k, v = range doc.Attributes.Entry {
 		switch k {
-		case metadataStylesheet:
-			fhtml.Styles = append(fhtml.Styles, v)
+		case asciidoctor.DocAttrStylesheet:
+			if len(v) != 0 {
+				fhtml.Styles = append(fhtml.Styles, v)
+			}
 		case asciidoctor.DocAttrAuthorNames:
 			fhtml.Metadata[asciidoctor.DocAttrAuthor] = v
 		case asciidoctor.DocAttrDescription,
@@ -79,7 +80,7 @@ func (fhtml *fileHTML) unpackMarkdownMetadata(metadata map[string]any) {
 
 		key = strings.ToLower(key)
 		switch key {
-		case metadataStylesheet:
+		case asciidoctor.DocAttrStylesheet:
 			fhtml.Styles = append(fhtml.Styles, vstr)
 		case metadataTitle:
 			fhtml.Title = vstr

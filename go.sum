@@ -1,5 +1,5 @@
-git.sr.ht/~shulhan/asciidoctor-go v0.7.0 h1:ENd9RgN1erERljh0nTHegllRHq/S18gzMkOt6YOyFrk=
-git.sr.ht/~shulhan/asciidoctor-go v0.7.0/go.mod h1:vwv7RMfWN6YAF7j2exJ/K1/ncoYX/tD6FLPgFzjeWfE=
+git.sr.ht/~shulhan/asciidoctor-go v0.7.1 h1:xdxLRufyEZA6plVLjrYk5VDBHbbxRmV+1d8RpYbly3k=
+git.sr.ht/~shulhan/asciidoctor-go v0.7.1/go.mod h1:vwv7RMfWN6YAF7j2exJ/K1/ncoYX/tD6FLPgFzjeWfE=
 git.sr.ht/~shulhan/pakakeh.go v0.60.1 h1:JGke3BIh40tK+d9eHg0jYi/W+GVixWcGwFkAcynSBSY=
 git.sr.ht/~shulhan/pakakeh.go v0.60.1/go.mod h1:8t/pEqWDrEcyr26qR5sXJkF1M5tFhrs3Jzr5aYoZdIo=
 github.com/google/go-cmp v0.6.0 h1:ofyhxvXcZhMsU5ulbFiLKl/XBFqE1GSq7atu8tAmTRI=
