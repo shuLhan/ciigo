@@ -304,7 +304,8 @@ request for new feature.
 
 <https://pkg.go.dev/git.sr.ht/~shulhan/ciigo> - Go module documentation.
 
-[Change log](/CHANGELOG.html) - Log of each releases.
+[Change log](https://kilabit.info/project/ciigo/CHANGELOG.html) - Log of
+each releases.
 
 <!--}}}-->
 ##  License
@@ -329,3 +330,6 @@ this program.
 If not, see <http://www.gnu.org/licenses/>.
 
 <!--}}}-->
+<!--
+vim: foldmethod=marker foldmarker={{{,}}} :
+-->
