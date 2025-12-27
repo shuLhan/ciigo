@@ -6,6 +6,19 @@ Shulhan <ms@kilabit.info>
 :sectanchors:
 :sectlinks:
 
+[#v0_15_3]
+==  ciigo v0.15.3 (2025-12-27)
+
+This is the last release for year 2025.
+
+In the README, we fix broken "Change log" link when rendered on pkg.go.dev
+and sr.ht sites.
+
+The go.mod has been updated to use minimum Go 1.24.0; and all dependencies
+has been updated to latest release.
+
+Happy holidays!
+
 
 [#v0_15_2]
 ==  ciigo v0.15.2 (2025-04-18)
