@@ -7,7 +7,7 @@ go 1.24.0
 
 require (
 	git.sr.ht/~shulhan/asciidoctor-go v0.7.2
-	git.sr.ht/~shulhan/pakakeh.go v0.60.2
+	git.sr.ht/~shulhan/pakakeh.go v0.60.3-0.20260115103415-806359d5462f
 	github.com/yuin/goldmark v1.7.13
 	github.com/yuin/goldmark-meta v1.1.0
 )

@@ -176,7 +176,7 @@ func (ciigo *Ciigo) onSearch(epr *libhttp.EndpointRequest) (resBody []byte, err 
 // files.
 func (ciigo *Ciigo) onGet(
 	node *memfs.Node, _ http.ResponseWriter, req *http.Request,
-) (out *memfs.Node) {
+) (out *memfs.Node, statusCode int) {
 	var (
 		logp = `onGet`
 		file string
@@ -206,7 +206,7 @@ func (ciigo *Ciigo) onGet(
 	fmarkup, isNew = ciigo.watcher.getFileMarkupByHTML(file)
 	if fmarkup == nil {
 		// File is not HTML or no markup files created from it.
-		return node
+		return node, 0
 	}
 	var err error
 	if isNew || ciigo.converter.shouldConvert(fmarkup) {
@@ -214,13 +214,13 @@ func (ciigo *Ciigo) onGet(
 		if err != nil {
 			log.Printf(`%s: failed to convert markup file %q: %s`,
 				logp, fmarkup.path, err)
-			return node
+			return node, 0
 		}
 	}
 	out, err = ciigo.serveOpts.Mfs.Get(file)
 	if err != nil {
 		log.Printf(`%s: failed to get %q: %s`, logp, file, err)
-		return node
+		return node, 0
 	}
-	return out
+	return out, 0
 }
