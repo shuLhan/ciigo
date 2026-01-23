@@ -1,8 +1,9 @@
-// SPDX-FileCopyrightText: 2020 Shulhan <ms@kilabit.info>
 // SPDX-License-Identifier: GPL-3.0-or-later
+// SPDX-FileCopyrightText: 2020 Shulhan <ms@kilabit.info>
+
 = Sub directory
 Second Author <m.shulhan@gmail.com>
 24 November 2020
-:stylesheet: /custom.css
+:stylesheet: custom.css
 
 This is an example of content in sub directory using custom stylesheet.

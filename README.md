@@ -1,3 +1,6 @@
+<!-- SPDX-License-Identifier: GPL-3.0-or-later -->
+<!-- SPDX-FileCopyrightText: 2020 Shulhan <ms@kilabit.info> -->
+
 # Welcome to ciigo
 
 <!--{{{-->
@@ -124,12 +127,12 @@ ciigo version
 
 <!--{{{-->
 
-In this repository, we have an "\_example" directory that we can try using
-`ciigo`.
+In this repository, we have an "\_doc/example/" directory that we can try
+using `ciigo`.
 
 ```
-$ tree _example
-_example/
+$ tree _doc/example
+_doc/example/
 ├── custom.css
 ├── favicon.ico
 ├── html.tmpl
@@ -139,21 +142,21 @@ _example/
     └── index.adoc
 ```
 
-First, lets convert all AsciiDoc files (.adoc) inside the "\_example"
+First, lets convert all AsciiDoc files (.adoc) inside the "\_doc/example"
 directory recursively,
 
 ```
-$ ciigo convert ./_example
-2025/01/06 19:17:07 convertFileMarkups: converting _example/sub/index.adoc
-2025/01/06 19:17:07 convertFileMarkups: converting _example/index.adoc
+$ ciigo convert ./_doc/example
+2025/01/06 19:17:07 convertFileMarkups: converting _doc/example/sub/index.adoc
+2025/01/06 19:17:07 convertFileMarkups: converting _doc/example/index.adoc
 $
 ```
 
 Then serve it under HTTP server,
 
 ```
-$ ciigo serve ./_example/
-2025/01/06 19:17:47 ciigo: starting HTTP server at http://127.0.0.1:6320 for "./_example"
+$ ciigo serve ./_doc/example/
+2025/01/06 19:17:47 ciigo: starting HTTP server at http://127.0.0.1:6320 for "./_doc/example"
 
 ```
 
@@ -168,7 +171,7 @@ As we can see, the style of "/sub/" page is different because they use
 custom style defined using
 
 ```
-:stylesheet: /custom.css
+:stylesheet: custom.css
 ```
 
 inside the "/sub/index.adoc" file.
@@ -178,7 +181,7 @@ their own style.
 Lets convert again but now using new "-template",
 
 ```
-$ ciigo -template _example/html.tmpl
+$ ciigo -template _doc/example/html.tmpl
 $
 ```
 
@@ -188,31 +191,31 @@ To force converting all markup files, we can update the modification time of
 our template file,
 
 ```
-$ touch _example/html.tmpl
+$ touch _doc/example/html.tmpl
 $
 ```
 
 or delete all the HTML files,
 
 ```
-$ find _example/ -name "*.html" -delete
+$ find _doc/example/ -name "*.html" -delete
 $
 ```
 
 and then run the convert command again.
 
 ```
-$ ciigo -template ./_example/html.tmpl convert ./_example/
-2025/01/06 19:28:17 convertFileMarkups: converting _example/sub/index.adoc
-2025/01/06 19:28:17 convertFileMarkups: converting _example/index.adoc
+$ ciigo -template ./_doc/example/html.tmpl convert ./_doc/example/
+2025/01/06 19:28:17 convertFileMarkups: converting _doc/example/sub/index.adoc
+2025/01/06 19:28:17 convertFileMarkups: converting _doc/example/index.adoc
 $
 ```
 
 Run the `serve` command again to preview our new generated HTML files,
 
 ```
-$ ciigo serve ./_example/
-2025/01/06 19:36:07 ciigo: starting HTTP server at http://127.0.0.1:6320 for "./_example"
+$ ciigo serve ./_doc/example/
+2025/01/06 19:36:07 ciigo: starting HTTP server at http://127.0.0.1:6320 for "./_doc/example"
 
 ```
 
@@ -228,18 +231,18 @@ as tile and a "Sub" menu at the top-right.
 The "ciigo serve" command able to watch for new changes on markup files and
 convert it automatically to HTML without need to run "convert" manually.
 
-Lets run the serve command again on \_example directory,
+Lets run the serve command again on "\_doc/example" directory,
 
 ```
-$ ciigo serve ./_example/
-2025/01/06 19:46:54 ciigo: starting HTTP server at http://127.0.0.1:6320 for "./_example"
+$ ciigo serve ./_doc/example/
+2025/01/06 19:46:54 ciigo: starting HTTP server at http://127.0.0.1:6320 for "./_doc/example"
 
 ```
 
-Create new directory "journal" under "\_example",
+Create new directory "journal" under "\_doc/example",
 
 ```
-$ mkdir -p ./_example/journal/
+$ mkdir -p ./_doc/example/journal/
 $
 ```
 
@@ -259,10 +262,6 @@ and we should see new HTML page generated with the above content.
 Each time we refresh the browser, ciigo will check if the markup file is
 updated and then convert it automatically to HTML and return it to browser.
 
-Another way to trigger ciigo to rescan for new markup files is by creating
-or updating file ".ciigo_rescan" inside the content directory.
-In the above example, by creating file "\_example/.ciigo_rescan".
-
 Lets try updating the "journal/index.adoc" into
 
 ```
@@ -274,7 +273,7 @@ Hello ciigo!
 and create or update the ".ciigo_rescan",
 
 ```
-$ touch _example/.ciigo_rescan
+$ touch _doc/example/.ciigo_rescan
 $
 ```
 
@@ -289,7 +288,7 @@ and when we refresh the browser, we should see the page being updated.
 Once we have write the content as we like, we can deploy the generated
 HTML files and other assets files to the server.
 
-For example, using `rsync(1)` we can deploy the "\_example/" excluding the
+For example, using `rsync(1)` we can deploy the "\_doc/example/" excluding the
 hidden files (start with ".") and files with extension ".adoc", ".md", and
 ".tmpl"; by issuing the following command,
 
@@ -297,7 +296,7 @@ hidden files (start with ".") and files with extension ".adoc", ".md", and
 $ rsync --exclude='.*' \
     --exclude='*.adoc' --exclude='*.md' --exclude='*.tmpl' \
     --recursive --archive \
-    _example/ \
+    _doc/example/ \
     user@myserver:/srv/pub/
 ```
 
@@ -350,5 +349,5 @@ later.
 
 <!--}}}-->
 <!--
-vim: foldmethod=marker foldmarker={{{,}}} :
+vim: foldmethod=marker foldmarker={{{,}}}:
 -->
