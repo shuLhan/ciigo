@@ -1,11 +1,12 @@
-// SPDX-FileCopyrightText: 2019 Shulhan <ms@kilabit.info>
 // SPDX-License-Identifier: GPL-3.0-or-later
+// SPDX-FileCopyrightText: 2019 Shulhan <ms@kilabit.info>
 
 package ciigo
 
 import (
 	"fmt"
 	"html/template"
+	"log"
 	"strings"
 
 	"git.sr.ht/~shulhan/asciidoctor-go"
@@ -18,7 +19,7 @@ const (
 // fileHTML represent an HTML metadata for header and its body.
 type fileHTML struct {
 	Title       string
-	EmbeddedCSS *template.CSS
+	EmbeddedCSS template.CSS
 	Styles      []string
 	Body        template.HTML
 	Metadata    map[string]string
@@ -38,6 +39,7 @@ func (fhtml *fileHTML) unpackAdocMetadata(doc *asciidoctor.Document) {
 		k string
 		v string
 	)
+	var withStylesheet bool
 
 	fhtml.Title = doc.Title.String()
 	fhtml.Styles = fhtml.Styles[:0]
@@ -47,6 +49,8 @@ func (fhtml *fileHTML) unpackAdocMetadata(doc *asciidoctor.Document) {
 		case asciidoctor.DocAttrStylesheet:
 			if len(v) != 0 {
 				fhtml.Styles = append(fhtml.Styles, v)
+			} else {
+				withStylesheet = true
 			}
 		case asciidoctor.DocAttrAuthorNames:
 			fhtml.Metadata[asciidoctor.DocAttrAuthor] = v
@@ -56,10 +60,7 @@ func (fhtml *fileHTML) unpackAdocMetadata(doc *asciidoctor.Document) {
 			fhtml.Metadata[k] = v
 		}
 	}
-
-	if len(fhtml.Styles) == 0 {
-		fhtml.EmbeddedCSS = embeddedCSS()
-	}
+	fhtml.initCSS(withStylesheet)
 }
 
 func (fhtml *fileHTML) unpackMarkdownMetadata(metadata map[string]any) {
@@ -69,6 +70,10 @@ func (fhtml *fileHTML) unpackMarkdownMetadata(metadata map[string]any) {
 		vstr string
 		ok   bool
 	)
+	// On markdown, the default stylesheet is true.
+	// User need to explicitly set `stylesheet: false`
+	// on metadata to turn it off.
+	var withStylesheet = true
 
 	fhtml.Styles = fhtml.Styles[:0]
 
@@ -81,7 +86,11 @@ func (fhtml *fileHTML) unpackMarkdownMetadata(metadata map[string]any) {
 		key = strings.ToLower(key)
 		switch key {
 		case asciidoctor.DocAttrStylesheet:
-			fhtml.Styles = append(fhtml.Styles, vstr)
+			if vstr == `false` {
+				withStylesheet = false
+			} else {
+				fhtml.Styles = append(fhtml.Styles, vstr)
+			}
 		case metadataTitle:
 			fhtml.Title = vstr
 		default:
@@ -90,8 +99,24 @@ func (fhtml *fileHTML) unpackMarkdownMetadata(metadata map[string]any) {
 			fhtml.Metadata[key] = vstr
 		}
 	}
+	fhtml.initCSS(withStylesheet)
+}
 
-	if len(fhtml.Styles) == 0 {
-		fhtml.EmbeddedCSS = embeddedCSS()
+func (fhtml *fileHTML) initCSS(withStylesheet bool) {
+	var logp = `initCSS`
+
+	if len(fhtml.Styles) != 0 {
+		// User defined their custom CSS throught ":stylesheet:"
+		return
 	}
+	if !withStylesheet {
+		// User unset the stylesheet throught ":stylesheet!".
+		return
+	}
+	css, err := staticfs.Get(`/ciigo.css`)
+	if err != nil {
+		log.Printf(`%s: %s`, logp, err)
+		return
+	}
+	fhtml.EmbeddedCSS = template.CSS(string(css.Content))
 }

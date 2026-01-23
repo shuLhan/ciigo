@@ -1,5 +1,5 @@
-## SPDX-FileCopyrightText: 2019 Shulhan <ms@kilabit.info>
 ## SPDX-License-Identifier: GPL-3.0-or-later
+## SPDX-FileCopyrightText: 2019 Shulhan <ms@kilabit.info>
 
 VERSION:=$(shell git describe --tags)
 ENV_GOBIN:=$(shell go env GOBIN)
@@ -16,7 +16,6 @@ lint:
 
 .PHONY: test
 test:
-	find ./testdata -name "*.html" -delete
 	CGO_ENABLED=1 go test -failfast -v -race -p=1 -coverprofile=cover.out ./...
 	go tool cover -html=cover.out -o cover.html
 
@@ -31,6 +30,7 @@ run-example:
 .PHONY: build
 build:
 	mkdir -p $(DIR_BUILD)
+	go run ./internal/cmd/staticfs/
 	CGO_ENABLED=0 go build $(LDFLAGS) -o $(DIR_BUILD) ./cmd/...
 
 .PHONY: serve-doc

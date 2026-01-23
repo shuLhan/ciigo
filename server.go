@@ -1,5 +1,5 @@
-// SPDX-FileCopyrightText: 2019 Shulhan <ms@kilabit.info>
 // SPDX-License-Identifier: GPL-3.0-or-later
+// SPDX-FileCopyrightText: 2019 Shulhan <ms@kilabit.info>
 
 package ciigo
 
@@ -43,6 +43,9 @@ func (ciigo *Ciigo) InitHTTPServer(opts ServeOptions) (err error) {
 		}
 	} else {
 		opts.Mfs.Opts.TryDirect = opts.IsDevelopment
+	}
+	if staticfs != nil {
+		staticfs.Opts.TryDirect = opts.IsDevelopment
 	}
 
 	ciigo.serveOpts = opts
@@ -209,7 +212,7 @@ func (ciigo *Ciigo) onGet(
 		return node, 0
 	}
 	var err error
-	if isNew || ciigo.converter.shouldConvert(fmarkup) {
+	if isNew || ciigo.converter.shouldConvert(fmarkup, ciigo.serveOpts.IsDevelopment) {
 		err = ciigo.converter.ToHTMLFile(fmarkup)
 		if err != nil {
 			log.Printf(`%s: failed to convert markup file %q: %s`,

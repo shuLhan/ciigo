@@ -1,10 +1,28 @@
-// SPDX-FileCopyrightText: 2020 Shulhan <ms@kilabit.info>
 // SPDX-License-Identifier: GPL-3.0-or-later
+// SPDX-FileCopyrightText: 2020 Shulhan <ms@kilabit.info>
+
 =  Changelog for ciigo
-Shulhan <ms@kilabit.info>
-:toc:
 :sectanchors:
-:sectlinks:
+:toc:
+
+Legend,
+
+* 🪵: Breaking changes
+* 🌱: New feature
+* 🌼: Enhancement
+* 💧: Chores
+
+[#v0_16_0]
+==  ciigo v0.16.0 (2026-xx-xx)
+
+**🌱 all: embed CSS and index HTML template using memfs**
+
+Previously, with direct embed, every time we change the CSS or index
+template, we need to restart the "ciigo serve" command.
+
+Using memfs make us easy to update and see the changes directly, without
+restarting the server.
+
 
 [#v0_15_3]
 ==  ciigo v0.15.3 (2025-12-27)

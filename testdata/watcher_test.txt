@@ -1,34 +1,39 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+// SPDX-FileCopyrightText: 2023 Shulhan <ms@kilabit.info>
+
 >>> create.adoc
 = watch create
 :generator!:
 
 <<< create.adoc.html
+
+
 <!DOCTYPE html>
 <html>
-	<head>
-		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<meta name="theme-color" content="#375EAB">
-		<title>watch create</title>
-		<style>
-		body{}
-		</style>
-	</head>
-	<body>
-		<div class="topbar">
-			<div class="container">
-				<div class="top-heading">
-					<a href="/">watch create</a>
-				</div>
-				<div class="menu">
-					<form class="item" action="/_internal/search">
-						<input type="text" name="q" placeholder="Search" />
-					</form>
-				</div>
-			</div>
-		</div>
-		<div class="page">
-			<div class="container">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#375EAB">
+    <title>watch create</title>
+    <style>
+    body{}
+    </style>
+  </head>
+  <body>
+    <div class="topbar">
+      <div class="container">
+        <div class="top-heading">
+          <a href="/">watch create</a>
+        </div>
+        <div class="menu">
+          <form class="item" action="/_internal/search">
+            <input type="text" name="q" placeholder="Search" />
+          </form>
+        </div>
+      </div>
+    </div>
+    <div class="page">
+      <div class="container">
 <div id="header">
 <h1>watch create</h1>
 </div>
@@ -45,31 +50,33 @@
 Hello, body.
 
 <<< update.adoc.html
+
+
 <!DOCTYPE html>
 <html>
-	<head>
-		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<meta name="theme-color" content="#375EAB">
-		<meta name="keywords" content="ciigo,asciidoc">
-		<title>watch updated</title>
-		<link rel="stylesheet" href="/path/to/style.css">
-	</head>
-	<body>
-		<div class="topbar">
-			<div class="container">
-				<div class="top-heading">
-					<a href="/">watch updated</a>
-				</div>
-				<div class="menu">
-					<form class="item" action="/_internal/search">
-						<input type="text" name="q" placeholder="Search" />
-					</form>
-				</div>
-			</div>
-		</div>
-		<div class="page">
-			<div class="container">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#375EAB">
+    <meta name="keywords" content="ciigo,asciidoc">
+    <title>watch updated</title>
+    <link rel="stylesheet" href="/path/to/style.css">
+  </head>
+  <body>
+    <div class="topbar">
+      <div class="container">
+        <div class="top-heading">
+          <a href="/">watch updated</a>
+        </div>
+        <div class="menu">
+          <form class="item" action="/_internal/search">
+            <input type="text" name="q" placeholder="Search" />
+          </form>
+        </div>
+      </div>
+    </div>
+    <div class="page">
+      <div class="container">
 <div id="header">
 <h1>watch updated</h1>
 </div>
@@ -87,37 +94,39 @@ Title: a title
 # watch create
 
 <<< create.md.html
+
+
 <!DOCTYPE html>
 <html>
-	<head>
-		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<meta name="theme-color" content="#375EAB">
-		<title>a title</title>
-		<style>
-		body{}
-		</style>
-	</head>
-	<body>
-		<div class="topbar">
-			<div class="container">
-				<div class="top-heading">
-					<a href="/">a title</a>
-				</div>
-				<div class="menu">
-					<form class="item" action="/_internal/search">
-						<input type="text" name="q" placeholder="Search" />
-					</form>
-				</div>
-			</div>
-		</div>
-		<div class="page">
-			<div class="container">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#375EAB">
+    <title>a title</title>
+    <style>
+    body{}
+    </style>
+  </head>
+  <body>
+    <div class="topbar">
+      <div class="container">
+        <div class="top-heading">
+          <a href="/">a title</a>
+        </div>
+        <div class="menu">
+          <form class="item" action="/_internal/search">
+            <input type="text" name="q" placeholder="Search" />
+          </form>
+        </div>
+      </div>
+    </div>
+    <div class="page">
+      <div class="container">
 <h1>watch create</h1>
 
-			</div>
-		</div>
-		<div class="footer">
+      </div>
+    </div>
+    <div class="footer">
 
 >>> update.md
 ---
@@ -128,33 +137,35 @@ keywords: ciigo,markdown
 # watch updated
 
 <<< update.md.html
+
+
 <!DOCTYPE html>
 <html>
-	<head>
-		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<meta name="theme-color" content="#375EAB">
-		<meta name="keywords" content="ciigo,markdown">
-		<title>A new title</title>
-		<link rel="stylesheet" href="/path/to/style.css">
-	</head>
-	<body>
-		<div class="topbar">
-			<div class="container">
-				<div class="top-heading">
-					<a href="/">A new title</a>
-				</div>
-				<div class="menu">
-					<form class="item" action="/_internal/search">
-						<input type="text" name="q" placeholder="Search" />
-					</form>
-				</div>
-			</div>
-		</div>
-		<div class="page">
-			<div class="container">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#375EAB">
+    <meta name="keywords" content="ciigo,markdown">
+    <title>A new title</title>
+    <link rel="stylesheet" href="/path/to/style.css">
+  </head>
+  <body>
+    <div class="topbar">
+      <div class="container">
+        <div class="top-heading">
+          <a href="/">A new title</a>
+        </div>
+        <div class="menu">
+          <form class="item" action="/_internal/search">
+            <input type="text" name="q" placeholder="Search" />
+          </form>
+        </div>
+      </div>
+    </div>
+    <div class="page">
+      <div class="container">
 <h1>watch updated</h1>
 
-			</div>
-		</div>
-		<div class="footer">
+      </div>
+    </div>
+    <div class="footer">

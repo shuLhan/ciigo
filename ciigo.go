@@ -1,5 +1,5 @@
-// SPDX-FileCopyrightText: 2019 M. Shulhan <ms@kilabit.info>
 // SPDX-License-Identifier: GPL-3.0-or-later
+// SPDX-FileCopyrightText: 2019 M. Shulhan <ms@kilabit.info>
 
 // Package ciigo is a program to write static web server with embedded files
 // using the asciidoc markup languages.
@@ -28,7 +28,7 @@ const (
 )
 
 // Version define the latest tagged release of this module.
-var Version = `0.15.4`
+var Version = `0.16.0`
 
 // defExcludes define default files to be excludes on GoEmbed.
 var defExcludes = []string{
@@ -36,6 +36,11 @@ var defExcludes = []string{
 	`.*\.md$`,
 	`^\..*`,
 }
+
+// staticfs contains memory file system for "_static/" directory.
+// The value is initialized by running "go run ./internal/cmd/staticfs", that
+// generate "staticfs.go" file.
+var staticfs *memfs.MemFS
 
 // Ciigo provides customizable and reusable instance of ciigo for embedding,
 // converting, and/or serving HTTP server.

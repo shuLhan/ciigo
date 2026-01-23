@@ -24,9 +24,9 @@ Features,
 
 - No themes, built your own template and style.
   Except for default
-  [HTML](https://git.sr.ht/~shulhan/ciigo/tree/main/item/template_index_html.go)
+  [HTML](https://git.sr.ht/~shulhan/ciigo/tree/main/item/_static/index.gohtml)
   template and embedded
-  [CSS](https://git.sr.ht/~shulhan/ciigo/tree/main/item/embedded_css.go),
+  [CSS](https://git.sr.ht/~shulhan/ciigo/tree/main/item/_static/ciigo.css),
   there is no other selection of theme that you can "pre-installed".
 
 - No layout, you are free to structure your sites, using normal directory

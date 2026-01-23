@@ -1,12 +1,11 @@
-// SPDX-FileCopyrightText: 2022 M. Shulhan <ms@kilabit.info>
 // SPDX-License-Identifier: GPL-3.0-or-later
+// SPDX-FileCopyrightText: 2022 M. Shulhan <ms@kilabit.info>
 
 package ciigo
 
 import (
-	"html/template"
+	"log"
 	"os"
-	"path/filepath"
 	"regexp"
 	"sort"
 	"testing"
@@ -16,10 +15,13 @@ import (
 )
 
 func TestMain(m *testing.M) {
-	var templateCSS = template.CSS(`body{}`)
-
-	_embeddedCSS = &templateCSS
-
+	if staticfs != nil {
+		css, err := staticfs.Get(`/ciigo.css`)
+		if err != nil {
+			log.Fatal(err)
+		}
+		css.Content = []byte(`body{}`)
+	}
 	os.Exit(m.Run())
 }
 
@@ -85,18 +87,6 @@ func TestGoEmbed(t *testing.T) {
 		opts EmbedOptions
 	}
 
-	var (
-		outDir = `testdata/goembed/out`
-
-		tdata *test.Data
-		err   error
-	)
-
-	tdata, err = test.LoadData(`testdata/goembed/GoEmbed_test.txt`)
-	if err != nil {
-		t.Fatal(err)
-	}
-
 	var listCase = []testCase{{
 		opts: EmbedOptions{
 			ConvertOptions: ConvertOptions{
@@ -106,33 +96,26 @@ func TestGoEmbed(t *testing.T) {
 				PackageName:    `mypackage`,
 				VarName:        `memfsIn`,
 				WithoutModTime: true,
+				GoFileName:     `testdata/goembed/default.go`,
+				CommentHeader: `// SPDX-License-Identifier: GPL-3.0-or-later
+// SPDX-FileCopyrightText: 2026 Shulhan <ms@kilabit.info>
+`,
 			},
 		},
-		tag: `default`,
 	}}
-
-	var (
-		tcase testCase
-		fname string
-		fpath string
-		got   []byte
-	)
-	for _, tcase = range listCase {
-		// Set the output file name based on tag.
-		fname = tcase.tag + `.go`
-		fpath = filepath.Join(outDir, fname)
-		tcase.opts.EmbedOptions.GoFileName = filepath.Join(outDir, fname)
-
-		err = GoEmbed(tcase.opts)
+	for _, tcase := range listCase {
+		err := GoEmbed(tcase.opts)
 		if err != nil {
 			t.Fatal(err)
 		}
-
-		got, err = os.ReadFile(fpath)
+		got, err := os.ReadFile(tcase.opts.EmbedOptions.GoFileName)
 		if err != nil {
 			t.Fatal(err)
 		}
-
-		test.Assert(t, tcase.tag, string(tdata.Output[fname]), string(got))
+		exp, err := os.ReadFile(tcase.opts.EmbedOptions.GoFileName + `.exp`)
+		if err != nil {
+			t.Fatal(err)
+		}
+		test.Assert(t, tcase.tag, string(exp), string(got))
 	}
 }

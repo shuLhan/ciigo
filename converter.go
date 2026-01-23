@@ -1,5 +1,5 @@
-// SPDX-FileCopyrightText: 2019 Shulhan <ms@kilabit.info>
 // SPDX-License-Identifier: GPL-3.0-or-later
+// SPDX-FileCopyrightText: 2019 Shulhan <ms@kilabit.info>
 
 package ciigo
 
@@ -12,6 +12,7 @@ import (
 	"time"
 
 	"git.sr.ht/~shulhan/asciidoctor-go"
+	"git.sr.ht/~shulhan/pakakeh.go/lib/memfs"
 	"github.com/yuin/goldmark"
 	meta "github.com/yuin/goldmark-meta"
 	"github.com/yuin/goldmark/parser"
@@ -31,18 +32,20 @@ type Converter struct {
 // NewConverter create and initialize Converter with HTML template.
 // If htmlTemplate is empty, it will use the internal, predefined template.
 func NewConverter(htmlTemplate string) (converter *Converter, err error) {
-	var (
-		logp = `NewConverter`
-
-		tmplContent string
-	)
+	var logp = `NewConverter`
 
 	converter = &Converter{}
 
 	converter.tmpl = template.New(``)
 
+	var bhtml []byte
 	if len(htmlTemplate) == 0 {
-		tmplContent = templateIndexHTML
+		var node *memfs.Node
+		node, err = staticfs.Get(`/index.gohtml`)
+		if err != nil {
+			return nil, fmt.Errorf(`%s: %w`, logp, err)
+		}
+		bhtml = node.Content
 	} else {
 		converter.htmlTemplate = filepath.Clean(htmlTemplate)
 
@@ -55,15 +58,12 @@ func NewConverter(htmlTemplate string) (converter *Converter, err error) {
 
 		converter.htmlTemplateModtime = fi.ModTime()
 
-		var bhtml []byte
-
 		bhtml, err = os.ReadFile(converter.htmlTemplate)
 		if err != nil {
 			return nil, fmt.Errorf(`%s: %w`, logp, err)
 		}
-
-		tmplContent = string(bhtml)
 	}
+	var tmplContent = string(bhtml)
 
 	converter.tmpl, err = converter.tmpl.Parse(tmplContent)
 	if err != nil {
@@ -90,7 +90,7 @@ func (converter *Converter) convertFileMarkups(fileMarkups map[string]*FileMarku
 
 	for _, fmarkup = range fileMarkups {
 		if !isForce {
-			if !converter.shouldConvert(fmarkup) {
+			if !converter.shouldConvert(fmarkup, isForce) {
 				continue
 			}
 		}
@@ -105,7 +105,12 @@ func (converter *Converter) convertFileMarkups(fileMarkups map[string]*FileMarku
 }
 
 func (converter *Converter) htmlTemplateUseInternal() (err error) {
-	converter.tmpl, err = converter.tmpl.Parse(templateIndexHTML)
+	var node *memfs.Node
+	node, err = staticfs.Get(`/index.gohtml`)
+	if err != nil {
+		return err
+	}
+	converter.tmpl, err = converter.tmpl.Parse(string(node.Content))
 	if err != nil {
 		return err
 	}
@@ -217,9 +222,14 @@ func (converter *Converter) markdownToHTML(fmarkup *FileMarkup) (fhtml *fileHTML
 
 // shouldConvert will return true if the file markup fmarkup needs to be
 // converted to HTML.
-// It return true if the HTML file not exist or the template or markup file is
-// newer than the HTML file.
-func (converter *Converter) shouldConvert(fmarkup *FileMarkup) bool {
+// It return true if,
+//   - the HTML file not exist, or
+//   - the markup file is newer than the HTML file,
+//
+// In development mode, it will return true if,
+//   - the template file is newer than the HTML file, or
+//   - the CSS file is newer than the HTML file.
+func (converter *Converter) shouldConvert(fmarkup *FileMarkup, isDevelopment bool) bool {
 	var fi os.FileInfo
 	fi, _ = os.Stat(fmarkup.pathHTML)
 	if fi == nil {
@@ -252,5 +262,30 @@ func (converter *Converter) shouldConvert(fmarkup *FileMarkup) bool {
 		fmarkup.info = fi
 		return true
 	}
+
+	if !isDevelopment {
+		return false
+	}
+
+	// Check with staticfs for CSS and index HTML files.
+	if staticfs == nil {
+		return false
+	}
+	var node *memfs.Node
+	node, _ = staticfs.Get(`/index.gohtml`)
+	if node != nil && node.ModTime().After(htmlModtime) {
+		var newtmpl = template.New(``)
+		newtmpl, err = newtmpl.Parse(string(node.Content))
+		if err != nil {
+			return false
+		}
+		converter.tmpl = newtmpl
+		return true
+	}
+	node, _ = staticfs.Get(`/ciigo.css`)
+	if node != nil && node.ModTime().After(htmlModtime) {
+		return true
+	}
+
 	return false
 }
