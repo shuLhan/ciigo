@@ -1,0 +1,322 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+// SPDX-FileCopyrightText: 2026 M. Shulhan <ms@kilabit.info>
+= _Example `Document` **title**_
+Author A <a@a.com>; Author mid_dle B <b@b.com>
+v1.2.3, 18 July 2020: remark
+:metadata key: value
+:unclosed metadata:
+:sectanchors:
+:toc:
+:toclevels: 3
+:description: asciidoc document for testing style of ciigo
+:keywords: key, words
+:test-url: https://kilabit.info
+:image-sunset: sunset.jpg
+:version-label!:
+:generator!:
+:idprefix:
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat
+non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+
+
+== Paragraph
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat
+non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat
+non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+
+== Heading 1
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+tempor incididunt ut labore et dolore magna aliqua.
+
+=== Heading 2
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+tempor incididunt ut labore et dolore magna aliqua.
+
+==== Heading 3
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+tempor incididunt ut labore et dolore magna aliqua.
+
+===== Heading 4
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+tempor incididunt ut labore et dolore magna aliqua.
+
+====== Heading 5
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+tempor incididunt ut labore et dolore magna aliqua.
+
+== List
+
+=== Ordered list
+
+Example of ordered list,
+
+. Orange
++
+--
+Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+tempor incididunt ut labore et dolore magna aliqua.
+--
+. Red
+.. Yellow
+... Blue
+. Green
++
+--
+Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+tempor incididunt ut labore et dolore magna aliqua.
+--
+.. Black
++
+--
+Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+tempor incididunt ut labore et dolore magna aliqua.
+--
+... White
++
+--
+Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+tempor incididunt ut labore et dolore magna aliqua.
+--
+
+=== Unordered list
+
+Example of unordered list,
+
+* Orange
++
+--
+Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+tempor incididunt ut labore et dolore magna aliqua.
+--
+
+* Red
+** Yellow
+*** Blue
+* Green
++
+--
+Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+tempor incididunt ut labore et dolore magna aliqua.
+--
+.. Black
++
+--
+Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+tempor incididunt ut labore et dolore magna aliqua.
+--
+... White
++
+--
+Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+tempor incididunt ut labore et dolore magna aliqua.
+--
+
+
+=== Checklists
+
+Example of check list,
+
+* [*] checked
+* [x] also checked
+* [ ] not checked
+* normal list item
+
+=== Description lists
+
+CPU:: The brain of the computer.
+Hard drive:: Permanent storage for operating system and/or user files.
+RAM:: Temporarily stores information the CPU uses during operation.
+Keyboard:: Used to enter text or control items on the screen.
+Mouse:: Used to point to and select items on your computer screen.
+Monitor:: Displays information in visual form using text and graphics.
+
+== Table
+
+[cols="1,1"]
+|===
+|Cell in column 1, row 1
+|Cell in column 2, row 1
+
+|Cell in column 1, row 2
+|Cell in column 2, row 2
+
+|Cell in column 1, row 3
+|Cell in column 2, row 3
+|===
+
+[cols="1,1"]
+|===
+|Cell in column 1, header row |Cell in column 2, header row
+
+|Cell in column 1, row 2
+|Cell in column 2, row 2
+
+|Cell in column 1, row 3
+|Cell in column 2, row 3
+
+|Cell in column 1, row 4
+|Cell in column 2, row 4
+|===
+
+=== Table with title
+
+.A table with a title
+[%autowidth]
+|===
+|Column 1, header row |Column 2, header row
+
+|Cell in column 1, row 2
+|Cell in column 2, row 2
+|===
+
+=== Adjust column widths
+
+[cols="2,1,3"]
+|===
+|Column 1 |Column 2 |Column 3
+
+|This column has a proportional width of 2
+|This column has a proportional width of 1
+|This column has a proportional width of 3
+|===
+
+=== Align content by column
+
+[cols="2*^",options=header]
+|===
+|Column name
+|Column name
+
+|This content is horizontally centered.
+|This content is also horizontally centered.
+|===
+
+[cols="^.>2,1,>.^1"]
+|===
+|Column name |Column name |Column name
+
+|This content is centered horizontally and aligned to the bottom
+of the cell.
+|There aren't any alignment operators on this column's specifier,
+so the column falls back to the default alignments.
+The default horizontal alignment is left-aligned.
+The default vertical alignment is top-aligned.
+|This content is aligned to the right side of the cell and
+centered vertically.
+|===
+
+=== Table Striping
+
+[cols=2*,stripes=even]
+|===
+|H1 | H2
+
+|A1
+|B1
+|A2
+|B2
+|A3
+|B3
+|A4
+|B4
+|===
+
+== Verbatim and Source blocks
+
+Example of pre,
+
+----
+var staticfs *memfs.MemFS
+
+type Ciigo struct {
+	HTTPServer *libhttp.Server
+	converter  *Converter
+	watcher    *watcher
+	serveOpts  ServeOptions
+}
+----
+
+`ciigo` is a program (as in command line interface, CLI) and a library (as
+in Go package) to write static web server with embedded files using
+https://asciidoctor.org/docs/what-is-asciidoc/[AsciiDoc]
+and
+https://www.markdownguide.org/[Markdown]
+markup format.
+
+== Admonitions
+
+Sample paragraph in between admonition.
+
+NOTE: Wolpertingers are known to nest in server racks.
+Enter at your own risk.
+
+Sample paragraph in between admonition.
+
+[TIP]
+.Feeding the Werewolves
+====
+While werewolves are hardy community members, keep in mind the following
+dietary concerns:
+
+----
+. They are allergic to cinnamon.
+. More than two glasses of orange juice in 24 hours makes them howl in
+  harmony with alarms and sirens.
+. Celery makes them sad.
+----
+====
+
+Sample paragraph in between admonition.
+
+[IMPORTANT]
+.Feeding the Werewolves
+====
+While werewolves are hardy community members, keep in mind the following
+dietary concerns:
+
+. They are allergic to cinnamon.
+. More than two glasses of orange juice in 24 hours makes them howl in
+  harmony with alarms and sirens.
+. Celery makes them sad.
+====
+
+Sample paragraph in between admonition.
+
+[CAUTION]
+.Feeding the Werewolves
+====
+While werewolves are hardy community members, keep in mind the following
+dietary concerns:
+
+- They are allergic to cinnamon.
+- More than two glasses of orange juice in 24 hours makes them howl in
+  harmony with alarms and sirens.
+- Celery makes them sad.
+====
+
+
+Sample paragraph in between admonition.
+
+WARNING: Wolpertingers are known to nest in server racks.
+Enter at your own risk.
