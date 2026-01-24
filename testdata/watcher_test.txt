@@ -19,14 +19,14 @@ body{}
     </style>
   </head>
   <body>
-    <div class="topbar">
+    <div class="topbar" role="banner">
       <a class="item title" href="/">watch create</a>
       <form class="item" action="/_internal/search">
         <input type="text" name="q" placeholder="Search" />
       </form>
     </div>
 
-    <div class="page">
+    <div class="page" role="main">
       <div class="container">
 <div id="header">
 <h1>watch create</h1>
@@ -56,14 +56,14 @@ Hello, body.
     <link rel="stylesheet" href="/path/to/style.css" />
   </head>
   <body>
-    <div class="topbar">
+    <div class="topbar" role="banner">
       <a class="item title" href="/">watch updated</a>
       <form class="item" action="/_internal/search">
         <input type="text" name="q" placeholder="Search" />
       </form>
     </div>
 
-    <div class="page">
+    <div class="page" role="main">
       <div class="container">
 <div id="header">
 <h1>watch updated</h1>
@@ -95,20 +95,21 @@ body{}
     </style>
   </head>
   <body>
-    <div class="topbar">
+    <div class="topbar" role="banner">
       <a class="item title" href="/">a title</a>
       <form class="item" action="/_internal/search">
         <input type="text" name="q" placeholder="Search" />
       </form>
     </div>
 
-    <div class="page">
+    <div class="page" role="main">
       <div class="container">
 <h1>watch create</h1>
 
       </div>
     </div>
-    <div class="footer">
+
+    <div class="footer" role="contentinfo">
 
 >>> update.md
 ---
@@ -131,17 +132,18 @@ keywords: ciigo,markdown
     <link rel="stylesheet" href="/path/to/style.css" />
   </head>
   <body>
-    <div class="topbar">
+    <div class="topbar" role="banner">
       <a class="item title" href="/">A new title</a>
       <form class="item" action="/_internal/search">
         <input type="text" name="q" placeholder="Search" />
       </form>
     </div>
 
-    <div class="page">
+    <div class="page" role="main">
       <div class="container">
 <h1>watch updated</h1>
 
       </div>
     </div>
-    <div class="footer">
+
+    <div class="footer" role="contentinfo">

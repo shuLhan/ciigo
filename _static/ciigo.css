@@ -2,11 +2,11 @@
 /* SPDX-FileCopyrightText: 2020 Shulhan <ms@kilabit.info> */
 
 :root {
-  --light-anchor: teal;
+  --light-anchor: maroon;
   --light-bg-adm-caution: lavender;
   --light-bg-adm-important: cornsilk;
   --light-bg-adm-note: gainsboro;
-  --light-bg-adm-tip: azure;
+  --light-bg-adm-tip: antiquewhite;
   --light-bg-adm-warning: mistyrose;
   --light-bg-mono: var(--light-bg-adm-important);
   --light-bg-table-header: var(--light-bg-adm-note);
@@ -19,11 +19,11 @@
   --light-fg-title: var(--light-fg);
   --light-fg: darkslategray;
 
-  --dark-anchor: darkturquoise;
+  --dark-anchor: bisque;
   --dark-bg-adm-caution: darkolivegreen;
   --dark-bg-adm-important: rgba(0, 0, 0, 0.2);
   --dark-bg-adm-note: slategray;
-  --dark-bg-adm-tip: var(--light-anchor);
+  --dark-bg-adm-tip: teal;
   --dark-bg-adm-warning: sienna;
   --dark-bg-mono: var(--dark-bg-adm-important);
   --dark-bg-table-header: var(--dark-bg-adm-note);
@@ -687,4 +687,10 @@ pre {
     color: var(--dark-fg-footer);
   }
   /*}}}*/
+}
+@media (pointer: coarse) {
+  /* Styles for touch devices */
+  #toc {
+    line-height: 1.6rem;
+  }
 }
