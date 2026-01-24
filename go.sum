@@ -1,5 +1,5 @@
-git.sr.ht/~shulhan/asciidoctor-go v0.7.2 h1:MeLOXoHeBE5Glq0M/DegO9lIv/MSH1mhre2EMNPXG3I=
-git.sr.ht/~shulhan/asciidoctor-go v0.7.2/go.mod h1:cY9Ae1vu3OniC7z29twH1/PMJa7ZSSUqbK9QQM4/bhc=
+git.sr.ht/~shulhan/asciidoctor-go v0.7.3-0.20260124143117-f289b7f13a1d h1:rdDzlVPJjgR6Jz84VNEAbdvNypMPtH3O6uEbVYb/7Rk=
+git.sr.ht/~shulhan/asciidoctor-go v0.7.3-0.20260124143117-f289b7f13a1d/go.mod h1:cY9Ae1vu3OniC7z29twH1/PMJa7ZSSUqbK9QQM4/bhc=
 git.sr.ht/~shulhan/pakakeh.go v0.60.3-0.20260115103415-806359d5462f h1:2D3QbPVWg5g91wcuyfY9fuN35NWXvCJAjg7c6YbKSVE=
 git.sr.ht/~shulhan/pakakeh.go v0.60.3-0.20260115103415-806359d5462f/go.mod h1:1MkKXbLZRHTcnheeSEbRpGztkym4Yxzh90ep+jCxbDc=
 github.com/creack/pty v1.1.9/go.mod h1:oKZEueFk5CKHvIhNR5MUki03XCEU+Q6VDXinZuGJ33E=
