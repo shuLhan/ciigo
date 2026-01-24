@@ -201,41 +201,20 @@ pre {
 
 .topbar {
   background-color: var(--light-bg-topbar);
-  height: 4rem;
-  overflow: hidden;
+  font-weight: normal;
+  padding: 1em;
 }
 
-.topbar .top-heading,
-.topbar .menu {
-  font-size: 1.25rem;
-  font-weight: normal;
-  padding: 1.313rem 0;
-}
-.topbar .top-heading {
-  float: left;
-}
-.topbar .top-heading a {
+.topbar .item {
+  display: inline-block;
+  padding: 4px;
   text-decoration: none;
 }
 
-.top-heading .header-logo {
-  height: 2rem;
-  width: 5.125rem;
-}
-
-.topbar .menu {
-  float: right;
-}
-.topbar .menu a {
-  background-color: var(--light-anchor);
-  border-radius: 5px;
-  border: 0.0625rem solid var(--light-anchor);
-  color: white;
-  margin: 0.625rem 0.125rem;
-  padding: 0.625rem;
-}
-.topbar .menu form {
-  display: inline-block;
+.topbar .title {
+  color: var(--light-fg);
+  font-size: 1.4rem;
+  font-weight: bold;
 }
 
 /*}}}*/
@@ -608,7 +587,7 @@ tfoot tr th p {
 }
 
 .footer {
-  margin: 0.2rem 0;
+  margin: 0.2rem 0 1rem 0;
 }
 
 /*}}}*/
@@ -648,7 +627,7 @@ tfoot tr th p {
     background-color: var(--dark-bg-topbar);
     color: var(--dark-fg);
   }
-  .topbar .top-heading a {
+  .topbar .title {
     color: var(--dark-fg);
   }
 

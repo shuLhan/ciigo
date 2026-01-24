@@ -105,7 +105,7 @@ func testAdocCreate(t *testing.T, testWatcher *watcher, tdata *test.Data, pathFi
 		t.Fatal(err)
 	}
 
-	gotBody = removeFooter(gotBody, 17)
+	gotBody = removeFooter(gotBody, 13)
 	expBody = tdata.Output[`create.adoc.html`]
 
 	test.Assert(t, `HTML body`, string(expBody), string(gotBody))
@@ -135,7 +135,7 @@ func testAdocUpdate(t *testing.T, testWatcher *watcher, tdata *test.Data, pathFi
 		t.Fatal(err)
 	}
 
-	gotBody = removeFooter(gotBody, 17)
+	gotBody = removeFooter(gotBody, 13)
 	expBody = tdata.Output[`update.adoc.html`]
 
 	test.Assert(t, `HTML body`, string(expBody), string(gotBody))
@@ -186,7 +186,7 @@ func testMarkdownCreate(t *testing.T, testWatcher *watcher, tdata *test.Data, pa
 	if err != nil {
 		t.Fatal(err)
 	}
-	gotBody = removeFooter(gotBody, 10)
+	gotBody = removeFooter(gotBody, 6)
 
 	expBody = string(tdata.Output[`create.md.html`])
 	test.Assert(t, `HTML body`, expBody, string(gotBody))
@@ -216,7 +216,7 @@ func testMarkdownUpdate(t *testing.T, testWatcher *watcher, tdata *test.Data, pa
 	if err != nil {
 		t.Fatal(err)
 	}
-	gotBody = removeFooter(gotBody, 10)
+	gotBody = removeFooter(gotBody, 6)
 
 	expBody = string(tdata.Output[`update.md.html`])
 	test.Assert(t, `HTML body`, expBody, string(gotBody))
