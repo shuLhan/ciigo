@@ -134,8 +134,7 @@ table.tableblock > .title,
 /* .page */
 /*{{{*/
 
-.page .container #header,
-.page .container #content {
+.page .container {
   margin: 0 auto;
   max-width: 50rem;
   padding: 0 1em;
@@ -536,7 +535,6 @@ pre {
 
 #footer,
 .footer {
-  background-color: var(--light-bg-topbar);
   color: var(--light-fg-footer);
   font-size: 0.875rem;
   text-align: center;
@@ -544,11 +542,12 @@ pre {
 
 #footer {
   border-top: 1px solid var(--light-border);
-  padding-top: 1em;
+  padding: 1rem 0;
 }
 
 .footer {
-  padding: 0.2rem 0 1rem 0;
+  background-color: var(--light-bg-topbar);
+  padding: 1rem 0;
 }
 
 /*}}}*/
@@ -680,8 +679,8 @@ pre {
 
   #footer {
     border-top: 1px solid var(--dark-border);
+    color: var(--dark-fg-footer);
   }
-  #footer,
   .footer {
     background-color: var(--dark-bg-topbar);
     color: var(--dark-fg-footer);
