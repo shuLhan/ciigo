@@ -152,6 +152,10 @@ table.tableblock > .title,
 /* #header author, version, date, and remark */
 /*{{{*/
 
+#header .details {
+  font-style: italic;
+}
+
 #header .details .author + br {
   display: none;
 }
@@ -166,18 +170,26 @@ table.tableblock > .title,
 
 #toc {
   font-size: 0.875rem;
+  margin: 1rem 0;
+}
+
+#toctitle {
+  font-size: 1rem;
+  padding-bottom: 0.2rem;
 }
 
 #toc ul {
   list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+#toc ul li ul {
+  padding-left: 1rem;
 }
 
 #toc a {
   text-decoration: none;
-}
-
-#toctitle {
-  display: none;
 }
 
 /*}}}*/
