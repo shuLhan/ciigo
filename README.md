@@ -320,6 +320,64 @@ That's it, happy writing!
 
 <!--}}}-->
 
+## Custom Stylesheet
+
+When converting an asciidoc or markdown to HTML, `ciigo` by
+default embed their own stylesheet.
+This is to provide better user experiences when using the program for the
+first time.
+
+To turn it off in asciidoc document, set the `stylesheet` attribute with "!"
+suffix,
+
+```
+= Title
+:stylesheet!:
+```
+
+To turn it off in markdown document, set the value to `false`,
+
+```
+---
+stylesheet: false
+---
+# Title
+```
+
+To combine default stylesheet with custom CSS, set the value to "default"
+and the file name of custom CSS, separated by comma.
+This is the recommended way to use custom stylesheet since it can be set
+only on specific pages.
+
+```
+// In asciidoctor:
+:stylesheet: default, custom.css
+
+// In markdown:
+stylesheet: default, custom.css
+```
+
+To disable default stylesheet and only using custom CSS, set the value only
+to the file name of custom CSS.
+
+Another way to use custom stylesheet is by creating your own template and
+pass it to `serve` or `convert` command.
+This method makes the stylesheet applied to all pages.
+
+```
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+{{- range $k, $v := .Metadata}}
+    <meta name="{{ $k }}" content="{{ $v }}" />
+{{- end }}
+    <title>{{.Title}}</title>
+    <link rel="stylesheet" href="/custom.css" />
+  </head>
+...
+```
+
 ## Links
 
 <!--{{{-->

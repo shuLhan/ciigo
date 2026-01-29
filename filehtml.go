@@ -39,6 +39,10 @@ func (fhtml *fileHTML) unpackAdocMetadata(doc *asciidoctor.Document) {
 		k string
 		v string
 	)
+
+	// By default `:stylesheet:` is set in Attributes.
+	// If user remove it, by using `:stylesheet!:`, the key would not
+	// exist in the map.
 	var withStylesheet bool
 
 	fhtml.Title = doc.Title.String()
@@ -47,10 +51,14 @@ func (fhtml *fileHTML) unpackAdocMetadata(doc *asciidoctor.Document) {
 	for k, v = range doc.Attributes.Entry {
 		switch k {
 		case asciidoctor.DocAttrStylesheet:
-			if len(v) != 0 {
-				fhtml.Styles = append(fhtml.Styles, v)
-			} else {
-				withStylesheet = true
+			vals := strings.Split(v, ",")
+			for _, v = range vals {
+				v = strings.TrimSpace(v)
+				if v == `` || v == `default` {
+					withStylesheet = true
+				} else {
+					fhtml.Styles = append(fhtml.Styles, v)
+				}
 			}
 		case asciidoctor.DocAttrAuthorNames:
 			fhtml.Metadata[asciidoctor.DocAttrAuthor] = v
@@ -86,10 +94,20 @@ func (fhtml *fileHTML) unpackMarkdownMetadata(metadata map[string]any) {
 		key = strings.ToLower(key)
 		switch key {
 		case asciidoctor.DocAttrStylesheet:
-			if vstr == `false` {
-				withStylesheet = false
-			} else {
-				fhtml.Styles = append(fhtml.Styles, vstr)
+			vals := strings.Split(vstr, ",")
+			for _, v := range vals {
+				v = strings.TrimSpace(v)
+
+				switch v {
+				case ``:
+					// Skip it.
+				case `false`:
+					withStylesheet = false
+				case `default`:
+					// Use embedded stylesheet.
+				default:
+					fhtml.Styles = append(fhtml.Styles, vstr)
+				}
 			}
 		case metadataTitle:
 			fhtml.Title = vstr
@@ -105,12 +123,8 @@ func (fhtml *fileHTML) unpackMarkdownMetadata(metadata map[string]any) {
 func (fhtml *fileHTML) initCSS(withStylesheet bool) {
 	var logp = `initCSS`
 
-	if len(fhtml.Styles) != 0 {
-		// User defined their custom CSS throught ":stylesheet:"
-		return
-	}
 	if !withStylesheet {
-		// User unset the stylesheet throught ":stylesheet!".
+		// User explicitly unset the default stylesheet.
 		return
 	}
 	css, err := staticfs.Get(`/ciigo.css`)

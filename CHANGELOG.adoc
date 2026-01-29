@@ -23,6 +23,53 @@ template, we need to restart the "ciigo serve" command.
 Using memfs make us easy to update and see the changes directly, without
 restarting the server.
 
+**🌼 all: improve the default stylesheet and template**
+
+Add common styles for asciidoctor elements with dark theme.
+Common styles including title, header, anchor, lists, table, and footer.
+
+The foreground color changes to conform with color-contrast
+ratio threshold, with score AAA. [1]
+
+Add ARIA role to each section of pages: banner for topbar,
+main for page, and contentinfo for footer.
+This is to make the webpage more robust and functional no matter
+what screen reader technology is used. [2]
+
+For touch devices, increase the line height on Table of Contents.
+This is to help users who may have difficulty in confidently targeting or
+operating small controls. [3]
+
+In the default template, instead of splitting the topbar into top-heading
+and menu, breaking it down by class item.
+
+[1]: https://dequeuniversity.com/rules/axe/4.11/color-contrast +
+[2]: https://dequeuniversity.com/rules/axe/4.11/landmark-one-main +
+[3]: https://dequeuniversity.com/rules/axe/4.11/target-size
+
+
+**🌱 all: allow combination of default and custom stylesheet**
+
+To combine default stylesheet with custom CSS, set the value to "default"
+and the file name of custom CSS, separated by comma.
+This is the recommended way to use custom stylesheet since it can be set
+only on specific pages.
+
+----
+// In asciidoctor:
+:stylesheet: default, custom.css
+
+// In markdown:
+stylesheet: default, custom.css
+----
+
+To disable default stylesheet and only using custom CSS, set the value only
+to the file name of custom CSS.
+
+Another way to use custom stylesheet is by creating your own template and
+pass it to `serve` or `convert` command.
+This method makes the stylesheet applied to all pages.
+
 
 [#v0_15_3]
 ==  ciigo v0.15.3 (2025-12-27)

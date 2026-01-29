@@ -129,6 +129,9 @@ keywords: ciigo,markdown
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="keywords" content="ciigo,markdown" />
     <title>A new title</title>
+    <style>
+body{}
+    </style>
     <link rel="stylesheet" href="/path/to/style.css" />
   </head>
   <body>
