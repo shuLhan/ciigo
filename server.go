@@ -51,6 +51,7 @@ func (ciigo *Ciigo) InitHTTPServer(opts ServeOptions) (err error) {
 	ciigo.serveOpts = opts
 
 	var httpdOpts = libhttp.ServerOptions{
+		Listener:        opts.Listener,
 		Memfs:           opts.Mfs,
 		Address:         opts.Address,
 		EnableIndexHTML: opts.EnableIndexHTML,

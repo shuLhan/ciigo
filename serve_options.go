@@ -3,7 +3,11 @@
 
 package ciigo
 
-import "git.sr.ht/~shulhan/pakakeh.go/lib/memfs"
+import (
+	"net"
+
+	"git.sr.ht/~shulhan/pakakeh.go/lib/memfs"
+)
 
 const (
 	defAddress = `:8080`
@@ -11,6 +15,11 @@ const (
 
 // ServeOptions contains the options to use on Serve function.
 type ServeOptions struct {
+	// Listener define the network listener to be used for serving HTTP
+	// connection.
+	// The Listener can be activated using systemd socket.
+	Listener net.Listener
+
 	// Mfs contains pointer to variable generated from Generate.
 	// This option is used to use embedded files for serving on HTTP.
 	Mfs *memfs.MemFS

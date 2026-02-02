@@ -15,6 +15,13 @@ Legend,
 [#v0_16_0]
 ==  ciigo v0.16.0 (2026-xx-xx)
 
+**🌼 all: add field Listener to ServeOptions**
+
+The field Listener allow passing [net.Listener] instance for accepting
+HTTP connection.
+
+One of the use case is to activate the ciigo serve using systemd.socket(5).
+
 **🌱 all: embed CSS and index HTML template using memfs**
 
 Previously, with direct embed, every time we change the CSS or index
