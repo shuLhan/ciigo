@@ -4,11 +4,12 @@
 :root {
   --light-anchor: maroon;
   --light-bg-adm-caution: lavender;
-  --light-bg-adm-important: cornsilk;
+  --light-bg-adm-important: floralwhite;
   --light-bg-adm-note: gainsboro;
   --light-bg-adm-tip: antiquewhite;
   --light-bg-adm-warning: mistyrose;
   --light-bg-mono: var(--light-bg-adm-important);
+  --light-bg-quote: var(--light-bg-adm-important);
   --light-bg-table-header: var(--light-bg-adm-note);
   --light-bg-table-strip: ghostwhite;
   --light-bg-topbar: var(--light-bg-adm-tip);
@@ -26,6 +27,7 @@
   --dark-bg-adm-tip: teal;
   --dark-bg-adm-warning: sienna;
   --dark-bg-mono: var(--dark-bg-adm-important);
+  --dark-bg-quote: var(--dark-bg-adm-important);
   --dark-bg-table-header: var(--dark-bg-adm-note);
   --dark-bg-table-strip: dimgray;
   --dark-bg-topbar: var(--dark-bg-mono);
@@ -50,6 +52,11 @@ body {
 
 a {
   color: var(--light-anchor);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration-line: underline;
 }
 
 p,
@@ -60,14 +67,16 @@ li {
 /* Heading */
 /*{{{*/
 
-h1,
-h2,
+h2 {
+  border-bottom: 1px solid gray;
+  margin-top: 4rem;
+}
+
 h3,
 h4,
 h5,
 h6 {
-  color: var(--light-fg-header);
-  font-weight: bold;
+  margin-top: 2.5rem;
 }
 
 /*}}}*/
@@ -112,22 +121,30 @@ table.tableblock > .title,
 /*{{{*/
 
 .topbar {
+  align-items: center;
   background-color: var(--light-bg-topbar);
+  display: flex;
+  flex-wrap: wrap;
   font-weight: normal;
+  justify-content: center;
   padding: 1em;
-  text-align: center;
-}
-
-.topbar .item {
-  display: inline-block;
-  padding: 4px;
-  text-decoration: none;
 }
 
 .topbar .title {
   color: var(--light-fg);
   font-size: 1.4rem;
   font-weight: bold;
+}
+
+.topbar .item {
+  display: inline-block;
+  padding: 0 0.4rem;
+  text-decoration: none;
+}
+
+.topbar > form {
+  margin: 0;
+  padding: 0;
 }
 
 /*}}}*/
@@ -181,41 +198,60 @@ table.tableblock > .title,
 #toc ul {
   list-style-type: none;
   padding: 0;
-  margin: 0;
+  margin: 0 0 0.4rem 0;
 }
 
 #toc ul li ul {
   padding-left: 1rem;
 }
 
-#toc a {
-  text-decoration: none;
-}
-
 /*}}}*/
 /* :sectanchors: */
 /*{{{*/
 
-h1 > a.anchor,
+#content h1 > a.anchor,
 h2 > a.anchor,
 h3 > a.anchor,
+#toctitle > a.anchor,
 h4 > a.anchor,
 h5 > a.anchor,
 h6 > a.anchor {
-  margin: 0 0.4rem 0 0;
+  display: block;
+  margin-left: -1.5ex;
+  position: absolute;
   text-decoration: none !important;
+  visibility: hidden;
+  width: 1.5ex;
+  z-index: 1001;
 }
 
 #content h1 > a.anchor::after,
 h2 > a.anchor::after,
 h3 > a.anchor::after,
 #toctitle > a.anchor::after,
-.sidebarblock > .content > .title > a.anchor::after,
 h4 > a.anchor::after,
 h5 > a.anchor::after,
 h6 > a.anchor::after {
   content: "\00A7";
-  opacity: 0.4;
+}
+
+#content h1:hover > a.anchor,
+#content h1 > a.anchor:hover,
+h2:hover > a.anchor,
+h2 > a.anchor:hover,
+h3:hover > a.anchor,
+#toctitle:hover > a.anchor,
+.sidebarblock > .content > .title:hover > a.anchor,
+h3 > a.anchor:hover,
+#toctitle > a.anchor:hover,
+.sidebarblock > .content > .title > a.anchor:hover,
+h4:hover > a.anchor,
+h4 > a.anchor:hover,
+h5:hover > a.anchor,
+h5 > a.anchor:hover,
+h6:hover > a.anchor,
+h6 > a.anchor:hover {
+  visibility: visible;
 }
 
 /*}}}*/
@@ -548,6 +584,24 @@ pre code {
 }
 
 /*}}}*/
+/* Blockquotes */
+
+.quoteblock {
+  border-left: 5px solid var(--light-border);
+  background-color: var(--light-bg-quote);
+  padding: 0.25rem 2rem 1.25rem;
+}
+.quoteblock blockquote {
+  margin: 0;
+}
+.quoteblock .attribution {
+  font-size: 0.8rem;
+  margin-top: 0.75rem;
+}
+.quoteblock cite {
+  padding-left: 1rem;
+}
+
 /* #footnotes */
 
 #footnotes {
@@ -566,6 +620,7 @@ pre code {
 
 #footer {
   border-top: 1px solid var(--light-border);
+  margin-top: 4rem;
   padding: 1rem 0;
 }
 
@@ -701,6 +756,11 @@ pre code {
     background-color: var(--dark-bg-table-strip);
   }
 
+  .quoteblock {
+    border-left: 5px solid var(--dark-border);
+    background-color: var(--dark-bg-quote);
+  }
+
   #footer {
     border-top: 1px solid var(--dark-border);
     color: var(--dark-fg-footer);
@@ -717,3 +777,5 @@ pre code {
     line-height: 1.6rem;
   }
 }
+
+/* vim: set foldmethod=marker foldmarker={{{,}}}: */
