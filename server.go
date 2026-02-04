@@ -55,9 +55,7 @@ func (ciigo *Ciigo) InitHTTPServer(opts ServeOptions) (err error) {
 		Memfs:           opts.Mfs,
 		Address:         opts.Address,
 		EnableIndexHTML: opts.EnableIndexHTML,
-	}
-	if opts.IsDevelopment {
-		httpdOpts.HandleFS = ciigo.onGet
+		HandleFS:        ciigo.onGet,
 	}
 
 	ciigo.HTTPServer, err = libhttp.NewServer(httpdOpts)
@@ -196,7 +194,7 @@ func (ciigo *Ciigo) onGet(
 			http.Redirect(w, req, file, http.StatusSeeOther)
 			return nil, http.StatusSeeOther
 		}
-	} else {
+	} else if ciigo.serveOpts.IsDevelopment {
 		if node.IsDir() {
 			file = path.Join(node.Path, `index.html`)
 		} else {
@@ -207,6 +205,10 @@ func (ciigo *Ciigo) onGet(
 			}
 		}
 	}
+	if !ciigo.serveOpts.IsDevelopment {
+		return node, 0
+	}
+
 	if file[len(file)-1] == '/' {
 		file = path.Join(file, `index.html`)
 	}
