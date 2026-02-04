@@ -179,7 +179,7 @@ func (ciigo *Ciigo) onSearch(epr *libhttp.EndpointRequest) (resBody []byte, err 
 // If yes, it will auto convert the adoc and return the new content of HTML
 // files.
 func (ciigo *Ciigo) onGet(
-	node *memfs.Node, _ http.ResponseWriter, req *http.Request,
+	node *memfs.Node, w http.ResponseWriter, req *http.Request,
 ) (out *memfs.Node, statusCode int) {
 	var (
 		logp = `onGet`
@@ -187,7 +187,15 @@ func (ciigo *Ciigo) onGet(
 	)
 
 	if node == nil {
+		// File does not exist.
 		file = req.URL.Path
+		ext := path.Ext(file)
+		if ext == `.adoc` || ext == `.md` {
+			// Redirect to .html.
+			file = strings.TrimSuffix(file, ext) + `.html`
+			http.Redirect(w, req, file, http.StatusSeeOther)
+			return nil, http.StatusSeeOther
+		}
 	} else {
 		if node.IsDir() {
 			file = path.Join(node.Path, `index.html`)
