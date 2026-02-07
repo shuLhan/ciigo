@@ -13,6 +13,7 @@ import (
 	"strings"
 
 	"git.sr.ht/~shulhan/ciigo"
+	libhttp "git.sr.ht/~shulhan/pakakeh.go/lib/http"
 	"git.sr.ht/~shulhan/pakakeh.go/lib/memfs"
 )
 
@@ -86,12 +87,13 @@ func main() {
 
 	case cmdServe:
 		var serveOpts = ciigo.ServeOptions{
-			ConvertOptions:  convertOpts,
-			Address:         *address,
-			EnableIndexHTML: true,
-			IsDevelopment:   true,
+			ServerOptions: libhttp.ServerOptions{
+				Address:         *address,
+				EnableIndexHTML: true,
+			},
+			IsDevelopment: true,
 		}
-		err = ciigo.Serve(serveOpts)
+		err = ciigo.Serve(serveOpts, convertOpts)
 
 	case cmdVersion:
 		fmt.Println(ciigo.Version)

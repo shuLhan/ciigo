@@ -11,6 +11,7 @@ import (
 	"testing"
 
 	"git.sr.ht/~shulhan/ciigo"
+	libhttp "git.sr.ht/~shulhan/pakakeh.go/lib/http"
 	"git.sr.ht/~shulhan/pakakeh.go/lib/test"
 	"git.sr.ht/~shulhan/pakakeh.go/lib/test/httptest"
 )
@@ -37,14 +38,17 @@ func TestCiigoOnGet(t *testing.T) {
 
 	var cigo = ciigo.Ciigo{}
 
-	var serveOpts = ciigo.ServeOptions{
-		Address: `127.0.0.1:11083`,
-		ConvertOptions: ciigo.ConvertOptions{
-			Root:         dirRoot,
-			HTMLTemplate: `testdata/onGet_template.gohtml`,
+	serveOpts := ciigo.ServeOptions{
+		ServerOptions: libhttp.ServerOptions{
+			Address: `127.0.0.1:11083`,
 		},
 	}
-	err = cigo.InitHTTPServer(serveOpts)
+	convertOpts := ciigo.ConvertOptions{
+		Root:         dirRoot,
+		HTMLTemplate: `testdata/onGet_template.gohtml`,
+	}
+
+	err = cigo.InitHTTPServer(serveOpts, convertOpts)
 	if err != nil {
 		t.Fatal(err)
 	}

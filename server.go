@@ -19,46 +19,44 @@ import (
 // InitHTTPServer create an HTTP server to serve HTML files in directory
 // defined in "[ConvertOptions].Root".
 //
-// The address parameter is optional, if not set its default to ":8080".
-// The htmlTemplate parameter is optional, if not set its default to
-// embedded HTML template.
-func (ciigo *Ciigo) InitHTTPServer(opts ServeOptions) (err error) {
+// This method initialize the [Ciigo.HTTPServer] so one can register
+// additional endpoints before running the HTTP server.
+func (ciigo *Ciigo) InitHTTPServer(serveOpts ServeOptions, convertOpts ConvertOptions) (err error) {
 	var logp = `InitHTTPServer`
 
-	err = opts.init()
+	err = convertOpts.init()
 	if err != nil {
 		return fmt.Errorf(`%s: %w`, logp, err)
 	}
 
-	if opts.Mfs == nil {
-		opts.IsDevelopment = true
+	serveOpts.init()
+
+	if serveOpts.Memfs == nil {
+		serveOpts.IsDevelopment = true
 		var mfsopts = &memfs.Options{
-			Root:      opts.Root,
+			Root:      convertOpts.Root,
 			Excludes:  defExcludes,
 			TryDirect: true,
 		}
-		opts.Mfs, err = memfs.New(mfsopts)
+		serveOpts.Memfs, err = memfs.New(mfsopts)
 		if err != nil {
 			return fmt.Errorf(`%s: %w`, logp, err)
 		}
 	} else {
-		opts.Mfs.Opts.TryDirect = opts.IsDevelopment
+		serveOpts.Memfs.Opts.TryDirect = serveOpts.IsDevelopment
 	}
 	if staticfs != nil {
-		staticfs.Opts.TryDirect = opts.IsDevelopment
+		staticfs.Opts.TryDirect = serveOpts.IsDevelopment
 	}
 
-	ciigo.serveOpts = opts
-
-	var httpdOpts = libhttp.ServerOptions{
-		Listener:        opts.Listener,
-		Memfs:           opts.Mfs,
-		Address:         opts.Address,
-		EnableIndexHTML: opts.EnableIndexHTML,
-		HandleFS:        ciigo.onGet,
+	if serveOpts.HandleFS == nil {
+		serveOpts.HandleFS = ciigo.onGet
+	} else {
+		userHandle := serveOpts.HandleFS
+		serveOpts.HandleFS = ciigo.userHandleFS(userHandle)
 	}
 
-	ciigo.HTTPServer, err = libhttp.NewServer(httpdOpts)
+	ciigo.HTTPServer, err = libhttp.NewServer(serveOpts.ServerOptions)
 	if err != nil {
 		return fmt.Errorf(`%s: %w`, logp, err)
 	}
@@ -78,8 +76,8 @@ func (ciigo *Ciigo) InitHTTPServer(opts ServeOptions) (err error) {
 
 	var pathHTMLTemplate string
 
-	if opts.IsDevelopment {
-		pathHTMLTemplate = opts.HTMLTemplate
+	if serveOpts.IsDevelopment {
+		pathHTMLTemplate = convertOpts.HTMLTemplate
 	}
 
 	ciigo.converter, err = NewConverter(pathHTMLTemplate)
@@ -87,10 +85,10 @@ func (ciigo *Ciigo) InitHTTPServer(opts ServeOptions) (err error) {
 		return fmt.Errorf(`%s: %w`, logp, err)
 	}
 
-	if !opts.IsDevelopment {
+	if !serveOpts.IsDevelopment {
 		var tmplNode *memfs.Node
 
-		tmplNode, _ = opts.Mfs.Get(internalTemplatePath)
+		tmplNode, _ = serveOpts.Memfs.Get(internalTemplatePath)
 		if tmplNode != nil {
 			ciigo.converter.tmpl, err = ciigo.converter.tmpl.Parse(string(tmplNode.Content))
 			if err != nil {
@@ -99,8 +97,8 @@ func (ciigo *Ciigo) InitHTTPServer(opts ServeOptions) (err error) {
 		}
 	}
 
-	if opts.IsDevelopment {
-		ciigo.watcher, err = newWatcher(ciigo.converter, opts.ConvertOptions)
+	if serveOpts.IsDevelopment {
+		ciigo.watcher, err = newWatcher(ciigo.converter, convertOpts)
 		if err != nil {
 			return fmt.Errorf(`%s: %w`, logp, err)
 		}
@@ -108,7 +106,23 @@ func (ciigo *Ciigo) InitHTTPServer(opts ServeOptions) (err error) {
 		ciigo.converter.convertFileMarkups(ciigo.watcher.fileMarkups, false)
 	}
 
+	ciigo.serveOpts = serveOpts
+	ciigo.convertOpts = convertOpts
+
 	return nil
+}
+
+// userHandleFS wrap the user HandleFS with internal onGet.
+func (ciigo *Ciigo) userHandleFS(userHandle libhttp.FSHandler) libhttp.FSHandler {
+	return func(node *memfs.Node, res http.ResponseWriter, req *http.Request) (
+		out *memfs.Node, statusCode int,
+	) {
+		out, statusCode = userHandle(node, res, req)
+		if statusCode != 0 {
+			return out, statusCode
+		}
+		return ciigo.onGet(node, res, req)
+	}
 }
 
 // Serve start the HTTP web server.
@@ -231,7 +245,7 @@ func (ciigo *Ciigo) onGet(
 			return node, 0
 		}
 	}
-	out, err = ciigo.serveOpts.Mfs.Get(file)
+	out, err = ciigo.serveOpts.Memfs.Get(file)
 	if err != nil {
 		log.Printf(`%s: failed to get %q: %s`, logp, file, err)
 		return node, 0

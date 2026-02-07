@@ -10,6 +10,7 @@ import (
 	"log"
 	"strings"
 
+	libhttp "git.sr.ht/~shulhan/pakakeh.go/lib/http"
 	"git.sr.ht/~shulhan/pakakeh.go/lib/memfs"
 
 	"git.sr.ht/~shulhan/ciigo"
@@ -23,13 +24,15 @@ var ciigoFS *memfs.MemFS
 
 func main() {
 	var (
-		opts = ciigo.ServeOptions{
-			ConvertOptions: ciigo.ConvertOptions{
-				Root:         `_example`,
-				HTMLTemplate: `_example/html.tmpl`,
+		convertOpts = ciigo.ConvertOptions{
+			Root:         `_example`,
+			HTMLTemplate: `_example/html.tmpl`,
+		}
+		serveOpts = ciigo.ServeOptions{
+			ServerOptions: libhttp.ServerOptions{
+				Memfs:   ciigoFS,
+				Address: `127.0.0.1:8080`,
 			},
-			Mfs:           ciigoFS,
-			Address:       `127.0.0.1:8080`,
 			IsDevelopment: true,
 		}
 
@@ -45,7 +48,7 @@ func main() {
 		return
 	}
 
-	err = ciigo.Serve(opts)
+	err = ciigo.Serve(serveOpts, convertOpts)
 	if err != nil {
 		log.Fatal(err)
 	}

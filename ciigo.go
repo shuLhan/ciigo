@@ -50,7 +50,9 @@ type Ciigo struct {
 	HTTPServer *libhttp.Server
 	converter  *Converter
 	watcher    *watcher
-	serveOpts  ServeOptions
+
+	convertOpts ConvertOptions
+	serveOpts   ServeOptions
 }
 
 // Convert all markup files inside directory "dir" recursively into HTML
@@ -77,11 +79,11 @@ func GoEmbed(opts EmbedOptions) (err error) {
 	return ciigo.GoEmbed(opts)
 }
 
-// Serve the content under directory "[ServeOptions].ConvertOptions.Root"
+// Serve the content under directory "ConvertOptions.Root"
 // using HTTP server at specific "[ServeOptions].Address".
-func Serve(opts ServeOptions) (err error) {
+func Serve(opts ServeOptions, convertOpts ConvertOptions) (err error) {
 	var ciigo = &Ciigo{}
-	err = ciigo.InitHTTPServer(opts)
+	err = ciigo.InitHTTPServer(opts, convertOpts)
 	if err != nil {
 		return err
 	}
@@ -254,7 +256,7 @@ func (ciigo *Ciigo) Convert(opts ConvertOptions) (err error) {
 		return fmt.Errorf(`%s: %w`, logp, err)
 	}
 
-	ciigo.serveOpts.ConvertOptions = opts
+	ciigo.convertOpts = opts
 
 	ciigo.converter, err = NewConverter(opts.HTMLTemplate)
 	if err != nil {

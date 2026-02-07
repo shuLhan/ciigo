@@ -15,6 +15,16 @@ Legend,
 [#v0_16_0]
 ==  ciigo v0.16.0 (2026-xx-xx)
 
+**🪵 all: embed struct [lib/http.ServerOptions] directly to [ServeOptions]**
+
+At this point, all of the fields in the struct ServeOptions is the
+same with [lib/http.ServerOptions] except IsDevelopment and
+ConvertOptions.
+
+For field IsDevelopment we keep in the struct.
+For field ConvertOptions we remove it and let the caller pass it on
+Serve function or InitHTTPServer method.
+
 **🌼 all: add field Listener to ServeOptions**
 
 The field Listener allow passing [net.Listener] instance for accepting

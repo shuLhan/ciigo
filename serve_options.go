@@ -3,37 +3,16 @@
 
 package ciigo
 
-import (
-	"net"
-
-	"git.sr.ht/~shulhan/pakakeh.go/lib/memfs"
-)
+import "git.sr.ht/~shulhan/pakakeh.go/lib/http"
 
 const (
 	defAddress = `:8080`
 )
 
-// ServeOptions contains the options to use on Serve function.
+// ServeOptions define the options to use on Serve function.
+// See [git.sr.ht/~shulhan/pakakeh.go/lib/http.ServerOptions] for more information.
 type ServeOptions struct {
-	// Listener define the network listener to be used for serving HTTP
-	// connection.
-	// The Listener can be activated using systemd socket.
-	Listener net.Listener
-
-	// Mfs contains pointer to variable generated from Generate.
-	// This option is used to use embedded files for serving on HTTP.
-	Mfs *memfs.MemFS
-
-	// Address to listen and serve for HTTP request.
-	Address string
-
-	ConvertOptions
-
-	// If true, the serve command generate index.html automatically if its
-	// not exist in the directory.
-	// The index.html contains the list of files inside the requested
-	// path.
-	EnableIndexHTML bool
+	http.ServerOptions
 
 	// IsDevelopment if set to true, it will serve the ConvertOptions.Root
 	// directory directly and watch all asciidoc files for changes and
@@ -42,13 +21,8 @@ type ServeOptions struct {
 	IsDevelopment bool
 }
 
-func (opts *ServeOptions) init() (err error) {
-	err = opts.ConvertOptions.init()
-	if err != nil {
-		return err
-	}
+func (opts *ServeOptions) init() {
 	if len(opts.Address) == 0 {
 		opts.Address = defAddress
 	}
-	return nil
 }
