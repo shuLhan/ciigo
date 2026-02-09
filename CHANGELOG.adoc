@@ -13,24 +13,7 @@ Legend,
 * 💧: Chores
 
 [#v0_16_0]
-==  ciigo v0.16.0 (2026-xx-xx)
-
-**🪵 all: embed struct [lib/http.ServerOptions] directly to [ServeOptions]**
-
-At this point, all of the fields in the struct ServeOptions is the
-same with [lib/http.ServerOptions] except IsDevelopment and
-ConvertOptions.
-
-For field IsDevelopment we keep in the struct.
-For field ConvertOptions we remove it and let the caller pass it on
-Serve function or InitHTTPServer method.
-
-**🌼 all: add field Listener to ServeOptions**
-
-The field Listener allow passing [net.Listener] instance for accepting
-HTTP connection.
-
-One of the use case is to activate the ciigo serve using systemd.socket(5).
+==  ciigo v0.16.0 (2026-02-09)
 
 **🌱 all: embed CSS and index HTML template using memfs**
 
@@ -64,7 +47,6 @@ and menu, breaking it down by class item.
 [2]: https://dequeuniversity.com/rules/axe/4.11/landmark-one-main +
 [3]: https://dequeuniversity.com/rules/axe/4.11/target-size
 
-
 **🌱 all: allow combination of default and custom stylesheet**
 
 To combine default stylesheet with custom CSS, set the value to "default"
@@ -86,6 +68,29 @@ to the file name of custom CSS.
 Another way to use custom stylesheet is by creating your own template and
 pass it to `serve` or `convert` command.
 This method makes the stylesheet applied to all pages.
+
+**🌼 all: add field Listener to ServeOptions**
+
+The field Listener allow passing [net.Listener] instance for accepting
+HTTP connection.
+
+One of the use case is to activate the ciigo serve using systemd.socket(5).
+
+**🌱 all: redirect request for .adoc or .md to the HTML file**
+
+During serve, onGet method, if the node does not exist and the request
+path end with .adoc or .md, redirect the client to the .html location
+with status 303 (See Other).
+
+**🪵 all: embed struct [lib/http.ServerOptions] directly to [ServeOptions]**
+
+At this point, all of the fields in the struct ServeOptions is the
+same with [lib/http.ServerOptions] except IsDevelopment and
+ConvertOptions.
+
+For field IsDevelopment we keep in the struct.
+For field ConvertOptions we remove it and let the caller pass it on
+Serve function or InitHTTPServer method.
 
 
 [#v0_15_3]
