@@ -200,8 +200,6 @@ func TestCiigoOnGet(t *testing.T) {
 		}
 
 		var expBody = tdata.Output[`/journal2/index.html`]
-		var gotBody = redactLastUpdated.ReplaceAll(
-			result.ResponseBody, []byte("[REDACTED]"))
-		test.Assert(t, `body`, string(expBody), string(gotBody))
+		test.Assert(t, `body`, string(expBody), string(result.ResponseBody))
 	})
 }

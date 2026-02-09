@@ -92,8 +92,5 @@ Hello world!
 Hello world!
 
 <<< /journal2/index.html
-<a href="/journal2/">Found</a>.
-
-
 
 >>> END
