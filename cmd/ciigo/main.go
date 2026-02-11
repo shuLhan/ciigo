@@ -1,5 +1,5 @@
-// SPDX-FileCopyrightText: 2019 Shulhan <ms@kilabit.info>
 // SPDX-License-Identifier: GPL-3.0-or-later
+// SPDX-FileCopyrightText: 2019 Shulhan <ms@kilabit.info>
 
 // ciigo is a CLI to convert, embed, and/or serve a directory that contains
 // markup files, as HTML files.
@@ -11,6 +11,7 @@ import (
 	"log"
 	"os"
 	"strings"
+	"time"
 
 	"git.sr.ht/~shulhan/ciigo"
 	libhttp "git.sr.ht/~shulhan/pakakeh.go/lib/http"
@@ -26,20 +27,32 @@ const (
 )
 
 func main() {
+	var serveOpts = ciigo.ServeOptions{
+		ServerOptions: libhttp.ServerOptions{
+			EnableIndexHTML: true,
+		},
+		IsDevelopment: true,
+	}
 	var (
 		htmlTemplate *string
 		outputFile   *string
-		address      *string
 		exclude      *string
 	)
+	var shutdownIdleDuration string
 
 	flag.Usage = usage
 
 	htmlTemplate = flag.String("template", "", "path to HTML template")
 	outputFile = flag.String("out", "ciigo_static.go",
 		"path to output of .go embed file")
-	address = flag.String(`address`, `127.0.0.1:6320`,
-		"the binding address for HTTP server")
+
+	flag.StringVar(&serveOpts.Address, `address`, `127.0.0.1:6320`,
+		`Set the listening address for HTTP server.`)
+	flag.StringVar(&serveOpts.BasePath, `base-path`, ``,
+		`Set the base path (or prefix) for handling HTTP request.`)
+	flag.StringVar(&shutdownIdleDuration, `shutdown-idle`, ``,
+		`Set the duration when server will shutting down after idle.`)
+
 	exclude = flag.String("exclude", "",
 		"a regex to exclude certain paths from being scanned during covert, embeded, watch, or serve")
 
@@ -48,6 +61,14 @@ func main() {
 
 	flag.Parse()
 
+	var err error
+	if shutdownIdleDuration != `` {
+		serveOpts.ShutdownIdleDuration, err = time.ParseDuration(shutdownIdleDuration)
+		if err != nil {
+			log.Fatalf(`invalid shutdown-idle %s: %s`, shutdownIdleDuration, err)
+		}
+	}
+
 	var (
 		command     = strings.ToLower(flag.Arg(0))
 		convertOpts = ciigo.ConvertOptions{
@@ -55,7 +76,6 @@ func main() {
 			HTMLTemplate: *htmlTemplate,
 			Exclude:      []string{*exclude},
 		}
-		err error
 	)
 
 	if len(command) == 0 {
@@ -86,13 +106,6 @@ func main() {
 		usage()
 
 	case cmdServe:
-		var serveOpts = ciigo.ServeOptions{
-			ServerOptions: libhttp.ServerOptions{
-				Address:         *address,
-				EnableIndexHTML: true,
-			},
-			IsDevelopment: true,
-		}
 		err = ciigo.Serve(serveOpts, convertOpts)
 
 	case cmdVersion:
@@ -137,11 +150,19 @@ ciigo [-template <file>] [-exclude <regex>] [-out <file>]
 	The package name default to main.
 	The variable name default to memFS.
 
-ciigo [-template <file>]  [-exclude <regex>] [-address <ip:port>] serve <dir>
+ciigo [-template <file>]  [-exclude <regex>] [-address <ip:port>]
+	[-base-path <string>]
+	[-shutdown-idle <duration>]
+	serve <dir>
 
 	Serve all files inside directory "dir" using HTTP server, watch
 	changes on markup files and convert them to HTML files automatically.
 	If the address is not set, its default to ":8080".
+
+	The -base-path set the base path or prefix for serving HTTP request.
+
+	The -shutdown-idle set the duration when the serve will automatically
+	shutting down when idle.
 
 ciigo version
 

@@ -195,17 +195,17 @@ func (ciigo *Ciigo) onGet(
 ) (out *memfs.Node, statusCode int) {
 	var (
 		logp = `onGet`
-		file string
+		file = req.URL.Path
 	)
 
 	if node == nil {
 		// File does not exist.
-		file = req.URL.Path
-		ext := path.Ext(file)
+		ext := path.Ext(req.URL.Path)
 		if ext == `.adoc` || ext == `.md` {
 			// Redirect to .html.
-			file = strings.TrimSuffix(file, ext) + `.html`
-			http.Redirect(w, req, file, http.StatusSeeOther)
+			req.URL.Path = strings.TrimSuffix(req.URL.Path, ext) + `.html`
+			req.URL.Path = path.Join(ciigo.serveOpts.BasePath, req.URL.Path)
+			http.Redirect(w, req, req.URL.String(), http.StatusSeeOther)
 			return nil, http.StatusSeeOther
 		}
 	} else if ciigo.serveOpts.IsDevelopment {

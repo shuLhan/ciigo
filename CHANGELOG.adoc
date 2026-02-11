@@ -12,6 +12,20 @@ Legend,
 * 🌼: Enhancement
 * 💧: Chores
 
+
+[#v0_17_0]
+==  ciigo v0.17.0 (2026-xx-xx)
+
+**🌱 cmd/ciigo**: add option to set base path and shutdown idle duration**
+
+The `-base-path` option set the URL prefix for serving HTTP request.
+This allow serving the content under the prefix other than "/".
+
+The `-shutdown-idle` option set the duration when server will stop accepting
+new connections and shutting down.
+This option can be helpful to reduce the resources on local environment.
+
+
 [#v0_16_0]
 ==  ciigo v0.16.0 (2026-02-09)
 
