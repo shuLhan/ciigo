@@ -67,6 +67,19 @@ li {
 /* Heading */
 /*{{{*/
 
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  /* Make the anchor position on the right to fix overflow */
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: start;
+  padding-bottom: 0.5em;
+}
+
 h2 {
   border-bottom: 1px solid gray;
   margin-top: 4rem;
@@ -216,12 +229,10 @@ h3 > a.anchor,
 h4 > a.anchor,
 h5 > a.anchor,
 h6 > a.anchor {
-  display: block;
-  margin-left: -1.5ex;
-  position: absolute;
+  font-size: 14pt;
+  margin-left: 1.5ex;
   text-decoration: none !important;
   visibility: hidden;
-  width: 1.5ex;
   z-index: 1001;
 }
 
