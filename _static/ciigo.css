@@ -75,7 +75,6 @@ h5,
 h6 {
   /* Make the anchor position on the right to fix overflow */
   display: flex;
-  flex-direction: row-reverse;
   justify-content: start;
   padding-bottom: 0.5em;
 }
