@@ -14,9 +14,9 @@ Legend,
 
 
 [#v0_17_0]
-==  ciigo v0.17.0 (2026-xx-xx)
+== ciigo v0.17.0 (2026-04-04)
 
-**🌱 cmd/ciigo**: add option to set base path and shutdown idle duration**
+**🌱 cmd/ciigo: add option to set base path and shutdown idle duration**
 
 The `-base-path` option set the URL prefix for serving HTTP request.
 This allow serving the content under the prefix other than "/".
@@ -24,6 +24,19 @@ This allow serving the content under the prefix other than "/".
 The `-shutdown-idle` option set the duration when server will stop accepting
 new connections and shutting down.
 This option can be helpful to reduce the resources on local environment.
+
+**🌼 all: make the anchor symbol position on the right side of headers**
+
+Previously, when `:sectanchors:` is set, the default anchor symbol
+position is absolute on the left side of heading text with block display
+option (the symbol located outside of box area of headers).
+In special case, this cause an overflow when the generated HTML are
+rendered inside flex with fixed height (the body is scrollable with empty
+content on bottom).
+
+This module changes the anchor symbol position to the right side of
+heading text to prevent scroll on such layout, without absolute position
+and normal inline layout.
 
 
 [#v0_16_0]
