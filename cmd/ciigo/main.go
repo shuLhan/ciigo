@@ -16,6 +16,7 @@ import (
 	"git.sr.ht/~shulhan/ciigo"
 	libhttp "git.sr.ht/~shulhan/pakakeh.go/lib/http"
 	"git.sr.ht/~shulhan/pakakeh.go/lib/memfs"
+	"git.sr.ht/~shulhan/pakakeh.go/lib/systemd"
 )
 
 const (
@@ -106,6 +107,21 @@ func main() {
 		usage()
 
 	case cmdServe:
+		listeners, err := systemd.Listeners(true)
+		if err != nil {
+			log.Fatal(err)
+		}
+		if len(listeners) > 1 {
+			log.Fatal(`too many listeners received for activation`)
+		}
+		if len(listeners) == 1 {
+			serveOpts.Listener = listeners[0]
+			gotAddr := serveOpts.Listener.Addr().String()
+			if gotAddr != serveOpts.Address {
+				log.Fatalf(`invalid Listener address, got %s, want %s`,
+					gotAddr, serveOpts.Address)
+			}
+		}
 		err = ciigo.Serve(serveOpts, convertOpts)
 
 	case cmdVersion:
