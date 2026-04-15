@@ -62,9 +62,7 @@ func (fhtml *fileHTML) unpackAdocMetadata(doc *asciidoctor.Document) {
 			}
 		case asciidoctor.DocAttrAuthorNames:
 			fhtml.Metadata[asciidoctor.DocAttrAuthor] = v
-		case asciidoctor.DocAttrDescription,
-			asciidoctor.DocAttrGenerator,
-			asciidoctor.DocAttrKeywords:
+		default:
 			fhtml.Metadata[k] = v
 		}
 	}
