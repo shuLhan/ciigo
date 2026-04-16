@@ -9,6 +9,7 @@ import (
 	"flag"
 	"fmt"
 	"log"
+	"net"
 	"os"
 	"strings"
 	"time"
@@ -107,7 +108,8 @@ func main() {
 		usage()
 
 	case cmdServe:
-		listeners, err := systemd.Listeners(true)
+		var listeners []net.Listener
+		listeners, err = systemd.Listeners(true)
 		if err != nil {
 			log.Fatal(err)
 		}
