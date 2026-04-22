@@ -33,6 +33,7 @@
   --dark-bg-topbar: var(--dark-bg-mono);
   --dark-bg: var(--light-fg);
   --dark-border: var(--light-border);
+  --dark-fg-a-code: burlywood;
   --dark-fg-footer: var(--dark-fg);
   --dark-fg-header: white;
   --dark-fg-title: var(--dark-fg);
@@ -667,6 +668,9 @@ pre code {
   textarea {
     background-color: var(--dark-bg-mono);
     color: var(--dark-fg);
+  }
+  a code {
+    color: var(--dark-fg-a-code);
   }
   .page > .container,
   .topbar {

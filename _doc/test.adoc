@@ -23,7 +23,6 @@ consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
 cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat
 non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
 
-
 == Paragraph
 
 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
@@ -64,6 +63,20 @@ tempor incididunt ut labore et dolore magna aliqua.
 
 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
 tempor incididunt ut labore et dolore magna aliqua.
+
+
+== Text Formatting and Punctuation
+
+`Code with monospace`.
+
+*Bold text*.
+
+_Italic text_.
+
+link:/["Normal link text, *with bold*, _and italic_"].
+
+link:/[`code inside link`]
+
 
 == List
 
