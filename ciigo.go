@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: GPL-3.0-or-later
+// SPDX-License-Identifier: GPL-3.0-only
 // SPDX-FileCopyrightText: 2019 M. Shulhan <ms@kilabit.info>
 
 // Package ciigo is a program to write static web server with embedded files

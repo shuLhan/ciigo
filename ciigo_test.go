@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: GPL-3.0-or-later
+// SPDX-License-Identifier: GPL-3.0-only
 // SPDX-FileCopyrightText: 2022 M. Shulhan <ms@kilabit.info>
 
 package ciigo
@@ -98,7 +98,7 @@ func TestGoEmbed(t *testing.T) {
 				VarName:        `memfsIn`,
 				WithoutModTime: true,
 				GoFileName:     `testdata/goembed/default.go`,
-				CommentHeader: `// SPDX-License-Identifier: GPL-3.0-or-later
+				CommentHeader: `// SPDX-License-Identifier: GPL-3.0-only
 // SPDX-FileCopyrightText: 2026 Shulhan <ms@kilabit.info>
 `,
 			},

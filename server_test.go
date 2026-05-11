@@ -1,5 +1,5 @@
+// SPDX-License-Identifier: GPL-3.0-only
 // SPDX-FileCopyrightText: 2024 Shulhan <ms@kilabit.info>
-// SPDX-License-Identifier: GPL-3.0-or-later
 
 package ciigo_test
 
@@ -10,10 +10,11 @@ import (
 	"regexp"
 	"testing"
 
-	"kilabit.info/ciigo"
 	libhttp "git.sr.ht/~shulhan/pakakeh.go/lib/http"
 	"git.sr.ht/~shulhan/pakakeh.go/lib/test"
 	"git.sr.ht/~shulhan/pakakeh.go/lib/test/httptest"
+
+	"kilabit.info/ciigo"
 )
 
 func TestCiigoOnGet(t *testing.T) {

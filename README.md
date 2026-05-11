@@ -1,4 +1,4 @@
-<!-- SPDX-License-Identifier: GPL-3.0-or-later -->
+<!-- SPDX-License-Identifier: GPL-3.0-only -->
 <!-- SPDX-FileCopyrightText: 2020 Shulhan <ms@kilabit.info> -->
 
 # Welcome to ciigo
@@ -402,8 +402,7 @@ each releases.
 
 Copyright 2022 Shulhan &lt;ms@kilabit.info&gt;.
 
-This software is licensed under GNU General Public License version 3.0 or
-later.
+This software is licensed under GNU General Public License version 3.0.
 
 <!--}}}-->
 <!--

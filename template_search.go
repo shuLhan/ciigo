@@ -1,5 +1,5 @@
+// SPDX-License-Identifier: GPL-3.0-only
 // SPDX-FileCopyrightText: 2020 Shulhan <ms@kilabit.info>
-// SPDX-License-Identifier: GPL-3.0-or-later
 
 package ciigo
 

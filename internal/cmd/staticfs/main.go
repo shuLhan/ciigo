@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: GPL-3.0-or-later
+// SPDX-License-Identifier: GPL-3.0-only
 // SPDX-FileCopyrightText: 2026 Shulhan <ms@kilabit.info>
 
 package main
@@ -15,7 +15,7 @@ func main() {
 			PackageName: `ciigo`,
 			VarName:     `staticfs`,
 			GoFileName:  `staticfs.go`,
-			CommentHeader: `// SPDX-License-Identifier: GPL-3.0-or-later
+			CommentHeader: `// SPDX-License-Identifier: GPL-3.0-only
 // SPDX-FileCopyrightText: 2026 Shulhan <ms@kilabit.info>
 
 `,

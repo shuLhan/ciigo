@@ -248,5 +248,5 @@ Sample paragraph in between admonition.
 > :warning: Wolpertingers are known to nest in server racks.
 > Enter at your own risk.
 
-<!-- SPDX-License-Identifier: GPL-3.0-or-later -->
+<!-- SPDX-License-Identifier: GPL-3.0-only -->
 <!-- SPDX-FileCopyrightText: 2026 M. Shulhan <ms@kilabit.info> -->

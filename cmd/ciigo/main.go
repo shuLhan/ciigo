@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: GPL-3.0-or-later
+// SPDX-License-Identifier: GPL-3.0-only
 // SPDX-FileCopyrightText: 2019 Shulhan <ms@kilabit.info>
 
 // ciigo is a CLI to convert, embed, and/or serve a directory that contains

@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: GPL-3.0-or-later
+// SPDX-License-Identifier: GPL-3.0-only
 // SPDX-FileCopyrightText: 2026 M. Shulhan <ms@kilabit.info>
 = _Example `Document` **title**_
 Author A <a@a.com>; Author mid_dle B <b@b.com>
