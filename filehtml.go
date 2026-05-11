@@ -9,7 +9,7 @@ import (
 	"log"
 	"strings"
 
-	"git.sr.ht/~shulhan/asciidoctor-go"
+	"kilabit.info/asciidoctor-go"
 )
 
 const (

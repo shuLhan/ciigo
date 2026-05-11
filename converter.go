@@ -11,7 +11,7 @@ import (
 	"path/filepath"
 	"time"
 
-	"git.sr.ht/~shulhan/asciidoctor-go"
+	"kilabit.info/asciidoctor-go"
 	"git.sr.ht/~shulhan/pakakeh.go/lib/memfs"
 	"github.com/yuin/goldmark"
 	meta "github.com/yuin/goldmark-meta"
