@@ -3,6 +3,8 @@
 
 =  Changelog for ciigo
 :sectanchors:
+:sectnumlevels: 1
+:toc-title!:
 :toc:
 
 Legend,
@@ -11,6 +13,30 @@ Legend,
 * 🌱: New feature
 * 🌼: Enhancement
 * 💧: Chores
+
+
+[#v0_18_0]
+== ciigo v0.18.0 (2026-05-11)
+
+This is major release where we move the Go module path to
+"kilabit.info/ciigo".
+
+The git repository also moved to https://git.kilabit.info/ciigo/ .
+
+Other changes,
+
+**💧 cmd/ciigo: enable serve under systemd socket activation.**
+
+The "ciigo serve" now can be activated using systemd.socket(5).
+
+**🌼 all: stores all document attributes into Metadata**
+
+This is to allow user to defines their own key-value in document
+attributes and access it in HTML template using "{{ .Metadata.<key> }}".
+
+**🌼 _static: fix text formatting for code inside anchor**
+
+The link color is not visible when text is formatted as code.
 
 
 [#v0_17_0]
