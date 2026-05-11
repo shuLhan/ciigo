@@ -27,9 +27,9 @@ Features,
 
 - No themes, built your own template and style.
   Except for default
-  [HTML](https://git.sr.ht/~shulhan/ciigo/tree/main/item/_static/index.gohtml)
+  [HTML](https://git.kilabit.info/ciigo/tree/_static/index.gohtml)
   template and embedded
-  [CSS](https://git.sr.ht/~shulhan/ciigo/tree/main/item/_static/ciigo.css),
+  [CSS](https://git.kilabit.info/ciigo/tree/_static/ciigo.css),
   there is no other selection of theme that you can "pre-installed".
 
 - No layout, you are free to structure your sites, using normal directory
@@ -58,7 +58,7 @@ directory,
 ```
 $ mkdir -p $HOME/src/
 $ cd $HOME/src
-$ git clone https://git.sr.ht/~shulhan/ciigo
+$ git clone https://git.kilabit.info/ciigo
 ```
 
 Run "go install" on ./cmd/ciigo,
@@ -314,7 +314,7 @@ This model gives flexibility.
 You can adding custom functions, custom HTTP endpoints, and many more.
 
 For an example on how to use ciigo as library see the code at
-[internal/cmd/ciigo-example](https://git.sr.ht/~shulhan/ciigo/tree/main/internal/cmd/ciigo-example).
+[internal/cmd/ciigo-example](https://git.kilabit.info/ciigo/tree/internal/cmd/ciigo-example).
 
 That's it, happy writing!
 
@@ -382,14 +382,14 @@ This method makes the stylesheet applied to all pages.
 
 <!--{{{-->
 
-<https://git.sr.ht/~shulhan/ciigo> - Link to the source code.
+<https://git.kilabit.info/ciigo/> - Link to the source code.
 
 <https://lists.sr.ht/~shulhan/ciigo> - Link to development and discussion.
 
 <https://todo.sr.ht/~shulhan/ciigo> - Link to submit an issue, feedback, or
 request for new feature.
 
-<https://pkg.go.dev/git.sr.ht/~shulhan/ciigo> - Go module documentation.
+<https://pkg.go.dev/kilabit.info/ciigo> - Go module documentation.
 
 [Change log](https://kilabit.info/project/ciigo/CHANGELOG.html) - Log of
 each releases.

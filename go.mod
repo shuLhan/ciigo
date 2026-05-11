@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // SPDX-FileCopyrightText: 2019 Shulhan <ms@kilabit.info>
 
-module git.sr.ht/~shulhan/ciigo
+module kilabit.info/ciigo
 
 go 1.26.0
 
@@ -25,6 +25,6 @@ require (
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 )
 
-//replace git.sr.ht/~shulhan/asciidoctor-go => ../asciidoctor-go
+//replace kilabit.info/asciidoctor-go => ../asciidoctor-go
 
 //replace git.sr.ht/~shulhan/pakakeh.go => ../pakakeh.go

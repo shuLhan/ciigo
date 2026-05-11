@@ -3,7 +3,7 @@
 
 VERSION:=$(shell git describe --tags)
 ENV_GOBIN:=$(shell go env GOBIN)
-LDFLAGS:=-ldflags "-s -w -X 'git.sr.ht/~shulhan/ciigo.Version=$(VERSION)'"
+LDFLAGS:=-ldflags "-s -w -X 'kilabit.info/ciigo.Version=$(VERSION)'"
 DIR_BUILD:=_bin
 
 .PHONY: all

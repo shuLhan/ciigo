@@ -13,7 +13,7 @@ import (
 	libhttp "git.sr.ht/~shulhan/pakakeh.go/lib/http"
 	"git.sr.ht/~shulhan/pakakeh.go/lib/memfs"
 
-	"git.sr.ht/~shulhan/ciigo"
+	"kilabit.info/ciigo"
 )
 
 const (

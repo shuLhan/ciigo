@@ -16,7 +16,7 @@ markup format.
 ==  ciigo as library
 
 For an up to date documentation of how to use the library see the
-https://git.sr.ht/~shulhan/ciigo[repository page^].
+https://kilabit.info/project/ciigo/[repository page^].
 
 ==  ciigo as CLI
 

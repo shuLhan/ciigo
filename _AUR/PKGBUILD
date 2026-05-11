@@ -6,7 +6,7 @@ pkgrel=1
 
 pkgdesc="CLI to convert, generate, and/or serve AsciiDoc markup files as HTML files."
 arch=(x86_64)
-url='https://git.sr.ht/~shulhan/ciigo'
+url='https://kilabit.info/project/ciigo/'
 license=('GPL3')
 
 makedepends=(
@@ -18,8 +18,8 @@ provides=('ciigo')
 
 #pkgname=ciigo-local
 source=(
-	"$pkgname::git+https://git.sr.ht/~shulhan/ciigo"
-	#"$pkgname::git+file:///home/ms/go/src/git.sr.ht/~shulhan/ciigo"
+	"$pkgname::git+https://git.kilabit.info/ciigo/"
+	#"$pkgname::git+file:///home/ms/go/src/kilabit.info/_project/src/ciigo"
 )
 md5sums=(
 	'SKIP'
