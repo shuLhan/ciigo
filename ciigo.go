@@ -4,8 +4,8 @@
 // Package ciigo is a program to write static web server with embedded files
 // using the asciidoc markup languages.
 //
-// For more information see the README file at the page repository
-// https://sr.ht/~shulhan/ciigo.
+// For more information see the project page at
+// https://kilabit.info/project/ciigo .
 package ciigo
 
 import (
@@ -17,8 +17,8 @@ import (
 	"regexp"
 	"strings"
 
-	libhttp "git.sr.ht/~shulhan/pakakeh.go/lib/http"
-	"git.sr.ht/~shulhan/pakakeh.go/lib/memfs"
+	libhttp "kilabit.info/pakakeh.go/lib/http"
+	"kilabit.info/pakakeh.go/lib/memfs"
 )
 
 const (

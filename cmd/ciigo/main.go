@@ -15,9 +15,9 @@ import (
 	"time"
 
 	"kilabit.info/ciigo"
-	libhttp "git.sr.ht/~shulhan/pakakeh.go/lib/http"
-	"git.sr.ht/~shulhan/pakakeh.go/lib/memfs"
-	"git.sr.ht/~shulhan/pakakeh.go/lib/systemd"
+	libhttp "kilabit.info/pakakeh.go/lib/http"
+	"kilabit.info/pakakeh.go/lib/memfs"
+	"kilabit.info/pakakeh.go/lib/systemd"
 )
 
 const (

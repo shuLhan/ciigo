@@ -12,7 +12,7 @@ import (
 	"time"
 
 	"kilabit.info/asciidoctor-go"
-	"git.sr.ht/~shulhan/pakakeh.go/lib/memfs"
+	"kilabit.info/pakakeh.go/lib/memfs"
 	"github.com/yuin/goldmark"
 	meta "github.com/yuin/goldmark-meta"
 	"github.com/yuin/goldmark/parser"

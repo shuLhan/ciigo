@@ -10,9 +10,9 @@ import (
 	"regexp"
 	"testing"
 
-	libhttp "git.sr.ht/~shulhan/pakakeh.go/lib/http"
-	"git.sr.ht/~shulhan/pakakeh.go/lib/test"
-	"git.sr.ht/~shulhan/pakakeh.go/lib/test/httptest"
+	libhttp "kilabit.info/pakakeh.go/lib/http"
+	"kilabit.info/pakakeh.go/lib/test"
+	"kilabit.info/pakakeh.go/lib/test/httptest"
 
 	"kilabit.info/ciigo"
 )

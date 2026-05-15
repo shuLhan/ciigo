@@ -3,7 +3,7 @@
 
 package ciigo
 
-import "git.sr.ht/~shulhan/pakakeh.go/lib/memfs"
+import "kilabit.info/pakakeh.go/lib/memfs"
 
 // EmbedOptions define the options for calling GoEmbed function.
 type EmbedOptions struct {

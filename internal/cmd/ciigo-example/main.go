@@ -10,8 +10,8 @@ import (
 	"log"
 	"strings"
 
-	libhttp "git.sr.ht/~shulhan/pakakeh.go/lib/http"
-	"git.sr.ht/~shulhan/pakakeh.go/lib/memfs"
+	libhttp "kilabit.info/pakakeh.go/lib/http"
+	"kilabit.info/pakakeh.go/lib/memfs"
 
 	"kilabit.info/ciigo"
 )

@@ -6,10 +6,10 @@ module kilabit.info/ciigo
 go 1.26.0
 
 require (
-	git.sr.ht/~shulhan/pakakeh.go v0.63.0
 	github.com/yuin/goldmark v1.8.2
 	github.com/yuin/goldmark-meta v1.1.0
-	kilabit.info/asciidoctor-go v0.8.0
+	kilabit.info/asciidoctor-go v0.8.1
+	kilabit.info/pakakeh.go v0.64.0
 )
 
 require (
@@ -27,4 +27,4 @@ require (
 
 //replace kilabit.info/asciidoctor-go => ../asciidoctor-go
 
-//replace git.sr.ht/~shulhan/pakakeh.go => ../pakakeh.go
+//replace kilabit.info/pakakeh.go => ../pakakeh.go

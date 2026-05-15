@@ -222,7 +222,7 @@ We bring many enhancements and update on the documentation.
 
 [ENHANCEMENT] +
 The first changes is refactoring to use
-https://pkg.go.dev/git.sr.ht/~shulhan/pakakeh.go/lib/watchfs/v2[watchfs/v2^].
+https://pkg.go.dev/kilabit.info/pakakeh.go/lib/watchfs/v2[watchfs/v2^].
 The [watchfs/v2] bring new enhancements by watching only single file
 instead of all markup files for changes.
 This minimize number of goroutine calling [os.Stat] on each markup

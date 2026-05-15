@@ -10,8 +10,8 @@ import (
 	"strings"
 	"time"
 
-	"git.sr.ht/~shulhan/pakakeh.go/lib/clise"
-	"git.sr.ht/~shulhan/pakakeh.go/lib/watchfs/v2"
+	"kilabit.info/pakakeh.go/lib/clise"
+	"kilabit.info/pakakeh.go/lib/watchfs/v2"
 )
 
 // watcher watch for changes on all markup files and convert them

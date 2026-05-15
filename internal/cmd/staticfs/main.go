@@ -6,7 +6,7 @@ package main
 import (
 	"log"
 
-	"git.sr.ht/~shulhan/pakakeh.go/lib/memfs"
+	"kilabit.info/pakakeh.go/lib/memfs"
 )
 
 func main() {

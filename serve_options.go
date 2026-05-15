@@ -3,14 +3,14 @@
 
 package ciigo
 
-import "git.sr.ht/~shulhan/pakakeh.go/lib/http"
+import "kilabit.info/pakakeh.go/lib/http"
 
 const (
 	defAddress = `:8080`
 )
 
 // ServeOptions define the options to use on Serve function.
-// See [git.sr.ht/~shulhan/pakakeh.go/lib/http.ServerOptions] for more information.
+// See [kilabit.info/pakakeh.go/lib/http.ServerOptions] for more information.
 type ServeOptions struct {
 	http.ServerOptions
 
