@@ -1,8 +1,11 @@
+// SPDX-License-Identifier: GPL-3.0-only
+// SPDX-FileCopyrightText: 2025 M. Shulhan <ms@kilabit.info>
 
 >>> one.adoc
 = One
 
 <<< one.html
+
 <div id="header">
 <h1>One</h1>
 </div>
@@ -18,6 +21,7 @@
 # Two
 
 <<< two.html
+
 <h1>Two</h1>
 
 
@@ -34,6 +38,7 @@
 = Three
 
 <<< new_three.html
+
 <div id="header">
 <h1>Three</h1>
 </div>
@@ -51,6 +56,7 @@
 Updated.
 
 <<< update_one.html
+
 <div id="header">
 <h1>One</h1>
 </div>
@@ -72,6 +78,7 @@ Updated.
 Hello world!
 
 <<< /journal/index.html
+
 <div id="header">
 <h1>Journal</h1>
 </div>

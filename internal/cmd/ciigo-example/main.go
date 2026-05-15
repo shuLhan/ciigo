@@ -64,8 +64,8 @@ func doEmbed() {
 			},
 		},
 		EmbedOptions: memfs.EmbedOptions{
-			CommentHeader: `// SPDX-FileCopyrightText: 2019 Shulhan <ms@kilabit.info>
-// SPDX-License-Identifier: GPL-3.0-only
+			CommentHeader: `// SPDX-License-Identifier: GPL-3.0-only
+// SPDX-FileCopyrightText: 2019 Shulhan <ms@kilabit.info>
 `,
 			PackageName:    `main`,
 			VarName:        `ciigoFS`,
