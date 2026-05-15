@@ -3,7 +3,7 @@
 # Maintainer: shulhan <ms@kilabit.info>
 
 pkgname=ciigo-git
-pkgver=0.13.0.r0.ga068721
+pkgver=0.18.0.r0.g2b35c68
 pkgrel=1
 
 pkgdesc="CLI to convert, generate, and/or serve AsciiDoc markup files as HTML files."
@@ -18,11 +18,16 @@ makedepends=(
 
 provides=('ciigo')
 
-#pkgname=ciigo-local
 source=(
-	"$pkgname::git+https://git.kilabit.info/ciigo/"
-	#"$pkgname::git+file:///home/ms/go/src/kilabit.info/_project/src/ciigo"
+	"$pkgname::git+https://git.kilabit.info/ciigo"
 )
+
+## For testing on local.
+#pkgname=ciigo-local
+#source=(
+#	"$pkgname::git+file:///home/ms/go/src/kilabit.info/_project/src/ciigo"
+#)
+
 md5sums=(
 	'SKIP'
 )

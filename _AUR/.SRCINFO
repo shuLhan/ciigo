@@ -1,6 +1,6 @@
 pkgbase = ciigo-git
 	pkgdesc = CLI to convert, generate, and/or serve AsciiDoc markup files as HTML files.
-	pkgver = 0.13.0.r0.ga068721
+	pkgver = 0.18.0.r0.g2b35c68
 	pkgrel = 1
 	url = https://kilabit.info/project/ciigo/
 	arch = x86_64
@@ -8,7 +8,7 @@ pkgbase = ciigo-git
 	makedepends = go
 	makedepends = git
 	provides = ciigo
-	source = ciigo-git::git+https://git.kilabit.info/ciigo/
+	source = ciigo-git::git+https://git.kilabit.info/ciigo
 	md5sums = SKIP
 
 pkgname = ciigo-git

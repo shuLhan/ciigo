@@ -3,9 +3,9 @@
 
 =  Changelog for ciigo
 :sectanchors:
-:sectnumlevels: 1
 :toc-title!:
 :toc:
+:toclevels: 1
 
 Legend,
 
@@ -13,6 +13,15 @@ Legend,
 * 🌱: New feature
 * 🌼: Enhancement
 * 💧: Chores
+
+
+[#v0_18_1]
+== ciigo v0.18.1 (2026-05-15)
+
+This is second release to complete the migration of Go module to new
+location at kilabit.info/ciigo.
+
+**💧 all: replace module pakakeh.go with new location**.
 
 
 [#v0_18_0]

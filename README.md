@@ -15,10 +15,10 @@ markup format.
 As showcase, the following websites are build using ciigo,
 
 - [kilabit.info](https://kilabit.info) -
-  [Source code](https://git.sr.ht/~shulhan/kilabit.info).
+  [Source code](https://git.kilabit.info/kilabit.info/).
 
 - [golang-id.org](https://golang-id.org) -
-  [Source code](https://git.sr.ht/~shulhan/golang-id-web).
+  [Source code](https://git.kilabit.info/golang-id-web/).
 
 Features,
 
@@ -382,17 +382,16 @@ This method makes the stylesheet applied to all pages.
 
 <!--{{{-->
 
+<https://kilabit.info/project/ciigo/> - Project page.
+
 <https://git.kilabit.info/ciigo/> - Link to the source code.
-
-<https://lists.sr.ht/~shulhan/ciigo> - Link to development and discussion.
-
-<https://todo.sr.ht/~shulhan/ciigo> - Link to submit an issue, feedback, or
-request for new feature.
 
 <https://pkg.go.dev/kilabit.info/ciigo> - Go module documentation.
 
 [Change log](https://kilabit.info/project/ciigo/CHANGELOG.html) - Log of
 each releases.
+
+Any bug, patch, or suggestion please send it to <ms@kilabit.info>.
 
 <!--}}}-->
 
